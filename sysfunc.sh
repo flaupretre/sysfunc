@@ -530,15 +530,24 @@ fi
 # $2 = target path
 # $3 = [mode]
 # $4 = [flag] (prepend)
+# $5 = [comment char] 1 caractere (defaut=#)
 #
 # Cas particulier : Si $1 = '-<name>', data lues sur stdin, et <name> utilise
 # uniquement pour les lignes start et end du bloc.
 
 sf_check_block()
 {
-local mode source target nstart nend fname tmpdir
+local mode source target flag comment nstart nend fname tmpdir
 
 source="$1"
+target="$2"
+mode="$3"
+[ -z "$mode" ] && mode=644
+flag="$4"
+comment="$5"
+[ -z "$comment" ] && comment='#'
+
+
 # Cas particulier. Si $source commence par '-', data lues sur stdin
 # et cree fichier dans repertoire temporaire (pour le nom)
 
@@ -555,30 +564,25 @@ else
 	fname=`basename $source`
 fi
 
-target="$2"
-
-mode="$3"
-[ -z "$mode" ] && mode=644
-
 [ -f "$source" ] || return
 
 #-- Extrait bloc
 
 if [ -f "$target" ] ; then
-	nstart=`grep -n "^##sysfunc_start/$fname##" "$target" | sed 's!:.*$!!'`
+	nstart=`grep -n "^.#sysfunc_start/$fname##" "$target" | sed 's!:.*$!!'`
 	if [ -n "$nstart" ] ; then
 		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$tmpfile._start
 		tail --lines=+`expr $nstart + 1` <"$target" >$tmpfile._2
-		nend=`grep -n "^##sysfunc_end/$fname##" "$tmpfile._2" | sed 's!:.*$!!'`
+		nend=`grep -n "^.#sysfunc_end/$fname##" "$tmpfile._2" | sed 's!:.*$!!'`
 		if [ -z "$nend" ] ; then # Ne devrait jamais arriver
-			fatal "check_block($1): start without end line"
+			fatal "check_block($1): detected start without end line"
 			return
 		fi
 		( [ $nend != 1 ] && head -`expr $nend - 1` $tmpfile._2 ) >$tmpfile._block
 		tail --lines=+`expr $nend + 1` <$tmpfile._2 >$tmpfile._end
 		diff "$source" $tmpfile._block >/dev/null 2>&1 && return # Same block, no action
 	else
-		if [ "$4" = "prepend" ] ; then
+		if [ "$flag" = "prepend" ] ; then
 			>$tmpfile._start
 			cp $target $tmpfile._end
 		else
@@ -598,9 +602,9 @@ if [ -z "$noexec" ] ; then
 	\rm -f "$target"
 	(
 	cat $tmpfile._start
-	echo "##sysfunc_start/$fname##------ Ne pas supprimer cette ligne"
+	echo "$comment#sysfunc_start/$fname##------ Ne pas supprimer cette ligne"
 	cat $source
-	echo "##sysfunc_end/$fname##-------- Ne pas supprimer cette ligne"
+	echo "$comment#sysfunc_end/$fname##-------- Ne pas supprimer cette ligne"
 	cat $tmpfile._end
 	) >$target
 	chmod $mode "$target"
