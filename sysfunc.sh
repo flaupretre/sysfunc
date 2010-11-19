@@ -134,7 +134,7 @@ local rc
 rc=1
 [ -n "$2" ] && rc=$2
 
-sf_error $*
+sf_error "$1"
 echo
 echo "******************* Abort *******************"
 exit $rc
@@ -165,24 +165,19 @@ sf_fatal "$1: Feature not supported in this environment: $_os" 2
 # If the ERRLOG environment variable is set, it is supposed to contain
 # a path. The error message will be appnded to the file at this path. If
 # the file does not exist, it will be created.
-# Returns 1 to allow constructs like: return `sf_error "..."`
 # Args :
 #	$1 : Message
-#	$2 : Optional. Code to return. Default=1
-# Returns : 1
+# Returns : void
 # Displays : Error message
 #-----------------------------------------------------------------------------
 
 sf_error()
 {
-local msg rc
+local msg
 
 msg="*Error : $1"
 sf_msg "$msg"
 [ -n "$ERRLOG" ] && echo "$msg" >>$ERRLOG
-rc=1
-[ -n "$2" ] && rc=$2
-return $rc
 }
 
 #-----------------------------------------------------------------------------
@@ -1150,7 +1145,7 @@ return $rc
 }
 
 #-----------------------------------------------------------------------------
-#
+# Refuses existing directory as mount point (security)
 #
 # Args :
 #	$1: Mount point
@@ -1173,7 +1168,14 @@ owner=$4
 
 sf_has_dedicated_fs $mnt && return
 sf_msg1 "$mnt: Creating file system"
-[ -d $mnt ] || mkdir -p $mnt
+
+if [ -d $mnt ] ; then # Securite
+	sf_error "$mnt: Cannot create FS on an existing directory"
+	return 1
+else
+	mkdir -p $mnt
+fi
+
 [ $? = 0 ] || return 1
 
 case "$_os" in
@@ -1273,7 +1275,10 @@ lv=$1
 vg=$2
 size=$3
 
-sf_vg_exists $vg || return `sf_error "VG $vg does not exist"`
+if ! sf_vg_exists $vg ; then
+	sf_error "VG $vg does not exist"
+	return 1
+fi
 
 sf_lv_exists $vg $lv && return
 
