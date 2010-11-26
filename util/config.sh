@@ -18,7 +18,7 @@
 
 PRODUCT=sysfunc
 DESCRIPTION="System utility shell functions"
-VERSION=1.0
+VERSION=1.1
 RELEASE=1
 
 export PRODUCT DESCRIPTION VERSION RELEASE
