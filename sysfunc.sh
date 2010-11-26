@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre
+# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -419,7 +419,7 @@ fi
 #
 # If the input arg is the path of an existing regular file, the file is copied
 # to '$path.orig'
-#
+# TODO: improve save features (multiple numbered saved versions,...)
 # Args :
 #	$1 : Path
 # Returns : void
@@ -436,11 +436,11 @@ fi
 
 #-----------------------------------------------------------------------------
 # Renames a file to '<dir>/old.<filename>
-#
 # 
 # Args :
-# Returns :
-# Displays :
+#	$1 : Path
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
 
 sf_rename_to_old()
@@ -448,7 +448,7 @@ sf_rename_to_old()
 local dir base of f
 
 f="$1"
-[ -f "$f" ] || continue
+[ -f "$f" ] || return
 dir="`dirname $f`"
 base="`basename $f`"
 of="$dir/old.$base"
@@ -460,17 +460,20 @@ fi
 }
 
 #-----------------------------------------------------------------------------
+# Copy a file or the content of function's standard input to a target file
+#
+# The copy takes place only if the source and target files are different.
+# If the target file is already existing, it is saved before being overwritten.
+# If the target path directory does not exist, it is created.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Source path. Special value: '-' means that data to copy is read from
+#		stdin, allowing to produce dynamic content without a temp file.
+#	$2: Target path
+#	$3: Optional. File creation mode. Default=644
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# Copie un fichier.
-# Si le fichier target existe deja, on fait une sauvegarde.
-# Cas particulier. Si $sf='-', data lues sur stdin
-# $1 = source path
-# $2 = target path
-# $3 = [mode]
 
 sf_check_copy()
 {
@@ -478,8 +481,8 @@ local mode source target
 
 istmp=''
 source="$1"
-# Cas particulier. Si $source='-', data lues sur stdin
-# et cree fichier temporaire
+
+#-- Special case: source='-' => read data from stdin and create temp file
 
 if [ "X$source" = 'X-' ] ; then
 	source=$tmpfile._check_copy
@@ -498,37 +501,50 @@ if [ -f "$target" ] ; then
 	sf_save $target
 fi
 
-sf_msg1 "Mise a jour du fichier $target"
+sf_msg1 "Updating file $target"
 
 if [ -z "$noexec" ] ; then
 	\rm -rf "$target"
+	sf_create_dir `dirname $target`
 	cp "$source" "$target"
 	chmod $mode "$target"
 fi
 }
 
 #-----------------------------------------------------------------------------
+# Replaces or prepends/appends a data block in a file
+#
+# The block is composed of entire lines and is surrounded by special comment
+# lines when inserted in the target file. These comment lines identify the
+# data block and allow the function to be called several times on the same
+# target file with different data blocks. The block identifier is the
+# base name of the source path.
+# If the given block is not present in the target file, it is appended or
+# prepended, depending on the flag argument. If the block is already
+# present in the file (was inserted by a previous run of this function),
+# its content is compared with the new data, and replaced if different.
+# In this case, it is replaced at the exact place where the previous block
+# lied.
+# If the target file is existing, it is saved before being overwritten.
+# If the target path directory does not exist, it is created.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: If this arg starts with the '-' char, the data is to be read from
+#		stdin and the string after the '-' is the block identifier. If
+#		it does not start with '-', it is the path to the source file
+#		(containing the data to insert)
+#	$2: Target path
+#	$3: Optional. Target file mode. Default=644
+#	$4: Optional. Flag. Set to 'prepend' to add data at the beginning of
+#		the file. Default mode: Append. Used only if data block is not
+#		already present in the file. Can be set to '' (empty string) to mean
+#		'default mode'.
+#	$5: Optional. Comment character. This argument, if set, must contain only
+#		one character. This character will be used as first char when building
+#		the 'identifier' lines surrounding the data block. Default: '#'.
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# Remplace ou prepend/append une partie de fichier.
-# Si le fichier target existe deja, on fait une sauvegarde.
-#
-# Format du bloc insere/remplace :
-#  
-#  ##config_start/<source_path>##--...
-#  data
-#  ##config_end/<source_path>##--..
-# $1 = source path
-# $2 = target path
-# $3 = [mode]
-# $4 = [flag] (prepend)
-# $5 = [comment char] 1 caractere (defaut=#)
-#
-# Cas particulier : Si $1 = '-<name>', data lues sur stdin, et <name> utilise
-# uniquement pour les lignes start et end du bloc.
 
 sf_check_block()
 {
@@ -542,9 +558,8 @@ flag="$4"
 comment="$5"
 [ -z "$comment" ] && comment='#'
 
-
-# Cas particulier. Si $source commence par '-', data lues sur stdin
-# et cree fichier dans repertoire temporaire (pour le nom)
+# Special case: data read from stdin. Create file in temp dir (id taken from
+# the base name)
 
 echo "X$source" | grep '^X-' >/dev/null 2>&1
 if [ $? = 0 ] ; then
@@ -569,37 +584,42 @@ if [ -f "$target" ] ; then
 		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$tmpfile._start
 		tail --lines=+`expr $nstart + 1` <"$target" >$tmpfile._2
 		nend=`grep -n "^.#sysfunc_end/$fname##" "$tmpfile._2" | sed 's!:.*$!!'`
-		if [ -z "$nend" ] ; then # Ne devrait jamais arriver
-			fatal "check_block($1): detected start without end line"
+		if [ -z "$nend" ] ; then # Corrupt block
+			fatal "check_block($1): Corrupt block detected - aborting"
 			return
 		fi
 		( [ $nend != 1 ] && head -`expr $nend - 1` $tmpfile._2 ) >$tmpfile._block
 		tail --lines=+`expr $nend + 1` <$tmpfile._2 >$tmpfile._end
 		diff "$source" $tmpfile._block >/dev/null 2>&1 && return # Same block, no action
+		action='Replacing'
 	else
 		if [ "$flag" = "prepend" ] ; then
 			>$tmpfile._start
 			cp $target $tmpfile._end
+			action='Prepending'
 		else
 			cp $target $tmpfile._start
 			>$tmpfile._end
+			action='Appending'
 		fi
 	fi
 	sf_save $target
 else
+	action='Creating from'
 	>$tmpfile._start
 	>$tmpfile._end
 fi
 
-sf_msg1 "Insertion d'un bloc dans le fichier $target"
+sf_msg1 "$target: $action data block"
 
 if [ -z "$noexec" ] ; then
 	\rm -f "$target"
+	sf_create_dir `dirname $target`
 	(
 	cat $tmpfile._start
-	echo "$comment#sysfunc_start/$fname##------ Ne pas supprimer cette ligne"
+	echo "$comment#sysfunc_start/$fname##------ Don't remove this line"
 	cat $source
-	echo "$comment#sysfunc_end/$fname##-------- Ne pas supprimer cette ligne"
+	echo "$comment#sysfunc_end/$fname##-------- DOn't remove this line"
 	cat $tmpfile._end
 	) >$target
 	chmod $mode "$target"
@@ -607,15 +627,16 @@ fi
 }
 
 #-----------------------------------------------------------------------------
+# Creates or modifies a symbolic link
 #
+# The target is saved before being modified.
+# Note: Don't use 'test -h' (not portable)
+# If the target path directory does not exist, it is created.
 #
 # Args :
 # Returns :
 # Displays :
 #-----------------------------------------------------------------------------
-# Cree un lien symbolique
-#
-# Note : Ne pas utiliser 'test -h' (non portable)
 # $1 = target du lien
 # $2 = lien a creer
 
@@ -637,6 +658,7 @@ sf_msg1 "Mise a jour du lien symbolique $2"
 
 if [ -z "$noexec" ] ; then
 	\rm -rf "$2"
+	sf_create_dir `dirname $2`
 	ln -s "$1" "$2"
 fi
 }
