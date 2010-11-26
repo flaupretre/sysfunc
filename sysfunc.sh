@@ -21,6 +21,22 @@
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# Utility function to check if the library is already loaded
+#
+# The 'official' way to load sysfunc is :
+#	sf_loaded 2>/dev/null || . /opt/sysfunc/sysfunc.sh
+#
+# Args : none
+# Returns : void
+# Displays : Library version (string)
+#-----------------------------------------------------------------------------
+
+sf_loaded()
+{
+return 0
+}
+
+#-----------------------------------------------------------------------------
 # Displays library version
 #
 # Args : none
