@@ -1350,8 +1350,11 @@ return $rc
 # Create a logical volume
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Logical volume name
+#	$2: Volume group name
+#	$3: Size in Mbytes
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
 
 sf_create_lv()
@@ -1385,11 +1388,19 @@ return $rc
 }
 
 #-----------------------------------------------------------------------------
+# Create a logical volume and a filesystem on it
 #
+# Combines sf_create_lv and sf_create_fs
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Mount point (directory)
+#	$2: Logical volume name
+#	$3: Volume group name
+#	$4: File system type
+#	$5: Size in Mbytes
+#	$6: Optional. Directory owner[:group]
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
 
 sf_create_lv_fs()
@@ -1412,14 +1423,15 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# List installed packages
 #
-#
-# Args :
-# Returns :
-# Displays :
-#-----------------------------------------------------------------------------
-# Return a sorted list of installed packages
+# Returns a sorted list of installed packages
 # Linux output: yum format (name-version-release.arch)
+#
+# Args : none
+# Returns : void
+# Displays : package list
+#-----------------------------------------------------------------------------
 
 sf_package_list()
 {
@@ -1438,14 +1450,16 @@ esac
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# Enable service start/stop at system boot/shutdown
 #
+# Enable service for state 2, 3, 4, and 5 (default for chkconfig)
 #
 # Args :
-# Returns :
-# Displays :
+#	$*: Service names
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# $*: service names
-# Enable service for state 2, 3, 4, and 5 (default for chkconfig)
+
 sf_enable_service()
 {
 for service in $*
@@ -1465,13 +1479,15 @@ done
 }
 
 #-----------------------------------------------------------------------------
+# Disable service start/stop at system boot/shutdown
 #
+# Disable service for every states
 #
 # Args :
-# Returns :
-# Displays :
+#	$*: Service names
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# $*: service names
 
 sf_disable_service()
 {
@@ -1496,13 +1512,16 @@ done
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# Suppresses the host name part from a FQDN
 #
+# Displays the input string without the beginning up to and including the
+# first '.'.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: input FQDN
+# Returns : void
+# Displays : truncated string
 #-----------------------------------------------------------------------------
-# Filtre: supprime le hostname
 
 sf_domain_part()
 {
@@ -1510,53 +1529,55 @@ sed 's/^[^\.]*\.//'
 }
 
 #-----------------------------------------------------------------------------
+# Extracts a hostname from an FQDN
 #
+# Removes everything from the first dot up to the end of the string
 #
-# Args :
-# Returns :
-# Displays :
+#	$1: input FQDN
+# Returns : void
+# Displays : truncated string
 #-----------------------------------------------------------------------------
 
 sf_host_part()
 {
-# Filtre: supprime le domaine
-
 sed 's/^\([^\.]*\)\..*$/\1/'
 }
 
 #-----------------------------------------------------------------------------
+# Resolves an IP address through the DNS
 #
+# If the address cannot be resolved, displays nothing
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: IP address
+#	$2: Optional. DNS server to ask
+# Returns : void
+# Displays : Host name as returned by the DNS or nothing if address could
+# not be resolved.
 #-----------------------------------------------------------------------------
 
 sf_dns_addr_to_name()
 {
-# $1 = adresse
-# $2 = DNS server (optional)
-# Si non resolu, renvoie une chaine vide
-
 ( [ -n "$2" && echo "server $2"; echo "$1" ) \
 	| nslookup 2>/dev/null | grep '^Name:' | head -1 \
 	| sed -e 's/^Name:[ 	]*//g'
 }
 
 #-----------------------------------------------------------------------------
+# Resolves a host name through the DNS
 #
+# If the name cannot be resolved, displays nothing
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Host name to resolve
+#	$2: Optional. DNS server to ask
+# Returns : void
+# Displays : IP address as returned by the DNS or nothing if name could
+# not be resolved.
 #-----------------------------------------------------------------------------
 
 sf_dns_name_to_addr()
 {
-# $1 = nom
-# $2 = DNS server (optional)
-# Si non resolu, renvoie une chaine vide
-
 ( [ -n "$2" && echo "server $2"; echo "$1" ) \
 	| nslookup 2>/dev/null \
 	| grep '^Address:' | tail --lines=+2 | head -1 \
@@ -1564,11 +1585,15 @@ sf_dns_name_to_addr()
 }
 
 #-----------------------------------------------------------------------------
+# Get the primary address of the system
 #
+# This is an arbitrary choice, such as the address assigned to the first
+# network nterface.
+# Feel free to improve !
 #
-# Args :
-# Returns :
-# Displays :
+# Args : none
+# Returns : void
+# Displays : IP address or nothing if no address was found
 #-----------------------------------------------------------------------------
 
 sf_primary_ip_address()
@@ -1588,7 +1613,7 @@ esac
 # MAIN
 #=============================================================================
 
-#-- Clear potentially conflicting aliases
+#-- Clear potentially conflicting f...ing aliases
 
 for i in cp mv rm
 	do
