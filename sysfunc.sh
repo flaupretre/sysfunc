@@ -650,11 +650,11 @@ fi
 # If the target path directory does not exist, it is created.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Link target
+#	$2: Link path
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# $1 = target du lien
-# $2 = lien a creer
 
 sf_check_link()
 {
@@ -670,7 +670,7 @@ if [ $? = 0 ] ; then
 	sf_save "$2"
 fi
 
-sf_msg1 "Mise a jour du lien symbolique $2"
+sf_msg1 "$2: Updating symbolic link"
 
 if [ -z "$noexec" ] ; then
 	\rm -rf "$2"
@@ -680,15 +680,19 @@ fi
 }
 
 #-----------------------------------------------------------------------------
+# Comment one line in a file
 #
+# The first line containing the (grep) pattern given in argument will be commented
+# out by prefixing it with the comment character.
+# If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1 = File path
+#	$2 = Pattern to search (grep regex syntax)
+#	$3 = Optional. Comment char (one char string). Default='#'
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# $1 = file
-# $2 = string
-# $3 = car de commentaire (def=#)
 
 sf_comment_out()
 {
@@ -699,7 +703,7 @@ if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
 grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	sf_save "$1"
-	sf_msg1 "Mise en commentaire de '$2' dans $1"
+	sf_msg1 "$1: Commenting out '$2'"
 	if [ -z "$noexec" ] ; then
 		ed $1 <<-EOF >/dev/null 2>&1
 			?^[^$com]*$2?
@@ -712,15 +716,19 @@ fi
 }
 
 #-----------------------------------------------------------------------------
+# Uncomment one line in a file
 #
+# The first commented line containing the (grep) pattern given in argument
+# will be uncommented by removing the comment character.
+# If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1 = File path
+#	$2 = Pattern to search (grep regex syntax)
+#	$3 = Optional. Comment char (one char string). Default='#'
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# $1 = file
-# $2 = string
-# $3 = car de commentaire (def=#)
 
 sf_uncomment()
 {
@@ -731,7 +739,7 @@ if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
 grep "$2" "$1" | grep "^[ 	]*$com" >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	sf_save "$1"
-	sf_msg1 "Suppression de la mise en commentaire de $2 dans $1"
+	sf_msg1 "$1: Uncommenting '$2'"
 	if [ -z "$noexec" ] ; then
 		ed $1 <<-EOF >/dev/null 2>&1
 			?^[ 	]*$com.*$2?
@@ -744,16 +752,22 @@ fi
 }
 
 #-----------------------------------------------------------------------------
+# Checks if a given line is contained in a file
 #
+# Takes a pattern and a string as arguments. The first line matching the
+# pattern is compared with the string. If they are different, the string
+# argument replaces the line in the file. If they are the same, the file
+# is left unchanged.
+# If the pattern is not found, the string arg is appended to the file.
+# If the file does not exist, it is created.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: File path
+#	$2: Pattern to search
+#	$3: Line string
+# Returns : void
+# Displays : Info msg
 #-----------------------------------------------------------------------------
-# Teste si un fichier contient une ligne donnee (avec pattern)
-# $1 = file
-# $2 = pattern
-# $3 = contenu de la ligne
 
 sf_check_line()
 {
@@ -763,19 +777,11 @@ file=$1
 pattern=$2
 line=$3
 
-if [ ! -f $file ] ; then
-	if [ -z "$noexec" ] ; then touch $file
-	else
-		sf_msg1 "Info: Le fichier $f n'existe pas"
-		return
-	fi
-fi
-
-fline=`grep "$pattern" $file | head -1`
+fline=`grep "$pattern" $file 2>/dev/null | head -1`
 [ "$fline" = "$line" ] && return
 sf_save $file
-sf_msg1 "Mise a jour du fichier $file"
 if [ -n "$fline" ] ; then
+	sf_msg1 "$1: Replacing '$2' line"
 	qpattern=`echo "$pattern" | sed 's!/!\\\\/!g'`
 	[ -z "$noexec" ] && ed $file <<-EOF >/dev/null 2>&1
 		/$qpattern/
@@ -786,6 +792,7 @@ if [ -n "$fline" ] ; then
 		q
 	EOF
 else
+	sf_msg1 "$1: Appending '$2' line"
 	[ -z "$noexec" ] && echo "$line" >>$file
 fi
 }
@@ -795,55 +802,63 @@ fi
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# Change a user's password
 #
+# Works on HP-UX, Solaris, and Linux.
+# Replaces an encrypted passwd in /etc/passwd or /etc/shadow.
+# TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Username
+#	$2: Encrypted password
+#	$3: File path
+# Returns : void
+# Displays : Nothing
 #-----------------------------------------------------------------------------
-# TODO: Unifier avec AIX avec detection automatique du fichier passwd utilise
-# (passwd/shadow).
-# Pour HP, Sun, et Linux: change un mot de passe dans un fichier
-# passwd ou shadow.
-# $1 = file
-# $2 = user
-# $3 = password crypte
 
 sf_set_passwd()
 {
-local qpass
+local file user pass qpass
 
-qpass=`echo "$3" | sed 's!/!\\\\/!g'`
+user="$1"
+pass="$2"
+file="$3"
 
-ed $1 <<EOF >/dev/null 2>&1
-	/^$2:/
-	s/^$2:[^:]*:/$2:$qpass:/
+qpass=`echo "$pass" | sed 's!/!\\\\/!g'`
+
+ed $file <<EOF >/dev/null 2>&1
+	/^$user:/
+	s/^$user:[^:]*:/$user:$qpass:/
 	w
 	q
 EOF
 }
 
 #-----------------------------------------------------------------------------
+# Set an AIX password
 #
+# TODO: Unify with other supported OS
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Username
+#	$2: Encrypted password
+# Returns : void
+# Displays : nothing
 #-----------------------------------------------------------------------------
-# Specifique AIX: les mots de passe sont stockes differemment
 
 sf_set_passwd_aix()
 {
-# $1 = user
-# $2 = password crypte
-local qpass
+local user pass qpass
 
-pwdadm -f NOCHECK $1	# pour le creer s'il n'existe pas
+user="$1"
+pass="$2"
 
-qpass=`echo "$2" | sed 's!/!\\\\/!g'`
+pwdadm -f NOCHECK $user	# to create the account if needed
+
+qpass=`echo "$pass" | sed 's!/!\\\\/!g'`
 
 ed /etc/security/passwd <<-EOF >/dev/null 2>&1
-	/^$1:/
+	/^$user:/
 	/password =/
 	s/=.*$/= $qpass/
 	/flags =/
@@ -854,23 +869,23 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 }
 
 #-----------------------------------------------------------------------------
-#
+# Create a user group
 #
 # Args :
-# Returns :
-# Displays :
+#	$1 = Group name
+#	$2 = Group Id
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
 
 sf_create_group()
 {
-# $1 = name
-# $2 = gid
 
 case $_os in
 	AIX)
 		lsgroup $1 >/dev/null 2>&1
 		if [ $? != 0 ] ; then
-			sf_msg1 "Creation du groupe $1"
+			sf_msg1 "Creating $1 group"
 			[ -z "$noexec" ] && mkgroup id=$2 $1
 		fi
 		;;
@@ -878,7 +893,7 @@ case $_os in
 	*)
 		grep "^$1:" /etc/group >/dev/null 2>&1
 		if [ $? != 0 ] ; then
-			sf_msg1 "Creation du groupe $1"
+			sf_msg1 "Creating $1 group"
 			[ -z "$noexec" ] && groupadd -g $2 $1
 		fi
 		;;
@@ -887,11 +902,12 @@ return 0
 }
 
 #-----------------------------------------------------------------------------
-#
+# Checks if a given user exists on the system
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: User name to check
+# Returns : 0 if user exists; != 0 if not
+# Displays : nothing
 #-----------------------------------------------------------------------------
 
 sf_user_exists()
@@ -913,24 +929,26 @@ return $status
 }
 
 #-----------------------------------------------------------------------------
+# Create a user
 #
+# To set the login shell, initialize the CREATE_USER_SHELL variable before
+# calling the function.
+# For accounts with no access allowed (blocked accounts), $7, $8, and $9 are
+# not set.
 #
 # Args :
-# Returns :
-# Displays :
+#	$1 = User name
+#	$2 = uid
+#	$3 = gid
+#	$4 = description (gecos)
+#	$5 = home dir (can be '' for '/none')
+#	$6 = Additional groups (separated with ',')
+#	$7 = encrypted password (Linux)
+#	$8 = encrypted password (HP-UX & SunOS)
+#	$9 = encrypted password (AIX)
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
-# Cree un user
-# $1 = name
-# $2 = uid
-# $3 = gid
-# $4 = description (gecos)
-# $5 = home (peut etre egal a '' pour '/none')
-# $6 = groupes suppl (separes par des ',')
-# $7 = encrypted password (Linux)
-# $8 = encrypted password (HP-UX & SunOS)
-# $9 = encrypted password (AIX)
-# Pour les comptes bloques, $7, $8, $9 ne sont pas fournis
-# Changement de shell (initialiser variable CREATE_USER_SHELL)
 
 sf_create_user()
 {
@@ -945,16 +963,13 @@ gecos=$4
 
 home=$5
 [ -z "$home" ] && home='/none'
-if [ $_os = SunOS ] ; then
-	echo $home | grep '^/home/' >/dev/null 2>&1 && home="/export$home"
-fi
 
 groups=$6
 
 locked='y'
 [ $# = 9 ] && locked=''
 
-sf_msg1 "Creation du compte $1"
+sf_msg1 "Creating account $1"
 [ -n "$noexec" ] && return
 sf_create_dir `dirname $home`
 
@@ -982,7 +997,7 @@ case $_os in
 			add_cmd="$add_cmd -M"
 		else
 			add_cmd="$add_cmd -m"
-		fi	
+		fi
 			
 		useradd -c "$gecos" -o -g $gid -u $uid -d $home -s $shell $add_cmd $name
 
@@ -1014,21 +1029,32 @@ return 0
 #=============================================================================
 
 #-----------------------------------------------------------------------------
+# Computes and displays a string defining the curent system environment
 #
+# The displayed string is a combination of the OS name, version, system
+# architecture and may also depend on other parameters like, for instance,
+# the RedHat ES/AS branches. It is an equivalent of the 'channel' concept
+# used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use
+# it in every script where I need a single string to identify the system
+# environment the script is currently running on.
+# If the current system is not recognized, the program aborts.
+#By convention, environments recognized by this function must support
+# the rest of the library.
 #
-# Args :
-# Returns :
-# Displays :
+# Contributors welcome ! Feel free to enhance this function with additional
+# recognized systems, especially with other Linux distros, and send your
+# patches.
+#
+# Args : None
+# Returns : void
+# Displays : OS ID
 #-----------------------------------------------------------------------------
-#-- Fabrique et affiche la chaine 'OS_ID' identifiant l'environnment courant.
-#--
-#-- Si l'environnement n'est pas supporte, sort avec un message d'erreur
 
 sf_compute_os_id()
 {
 local id os frel rel sub
 
-#-- Reconnait l'environnement
+#-- Recognizes the current environment
 
 id=''
 case "$_os" in
@@ -1069,34 +1095,32 @@ echo $id
 #=============================================================================
 
 #-----------------------------------------------------------------------------
-#
+# Checks if a directory is a file system mount point
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Directory to check
+# Returns : 0 if true, !=0 if false
+# Displays : nothing
 #-----------------------------------------------------------------------------
 
 sf_has_dedicated_fs()
 {
-# $1=directory
-
 [ -d "$1" ] || return 1
 
 [ "`sf_get_fs_mnt $1`" = "$1" ]
 }
 
 #-----------------------------------------------------------------------------
-#
+# Gets the mount point of the filesystem containing a given path
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: Path (must correspond to an existing element)
+# Returns : void
+# Displays : The mount directory of the filesystem containing the element
 #-----------------------------------------------------------------------------
 
 sf_get_fs_mnt()
 {
-# $1=directory
-
 case "$_os" in
 	Linux)
 		df -kP "$1" | tail -1 | awk '{ print $6 }'
@@ -1114,10 +1138,11 @@ esac
 }
 
 #-----------------------------------------------------------------------------
-#
+# Get the size of the filesystem containing a given path
 #
 # Args :
-# Returns :
+#	$1: Path (must correspond to an existing element)
+# Returns : void
 # Displays : FS size in Mbytes
 #-----------------------------------------------------------------------------
 
@@ -1144,17 +1169,17 @@ echo `expr $sz / 1024`
 }
 
 #-----------------------------------------------------------------------------
-#
+# Extend a file system to a given size
 #
 # Args :
-# Returns :
-# Displays :
+#	$1: A path contained in the file system to extend
+#	$2: The new size in Mbytes, or the size to add if prefixed with a '+'
+# Returns : void
+# Displays : info msg
 #-----------------------------------------------------------------------------
 
 sf_set_fs_space()
 {
-# $1=directory
-# $2= taille en Mo (prefixe par + si taille a ajouter)
 local fs size newsize rc
 
 fs=`sf_get_fs_mnt $1`
@@ -1183,6 +1208,9 @@ return $rc
 }
 
 #-----------------------------------------------------------------------------
+# Create a file system, mount it, and set system configuration to mount it
+# at system start
+#
 # Refuses existing directory as mount point (security)
 #
 # Args :
@@ -1298,7 +1326,7 @@ return $rc
 }
 
 #-----------------------------------------------------------------------------
-#
+# Create a logical volume
 #
 # Args :
 # Returns :
