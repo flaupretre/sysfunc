@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre
+# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
