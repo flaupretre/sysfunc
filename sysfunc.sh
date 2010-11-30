@@ -635,11 +635,32 @@ if [ -z "$noexec" ] ; then
 	cat $tmpfile._start
 	echo "$comment#sysfunc_start/$fname##------ Don't remove this line"
 	cat $source
-	echo "$comment#sysfunc_end/$fname##-------- DOn't remove this line"
+	echo "$comment#sysfunc_end/$fname##-------- Don't remove this line"
 	cat $tmpfile._end
 	) >$target
 	chmod $mode "$target"
 fi
+}
+
+#-----------------------------------------------------------------------------
+# Checks if a file contains a block inserted by sf_check_block
+#
+#
+# Args :
+#       $1: The block identifier or source path
+#       $2: File path
+# Returns : 0 if the block is in the file, !=0 if not.
+# Displays : Nothing
+#-----------------------------------------------------------------------------
+
+sf_contains_block()
+{
+local id target
+
+id="`basename $1`"
+target="$2"
+
+grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
 }
 
 #-----------------------------------------------------------------------------
