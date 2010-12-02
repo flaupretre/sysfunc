@@ -17,31 +17,32 @@
 #=============================================================================
 
 #=============================================================================
-# Utility functions
+# Section: Utility functions
 #=============================================================================
 
-#-----------------------------------------------------------------------------
-# Utility function to check if the library is already loaded
+##----------------------------------------------------------------------------
+# Checks if the library is already loaded
 #
-# The 'official' way to load sysfunc is :
+#- Of course, if it can run, the library is loaded. So, it always returns 0.
+#- Allows to support the 'official' way to load sysfunc :
 #	sf_loaded 2>/dev/null || . /opt/sysfunc/sysfunc.sh
 #
-# Args : none
-# Returns : void
-# Displays : Library version (string)
-#-----------------------------------------------------------------------------
+# Args: none
+# Returns: Always 0
+# Displays: Nothing
+##----------------------------------------------------------------------------
 
 sf_loaded()
 {
 return 0
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays library version
 #
-# Args : none
-# Returns : void
-# Displays : Library version (string)
+# Args: none
+# Returns: Always 0
+# Displays: Library version (string)
 #-----------------------------------------------------------------------------
 
 sf_version()
@@ -50,17 +51,18 @@ echo "%VERSION%"
 return 0
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Retrieves executable data through an URL and executes it.
 #
-# Supports any URL accepted by wget.
-# By default, the 'wget' command is used. If the $WGET environment variable is set, it is used instead (use, for instance, to
-# specify a proxy or an alternate configuration file).
+#- Supports any URL accepted by wget.
+#- By default, the 'wget' command is used. If the $WGET environment variable
+#  is set, it is used instead (use, for instance, to
+#  specify a proxy or an alternate configuration file).
 #
-# Args :
+# Args:
 #	$1 : Url
-# Returns : the return code of the executed program
-# Displays : data displayed by the executed program
+# Returns: the return code of the executed program
+# Displays: data displayed by the executed program
 #-----------------------------------------------------------------------------
 
 sf_exec_url()
@@ -89,15 +91,15 @@ return $status
 }
 
 #=============================================================================
-# Temporary file management
+# Section: Temporary file management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Deletes all temporary files
 #
-# Args : none
-# Returns : vois
-# Displays : nothing
+# Args: none
+# Returns: Always 0
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
 sf_cleanup()
@@ -105,14 +107,14 @@ sf_cleanup()
 \rm -rf $tmpfile*
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Returns an unused temporary path
 #
 # The returned path can then be used to create a directory or a file.
 #
-# Args : none
-# Returns : void
-# Displays : An unused temporary path
+# Args: none
+# Returns: Always 0
+# Displays: An unused temporary path
 #-----------------------------------------------------------------------------
 
 sf_get_tmp()
@@ -129,18 +131,18 @@ echo $f
 }
 
 #=============================================================================
-# Error handling
+# Section: Error handling
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays an error message and aborts execution
 #
-# Args :
+# Args:
 #	$1 : message
 #	$2 : Optional. Exit code.
-# Returns : Does not return. Exits with the provided exit code if arg 2 set,
+# Returns: Does not return. Exits with the provided exit code if arg 2 set,
 #	with 1 if not.
-# Displays : Error and abort messages
+# Displays: Error and abort messages
 #-----------------------------------------------------------------------------
 
 sf_fatal()
@@ -156,16 +158,16 @@ echo "******************* Abort *******************"
 exit $rc
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Fatal error on unsupported feature
 #
 # Call this function when a feature is not available on the current
 # operating system (yet ?)
 #
-# Args :
+# Args:
 #	$1 : feature name
-# Returns : Does not return. Exits with code 2.
-# Displays : Error and abort messages
+# Returns: Does not return. Exits with code 2.
+# Displays: Error and abort messages
 #-----------------------------------------------------------------------------
 
 sf_unsupported()
@@ -175,16 +177,16 @@ sf_unsupported()
 sf_fatal "$1: Feature not supported in this environment: $_os" 2
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays an error message
 #
 # If the ERRLOG environment variable is set, it is supposed to contain
 # a path. The error message will be appnded to the file at this path. If
 # the file does not exist, it will be created.
-# Args :
+# Args:
 #	$1 : Message
-# Returns : void
-# Displays : Error message
+# Returns: Always 0
+# Displays: Error message
 #-----------------------------------------------------------------------------
 
 sf_error()
@@ -196,13 +198,13 @@ sf_msg "$msg"
 [ -n "$ERRLOG" ] && echo "$msg" >>$ERRLOG
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays a warning message
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : Warning message
+# Returns: Always 0
+# Displays: Warning message
 #-----------------------------------------------------------------------------
 
 sf_warning()
@@ -211,18 +213,18 @@ sf_msg " *===* WARNING *===* : $1"
 }
 
 #=============================================================================
-# User interaction
+# Section: User interaction
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays a message (string)
 #
 # If the $noexec environment variable is set, prefix the message with '(n)'
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : Message
+# Returns: Always 0
+# Displays: Message
 #-----------------------------------------------------------------------------
 
 sf_msg()
@@ -234,16 +236,16 @@ prefix=''
 echo "$prefix$1"
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Display trace message
 #
 # If the $verbose environment variable is set, displays the message. If not,
 # does not display anything.
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : message if verbose mode is active, nothing if not
+# Returns: Always 0
+# Displays: message if verbose mode is active, nothing if not
 #-----------------------------------------------------------------------------
 
 sf_trace()
@@ -251,13 +253,13 @@ sf_trace()
 [ -n "$verbose" ] && sf_msg1 ">>> $*"
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays a message prefixed with spaces
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : message prefixed with spaces
+# Returns: Always 0
+# Displays: message prefixed with spaces
 #-----------------------------------------------------------------------------
 
 sf_msg1()
@@ -265,16 +267,16 @@ sf_msg1()
 sf_msg "        $*"
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays a 'section' message
 #
 # This is a message prefixed with a linefeed and some hyphens. 
 # To be used as paragraph/section title.
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : Message
+# Returns: Always 0
+# Displays: Message
 #-----------------------------------------------------------------------------
 
 sf_msg_section()
@@ -283,15 +285,15 @@ sf_msg ''
 sf_msg "--- $1"
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Displays a 'banner' message
 #
 # The message is displayed with an horizontal separator line above and below
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : message
+# Returns: Always 0
+# Displays: message
 #-----------------------------------------------------------------------------
 
 sf_banner()
@@ -303,15 +305,15 @@ echo "==================================================================="
 echo
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Ask a question to the user
 #
 #  This is a message without a terminating newline.
 #
-# Args :
+# Args:
 #	$1 : message
-# Returns : void
-# Displays : message without terminating newline
+# Returns: Always 0
+# Displays: message without terminating newline
 #-----------------------------------------------------------------------------
 
 sf_ask()
@@ -323,19 +325,19 @@ else
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Asks a 'yes/no' question, gets answer, and return yes/no code
 #
 # Works at least for questions in english, french, and german :
-#	- accepts 'Y', 'O', and 'J' for 'yes' (upper or lowercase)
-#	- anything different is considered as 'no'
-# If the $forceyes environment variable is set, the user is not asked
+# Accepts 'Y', 'O', and 'J' for 'yes' (upper or lowercase), and
+# anything different is considered as 'no'
+#- If the $forceyes environment variable is set, the user is not asked
 # and the 'yes' code is returned.
 #
-# Args :
+# Args:
 #	$1 : Question string
-# Returns : 0 for 'yes', 1 for 'no'
-# Displays : Question and typed answer if $forceyes not set, nothing if
+# Returns: 0 for 'yes', 1 for 'no'
+# Displays: Question and typed answer if $forceyes not set, nothing if
 #            $forceyes is set.
 #-----------------------------------------------------------------------------
 
@@ -361,18 +363,18 @@ return 0
 }
 
 #=============================================================================
-# File/dir management
+# Section: File/dir management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
-# Recursively deletes a file or a directory.
+##----------------------------------------------------------------------------
+# Recursively deletes a file or a directory
 #
 # Returns without error if arg is a non-existent path
 #
-# Args :
+# Args:
 #	$1 : Path to delete
-# Returns : void
-# Displays : info msg if deletion occurs
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_delete()
@@ -388,23 +390,23 @@ for i
 done
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Creates a directory
 #
 # If the given path argument corresponds to an already existing
 # file (any type except directory or symbolic link to a directory), the
-# program aborts with a fatal error. If you want to avoid
+# program aborts with a fatal error. If you want to aAlways 0
 # this (if you want to create the directory, even if somathing else is
 # already existing in this path), call sf_delete first.
 # If the path given as arg contains a symbolic link pointing to an existing
 # directory, it is left as-is.
 #
-# Args :
+# Args:
 #	$1 : Path
 #	$2 : Optional. Directory owner[:group]. Default: root
 #	$3 : Optional. Directory mode in a format accepted by chmod. Default: 755
-# Returns : void
-# Displays : Info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_dir()
@@ -430,16 +432,16 @@ if [ ! -d "$path" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Saves a file
 #
 # If the input arg is the path of an existing regular file, the file is copied
 # to '$path.orig'
 # TODO: improve save features (multiple numbered saved versions,...)
-# Args :
+# Args:
 #	$1 : Path
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_save()
@@ -450,13 +452,13 @@ if [ -f "$1" -a ! -f "$1.orig" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Renames a file to '<dir>/old.<filename>
 # 
-# Args :
+# Args:
 #	$1 : Path
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_rename_to_old()
@@ -475,20 +477,20 @@ if [ -z "$noexec" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Copy a file or the content of function's standard input to a target file
 #
 # The copy takes place only if the source and target files are different.
 # If the target file is already existing, it is saved before being overwritten.
 # If the target path directory does not exist, it is created.
 #
-# Args :
+# Args:
 #	$1: Source path. Special value: '-' means that data to copy is read from
 #		stdin, allowing to produce dynamic content without a temp file.
 #	$2: Target path
 #	$3: Optional. File creation mode. Default=644
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_check_copy()
@@ -527,7 +529,7 @@ if [ -z "$noexec" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Replaces or prepends/appends a data block in a file
 #
 # The block is composed of entire lines and is surrounded by special comment
@@ -535,31 +537,35 @@ fi
 # data block and allow the function to be called several times on the same
 # target file with different data blocks. The block identifier is the
 # base name of the source path.
-# If the given block is not present in the target file, it is appended or
+#- If the given block is not present in the target file, it is appended or
 # prepended, depending on the flag argument. If the block is already
 # present in the file (was inserted by a previous run of this function),
 # its content is compared with the new data, and replaced if different.
 # In this case, it is replaced at the exact place where the previous block
 # lied.
-# If the target file is existing, it is saved before being overwritten.
-# If the target path directory does not exist, it is created.
+#- If the target file exists, it is saved before being overwritten.
+#- If the target path directory does not exist, it is created.
 #
-# Args :
+# Args:
 #	$1: If this arg starts with the '-' char, the data is to be read from
-#		stdin and the string after the '-' is the block identifier. If
-#		it does not start with '-', it is the path to the source file
-#		(containing the data to insert)
+#		stdin and the string after the '-' is the block identifier.
+#-		If it does not start with '-', it is the path to the source file
+#		(containing the data to insert).
 #	$2: Target path
-#	$3: Optional. Target file mode. Default=644
+#	$3: Optional. Target file mode.
+#-		Default=644
 #	$4: Optional. Flag. Set to 'prepend' to add data at the beginning of
-#		the file. Default mode: Append. Used only if data block is not
-#		already present in the file. Can be set to '' (empty string) to mean
-#		'default mode'.
-#	$5: Optional. Comment character. This argument, if set, must contain only
-#		one character. This character will be used as first char when building
-#		the 'identifier' lines surrounding the data block. Default: '#'.
-# Returns : void
-# Displays : info msg
+#		the file.
+#-		Default mode: Append.
+#-		Used only if data block is not already present in the file.
+#-		Can be set to '' (empty string) to mean 'default mode'.
+#	$5: Optional. Comment character.
+#-		This argument, if set, must contain only one character.
+#		This character will be used as first char when building
+#		the 'identifier' lines surrounding the data block.
+#-		Default: '#'.
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_check_block()
@@ -642,15 +648,15 @@ if [ -z "$noexec" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a file contains a block inserted by sf_check_block
 #
 #
-# Args :
+# Args:
 #       $1: The block identifier or source path
 #       $2: File path
-# Returns : 0 if the block is in the file, !=0 if not.
-# Displays : Nothing
+# Returns: 0 if the block is in the file, !=0 if not.
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 sf_contains_block()
@@ -663,18 +669,18 @@ target="$2"
 grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Creates or modifies a symbolic link
 #
 # The target is saved before being modified.
 # Note: Don't use 'test -h' (not portable)
 # If the target path directory does not exist, it is created.
 #
-# Args :
+# Args:
 #	$1: Link target
 #	$2: Link path
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_check_link()
@@ -700,19 +706,19 @@ if [ -z "$noexec" ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Comment one line in a file
 #
 # The first line containing the (grep) pattern given in argument will be commented
 # out by prefixing it with the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
-# Args :
+# Args:
 #	$1 = File path
 #	$2 = Pattern to search (grep regex syntax)
 #	$3 = Optional. Comment char (one char string). Default='#'
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_comment_out()
@@ -736,19 +742,19 @@ if [ $? = 0 ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Uncomment one line in a file
 #
 # The first commented line containing the (grep) pattern given in argument
 # will be uncommented by removing the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
-# Args :
+# Args:
 #	$1 = File path
 #	$2 = Pattern to search (grep regex syntax)
 #	$3 = Optional. Comment char (one char string). Default='#'
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_uncomment()
@@ -772,7 +778,7 @@ if [ $? = 0 ] ; then
 fi
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a given line is contained in a file
 #
 # Takes a pattern and a string as arguments. The first line matching the
@@ -782,12 +788,12 @@ fi
 # If the pattern is not found, the string arg is appended to the file.
 # If the file does not exist, it is created.
 #
-# Args :
+# Args:
 #	$1: File path
 #	$2: Pattern to search
 #	$3: Line string
-# Returns : void
-# Displays : Info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_check_line()
@@ -819,22 +825,22 @@ fi
 }
 
 #=============================================================================
-# User/group management
+# Section: User/group management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Change a user's password
 #
 # Works on HP-UX, Solaris, and Linux.
 # Replaces an encrypted passwd in /etc/passwd or /etc/shadow.
 # TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
 #
-# Args :
+# Args:
 #	$1: Username
 #	$2: Encrypted password
 #	$3: File path
-# Returns : void
-# Displays : Nothing
+# Returns: Always 0
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 sf_set_passwd()
@@ -855,16 +861,16 @@ ed $file <<EOF >/dev/null 2>&1
 EOF
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Set an AIX password
 #
 # TODO: Unify with other supported OS
 #
-# Args :
+# Args:
 #	$1: Username
 #	$2: Encrypted password
-# Returns : void
-# Displays : nothing
+# Returns: Always 0
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
 sf_set_passwd_aix()
@@ -889,14 +895,14 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 	EOF
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Create a user group
 #
-# Args :
+# Args:
 #	$1 = Group name
 #	$2 = Group Id
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_group()
@@ -922,13 +928,13 @@ esac
 return 0
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a given user exists on the system
 #
-# Args :
+# Args:
 #	$1: User name to check
-# Returns : 0 if user exists; != 0 if not
-# Displays : nothing
+# Returns: 0 if user exists; != 0 if not
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
 sf_user_exists()
@@ -949,7 +955,7 @@ esac
 return $status
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Create a user
 #
 # To set the login shell, initialize the CREATE_USER_SHELL variable before
@@ -957,7 +963,7 @@ return $status
 # For accounts with no access allowed (blocked accounts), $7, $8, and $9 are
 # not set.
 #
-# Args :
+# Args:
 #	$1 = User name
 #	$2 = uid
 #	$3 = gid
@@ -967,8 +973,8 @@ return $status
 #	$7 = encrypted password (Linux)
 #	$8 = encrypted password (HP-UX & SunOS)
 #	$9 = encrypted password (AIX)
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_user()
@@ -1046,10 +1052,10 @@ return 0
 }
 
 #=============================================================================
-# OS management
+# Section: OS management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Computes and displays a string defining the curent system environment
 #
 # The displayed string is a combination of the OS name, version, system
@@ -1066,9 +1072,9 @@ return 0
 # recognized systems, especially with other Linux distros, and send your
 # patches.
 #
-# Args : None
-# Returns : void
-# Displays : OS ID
+# Args: None
+# Returns: Always 0
+# Displays: OS ID
 #-----------------------------------------------------------------------------
 
 sf_compute_os_id()
@@ -1112,16 +1118,16 @@ echo $id
 }
 
 #=============================================================================
-# Filesystem management
+# Section: Filesystem management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a directory is a file system mount point
 #
-# Args :
+# Args:
 #	$1: Directory to check
-# Returns : 0 if true, !=0 if false
-# Displays : nothing
+# Returns: 0 if true, !=0 if false
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
 sf_has_dedicated_fs()
@@ -1131,13 +1137,13 @@ sf_has_dedicated_fs()
 [ "`sf_get_fs_mnt $1`" = "$1" ]
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Gets the mount point of the filesystem containing a given path
 #
-# Args :
+# Args:
 #	$1: Path (must correspond to an existing element)
-# Returns : void
-# Displays : The mount directory of the filesystem containing the element
+# Returns: Always 0
+# Displays: The mount directory of the filesystem containing the element
 #-----------------------------------------------------------------------------
 
 sf_get_fs_mnt()
@@ -1158,13 +1164,13 @@ case "$_os" in
 esac
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Get the size of the filesystem containing a given path
 #
-# Args :
+# Args:
 #	$1: Path (must correspond to an existing element)
-# Returns : void
-# Displays : FS size in Mbytes
+# Returns: Always 0
+# Displays: FS size in Mbytes
 #-----------------------------------------------------------------------------
 
 sf_get_fs_size()
@@ -1189,14 +1195,14 @@ esac
 echo `expr $sz / 1024`
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Extend a file system to a given size
 #
-# Args :
+# Args:
 #	$1: A path contained in the file system to extend
 #	$2: The new size in Mbytes, or the size to add if prefixed with a '+'
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_set_fs_space()
@@ -1228,19 +1234,19 @@ fi
 return $rc
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Create a file system, mount it, and set system configuration to mount it
 # at system start
 #
 # Refuses existing directory as mount point (security)
 #
-# Args :
+# Args:
 #	$1: Mount point
 #	$2: device path
 #	$3: FS type
 #	$4: Optional. Mount point directory owner[:group]
-# Returns : 0 if no error, 1 on error
-# Displays : info msg
+# Returns: 0 if no error, 1 on error
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_fs()
@@ -1288,14 +1294,14 @@ chown $owner $mnt
 return 0
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a given logical volume exists
 #
-# Args :
+# Args:
 #	$1: VG name
 #	$2: LV name
-# Returns : 0 if it exists, 1 if not
-# Displays : Nothing
+# Returns: 0 if it exists, 1 if not
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 sf_lv_exists()
@@ -1318,13 +1324,13 @@ esac
 return $rc
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Checks if a given volume group exists
 #
-# Args :
+# Args:
 #	$1: VG name
-# Returns : 0 if it exists, 1 if not
-# Displays : Nothing
+# Returns: 0 if it exists, 1 if not
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 sf_vg_exists()
@@ -1346,15 +1352,15 @@ esac
 return $rc
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Create a logical volume
 #
-# Args :
+# Args:
 #	$1: Logical volume name
 #	$2: Volume group name
 #	$3: Size in Mbytes
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_lv()
@@ -1387,20 +1393,20 @@ esac
 return $rc
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Create a logical volume and a filesystem on it
 #
 # Combines sf_create_lv and sf_create_fs
 #
-# Args :
+# Args:
 #	$1: Mount point (directory)
 #	$2: Logical volume name
 #	$3: Volume group name
 #	$4: File system type
 #	$5: Size in Mbytes
 #	$6: Optional. Directory owner[:group]
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_lv_fs()
@@ -1419,18 +1425,18 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 }
 
 #=============================================================================
-# Package management
+# Section: Package management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # List installed packages
 #
 # Returns a sorted list of installed packages
 # Linux output: yum format (name-version-release.arch)
 #
-# Args : none
-# Returns : void
-# Displays : package list
+# Args: none
+# Returns: Always 0
+# Displays: package list
 #-----------------------------------------------------------------------------
 
 sf_package_list()
@@ -1446,18 +1452,18 @@ esac
 }
 
 #=============================================================================
-# Service management
+# Section: Service management
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Enable service start/stop at system boot/shutdown
 #
 # Enable service for state 2, 3, 4, and 5 (default for chkconfig)
 #
-# Args :
+# Args:
 #	$*: Service names
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_enable_service()
@@ -1478,15 +1484,15 @@ for service in $*
 done
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Disable service start/stop at system boot/shutdown
 #
 # Disable service for every states
 #
-# Args :
+# Args:
 #	$*: Service names
-# Returns : void
-# Displays : info msg
+# Returns: Always 0
+# Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_disable_service()
@@ -1508,19 +1514,19 @@ done
 }
 
 #=============================================================================
-# Network
+# Section: Network
 #=============================================================================
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Suppresses the host name part from a FQDN
 #
 # Displays the input string without the beginning up to and including the
 # first '.'.
 #
-# Args :
-#	$1: input FQDN
-# Returns : void
-# Displays : truncated string
+# Args:
+#	$1: Input FQDN
+# Returns: Always 0
+# Displays: truncated string
 #-----------------------------------------------------------------------------
 
 sf_domain_part()
@@ -1528,14 +1534,15 @@ sf_domain_part()
 sed 's/^[^\.]*\.//'
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Extracts a hostname from an FQDN
 #
 # Removes everything from the first dot up to the end of the string
 #
-#	$1: input FQDN
-# Returns : void
-# Displays : truncated string
+# Args:
+#	$1: Input FQDN
+# Returns: Always 0
+# Displays: truncated string
 #-----------------------------------------------------------------------------
 
 sf_host_part()
@@ -1543,16 +1550,16 @@ sf_host_part()
 sed 's/^\([^\.]*\)\..*$/\1/'
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Resolves an IP address through the DNS
 #
 # If the address cannot be resolved, displays nothing
 #
-# Args :
+# Args:
 #	$1: IP address
 #	$2: Optional. DNS server to ask
-# Returns : void
-# Displays : Host name as returned by the DNS or nothing if address could
+# Returns: Always 0
+# Displays: Host name as returned by the DNS or nothing if address could
 # not be resolved.
 #-----------------------------------------------------------------------------
 
@@ -1563,16 +1570,16 @@ sf_dns_addr_to_name()
 	| sed -e 's/^Name:[ 	]*//g'
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Resolves a host name through the DNS
 #
 # If the name cannot be resolved, displays nothing
 #
-# Args :
+# Args:
 #	$1: Host name to resolve
 #	$2: Optional. DNS server to ask
-# Returns : void
-# Displays : IP address as returned by the DNS or nothing if name could
+# Returns: Always 0
+# Displays: IP address as returned by the DNS or nothing if name could
 # not be resolved.
 #-----------------------------------------------------------------------------
 
@@ -1584,16 +1591,16 @@ sf_dns_name_to_addr()
 	| sed -e 's/^Address:[ 	]*//g'
 }
 
-#-----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
 # Get the primary address of the system
 #
 # This is an arbitrary choice, such as the address assigned to the first
 # network nterface.
 # Feel free to improve !
 #
-# Args : none
-# Returns : void
-# Displays : IP address or nothing if no address was found
+# Args: none
+# Returns: Always 0
+# Displays: IP address or nothing if no address was found
 #-----------------------------------------------------------------------------
 
 sf_primary_ip_address()
