@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2010 - Francois Laupretre
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ echo
 clean_dir()
 {
 \rm -rf $1
-mkdir $1
+mkdir -p $1
 }
 
 #------
