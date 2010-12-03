@@ -28,7 +28,7 @@ tdir=/opt/$PRODUCT
 link=/usr/bin/sysfunc.sh
 ltarget=$tdir/sysfunc.sh
 
-files="$tdir $link /usr/share/man/man8/$PRODUCT.8 /usr/share/doc/$PRODUCT"
+files="$tdir $link /usr/share/doc/$PRODUCT"
 
 export tdir link files
 
@@ -37,14 +37,10 @@ export tdir link files
 cd $sdir
 
 clean_dir $tdir
-
 filter <$PRODUCT.sh >$tdir/$PRODUCT.sh
 
-mkdir -p /usr/share/man/man8
-filter <man/$PRODUCT.8 >/usr/share/man/man8/$PRODUCT.8
-
-mkdir -p /usr/share/doc/$PRODUCT
-cp COPYING /usr/share/doc/$PRODUCT
+clean_dir /usr/share/doc/$PRODUCT
+cp -rp COPYING doc/* /usr/share/doc/$PRODUCT
 
 mk_link $ltarget $link	#-- Create symbolic link
 
