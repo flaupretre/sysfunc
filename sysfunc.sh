@@ -75,7 +75,7 @@ wd=`pwd`
 tdir=`sf_get_tmp`
 
 for i ; do
-	create_dir $tdir
+	sf_create_dir $tdir
 	cd $tdir
 
 	$WGET $i
@@ -104,7 +104,7 @@ return $status
 
 sf_cleanup()
 {
-\rm -rf $tmpfile*
+\rm -rf $sf_tmpfile*
 }
 
 ##----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ sf_get_tmp()
 n=0
 while true
 	do
-	f="$tmpfile._tmp.$n"
+	f="$sf_tmpfile._tmp.$n"
 	[ -e $f ] || break
 	n=`expr $n + 1`
 done
@@ -219,7 +219,7 @@ sf_msg " *===* WARNING *===* : $1"
 ##----------------------------------------------------------------------------
 # Displays a message (string)
 #
-# If the $noexec environment variable is set, prefix the message with '(n)'
+# If the $sf_noexec environment variable is set, prefix the message with '(n)'
 #
 # Args:
 #	$1 : message
@@ -232,14 +232,14 @@ sf_msg()
 local prefix
 
 prefix=''
-[ -n "$noexec" ] && prefix='(n)'
+[ -n "$sf_noexec" ] && prefix='(n)'
 echo "$prefix$1"
 }
 
 ##----------------------------------------------------------------------------
 # Display trace message
 #
-# If the $verbose environment variable is set, displays the message. If not,
+# If the $sf_verbose environment variable is set, displays the message. If not,
 # does not display anything.
 #
 # Args:
@@ -250,7 +250,7 @@ echo "$prefix$1"
 
 sf_trace()
 {
-[ -n "$verbose" ] && sf_msg1 ">>> $*"
+[ -n "$sf_verbose" ] && sf_msg1 ">>> $*"
 }
 
 ##----------------------------------------------------------------------------
@@ -385,7 +385,7 @@ for i
 	do
 	if ls -d "$i" >/dev/null 2>&1 ; then
 		sf_msg1 "Deleting $i"
-		[ -z "$noexec" ] && \rm -rf $i
+		[ -z "$sf_noexec" ] && \rm -rf $i
 	fi
 done
 }
@@ -423,7 +423,7 @@ mode=$3
 
 if [ ! -d "$path" ] ; then
 	sf_msg1 "Creating directory: $path"
-	if [ -z "$noexec" ] ; then
+	if [ -z "$sf_noexec" ] ; then
 		mkdir -p "$path"
 		[ -d "$path" ] || sf_fatal "$path: Cannot create directory"
 		chown $owner $path
@@ -448,7 +448,7 @@ sf_save()
 {
 if [ -f "$1" -a ! -f "$1.orig" ] ; then
 	sf_msg1 "Saving $1 to $1.orig"
-	[ -z "$noexec" ] && cp -p "$1" "$1.orig"
+	[ -z "$sf_noexec" ] && cp -p "$1" "$1.orig"
 fi
 }
 
@@ -471,7 +471,7 @@ dir="`dirname $f`"
 base="`basename $f`"
 of="$dir/old.$base"
 sf_msg1 "Renaming $f to old.$base"
-if [ -z "$noexec" ] ; then
+if [ -z "$sf_noexec" ] ; then
 	sf_delete $of
 	mv $f $of
 fi
@@ -503,7 +503,7 @@ source="$1"
 #-- Special case: source='-' => read data from stdin and create temp file
 
 if [ "X$source" = 'X-' ] ; then
-	source=$tmpfile._check_copy
+	source=$sf_tmpfile._check_copy
 	dd of=$source 2>/dev/null
 fi
 
@@ -521,7 +521,7 @@ fi
 
 sf_msg1 "Updating file $target"
 
-if [ -z "$noexec" ] ; then
+if [ -z "$sf_noexec" ] ; then
 	\rm -rf "$target"
 	sf_create_dir `dirname $target`
 	cp "$source" "$target"
@@ -587,7 +587,7 @@ echo "X$source" | grep '^X-' >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	fname="`echo "X$source" | sed 's/^..//'`"
 	fname=`basename $fname`
-	tmpdir=$tmpfile._dir.check_block
+	tmpdir=$sf_tmpfile._dir.check_block
 	\rm -rf $tmpdir
 	mkdir -p $tmpdir
 	source=$tmpdir/$fname
@@ -603,46 +603,46 @@ fi
 if [ -f "$target" ] ; then
 	nstart=`grep -n "^.#sysfunc_start/$fname##" "$target" | sed 's!:.*$!!'`
 	if [ -n "$nstart" ] ; then
-		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$tmpfile._start
-		tail --lines=+`expr $nstart + 1` <"$target" >$tmpfile._2
-		nend=`grep -n "^.#sysfunc_end/$fname##" "$tmpfile._2" | sed 's!:.*$!!'`
+		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$sf_tmpfile._start
+		tail --lines=+`expr $nstart + 1` <"$target" >$sf_tmpfile._2
+		nend=`grep -n "^.#sysfunc_end/$fname##" "$sf_tmpfile._2" | sed 's!:.*$!!'`
 		if [ -z "$nend" ] ; then # Corrupt block
 			fatal "check_block($1): Corrupt block detected - aborting"
 			return
 		fi
-		( [ $nend != 1 ] && head -`expr $nend - 1` $tmpfile._2 ) >$tmpfile._block
-		tail --lines=+`expr $nend + 1` <$tmpfile._2 >$tmpfile._end
-		diff "$source" $tmpfile._block >/dev/null 2>&1 && return # Same block, no action
+		( [ $nend != 1 ] && head -`expr $nend - 1` $sf_tmpfile._2 ) >$sf_tmpfile._block
+		tail --lines=+`expr $nend + 1` <$sf_tmpfile._2 >$sf_tmpfile._end
+		diff "$source" $sf_tmpfile._block >/dev/null 2>&1 && return # Same block, no action
 		action='Replacing'
 	else
 		if [ "$flag" = "prepend" ] ; then
-			>$tmpfile._start
-			cp $target $tmpfile._end
+			>$sf_tmpfile._start
+			cp $target $sf_tmpfile._end
 			action='Prepending'
 		else
-			cp $target $tmpfile._start
-			>$tmpfile._end
+			cp $target $sf_tmpfile._start
+			>$sf_tmpfile._end
 			action='Appending'
 		fi
 	fi
 	sf_save $target
 else
 	action='Creating from'
-	>$tmpfile._start
-	>$tmpfile._end
+	>$sf_tmpfile._start
+	>$sf_tmpfile._end
 fi
 
 sf_msg1 "$target: $action data block"
 
-if [ -z "$noexec" ] ; then
+if [ -z "$sf_noexec" ] ; then
 	\rm -f "$target"
 	sf_create_dir `dirname $target`
 	(
-	cat $tmpfile._start
+	cat $sf_tmpfile._start
 	echo "$comment#sysfunc_start/$fname##------ Don't remove this line"
 	cat $source
 	echo "$comment#sysfunc_end/$fname##-------- Don't remove this line"
-	cat $tmpfile._end
+	cat $sf_tmpfile._end
 	) >$target
 	chmod $mode "$target"
 fi
@@ -699,7 +699,7 @@ fi
 
 sf_msg1 "$2: Updating symbolic link"
 
-if [ -z "$noexec" ] ; then
+if [ -z "$sf_noexec" ] ; then
 	\rm -rf "$2"
 	sf_create_dir `dirname $2`
 	ln -s "$1" "$2"
@@ -731,7 +731,7 @@ grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	sf_save "$1"
 	sf_msg1 "$1: Commenting out '$2'"
-	if [ -z "$noexec" ] ; then
+	if [ -z "$sf_noexec" ] ; then
 		ed $1 <<-EOF >/dev/null 2>&1
 			?^[^$com]*$2?
 			s?^?$com?
@@ -767,7 +767,7 @@ grep "$2" "$1" | grep "^[ 	]*$com" >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	sf_save "$1"
 	sf_msg1 "$1: Uncommenting '$2'"
-	if [ -z "$noexec" ] ; then
+	if [ -z "$sf_noexec" ] ; then
 		ed $1 <<-EOF >/dev/null 2>&1
 			?^[ 	]*$com.*$2?
 			s?^[ 	]*$com??g
@@ -810,7 +810,7 @@ sf_save $file
 if [ -n "$fline" ] ; then
 	sf_msg1 "$1: Replacing '$2' line"
 	qpattern=`echo "$pattern" | sed 's!/!\\\\/!g'`
-	[ -z "$noexec" ] && ed $file <<-EOF >/dev/null 2>&1
+	[ -z "$sf_noexec" ] && ed $file <<-EOF >/dev/null 2>&1
 		/$qpattern/
 		.c
 		$line
@@ -820,7 +820,7 @@ if [ -n "$fline" ] ; then
 	EOF
 else
 	sf_msg1 "$1: Appending '$2' line"
-	[ -z "$noexec" ] && echo "$line" >>$file
+	[ -z "$sf_noexec" ] && echo "$line" >>$file
 fi
 }
 
@@ -913,7 +913,7 @@ case $_os in
 		lsgroup $1 >/dev/null 2>&1
 		if [ $? != 0 ] ; then
 			sf_msg1 "Creating $1 group"
-			[ -z "$noexec" ] && mkgroup id=$2 $1
+			[ -z "$sf_noexec" ] && mkgroup id=$2 $1
 		fi
 		;;
 
@@ -921,7 +921,7 @@ case $_os in
 		grep "^$1:" /etc/group >/dev/null 2>&1
 		if [ $? != 0 ] ; then
 			sf_msg1 "Creating $1 group"
-			[ -z "$noexec" ] && groupadd -g $2 $1
+			[ -z "$sf_noexec" ] && groupadd -g $2 $1
 		fi
 		;;
 esac
@@ -997,7 +997,7 @@ locked='y'
 [ $# = 9 ] && locked=''
 
 sf_msg1 "Creating account $1"
-[ -n "$noexec" ] && return
+[ -n "$sf_noexec" ] && return
 sf_create_dir `dirname $home`
 
 add_cmd=''
@@ -1475,7 +1475,7 @@ for service in $*
 			[ -f /etc/init.d/$service ] || continue
 			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null && continue
 			msg1 "Enabling service $service"
-			[ -z "$noexec" ] && /sbin/chkconfig $service on
+			[ -z "$sf_noexec" ] && /sbin/chkconfig $service on
 			;;
 		*)
 			sf_unsupported enable_service
@@ -1504,7 +1504,7 @@ for service in $*
 			[ -f /etc/init.d/$service ] || continue
 			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null || continue
 			sf_msg1 "Disabling service $service"
-			[ -z "$noexec" ] && /sbin/chkconfig --level 0123456 $service off
+			[ -z "$sf_noexec" ] && /sbin/chkconfig --level 0123456 $service off
 			;;
 		*)
 			sf_unsupported disable_service
@@ -1632,8 +1632,8 @@ done
 _os=`uname -s`
 export _os
 
-[ -z "$tmpfile" ] && tmpfile=/tmp/.conf$$.tmp
-export tmpfile
+[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
+export sf_tmpfile
 
 #-- Path
 
