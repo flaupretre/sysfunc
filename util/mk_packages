@@ -20,33 +20,28 @@
 #
 #=============================================================================
 
-. ./config.sh
-. ./pkg_func.sh
+. pkg_func.sh
 
 tdir=/opt/$PRODUCT
+link_source=/usr/bin/$PRODUCT.sh
+link_target=$tdir/$PRODUCT.sh
+doc_dir=/usr/share/doc/$PRODUCT
 
-link=/usr/bin/sysfunc.sh
-ltarget=$tdir/sysfunc.sh
+files="$tdir $link_source $doc_dir"
 
-files="$tdir $link /usr/share/man/man8/$PRODUCT.8 /usr/share/doc/$PRODUCT"
-
-export tdir link files
+export tdir link_source link_target doc_dir files
 
 #-- Specific - Copy source files
 
 cd $sdir
 
 clean_dir $tdir
-
 filter <$PRODUCT.sh >$tdir/$PRODUCT.sh
 
-mkdir -p /usr/share/man/man8
-filter <man/$PRODUCT.8 >/usr/share/man/man8/$PRODUCT.8
+clean_dir $doc_dir
+cp -rp COPYING doc/* $doc_dir
 
-mkdir -p /usr/share/doc/$PRODUCT
-cp COPYING /usr/share/doc/$PRODUCT
-
-mk_link $ltarget $link	#-- Create symbolic link
+mk_link $link_target $link_source	#-- Create symbolic link
 
 #--
 
