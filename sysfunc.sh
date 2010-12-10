@@ -25,7 +25,7 @@
 #
 #- Of course, if it can run, the library is loaded. So, it always returns 0.
 #- Allows to support the 'official' way to load sysfunc :
-#	sf_loaded 2>/dev/null || . /opt/sysfunc/sysfunc.sh
+#	sf_loaded 2>/dev/null || . sysfunc.sh
 #
 # Args: none
 # Returns: Always 0
