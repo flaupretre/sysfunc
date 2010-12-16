@@ -1028,7 +1028,7 @@ case $_os in
 			
 		useradd -c "$gecos" -o -g $gid -u $uid -d $home -s $shell $add_cmd $name
 
-		[ -z "$locked" ] && sf_set_passwd /etc/shadow $name "$7"
+		[ -z "$locked" ] && sf_set_passwd $name "$7" /etc/shadow
 		;;
 
 	*)
@@ -1045,7 +1045,7 @@ case $_os in
 
 		passwd_file=/etc/shadow
 		[ $_os = HP-UX ] && passwd_file=/etc/passwd
-		[ -z "$locked" ] && sf_set_passwd $passwd_file $name "$8"
+		[ -z "$locked" ] && sf_set_passwd $name "$8" $passwd_file
 		;;
 esac
 return 0
