@@ -1451,6 +1451,31 @@ case "$_os" in
 esac
 }
 
+##----------------------------------------------------------------------------
+# Check if a package is installed
+#
+# Args:
+#	$1 : Package name (without version)
+# Returns: 0 if package is present, !=0 if not.
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_installed_package()
+{
+local rc
+
+case "$_os" in
+	Linux)
+		rpm -q "$1" >/dev/null 2>&1
+		rc=$?
+		;;
+	*)
+		sf_unsupported package_list
+		;;
+esac
+return $rc
+}
+
 #=============================================================================
 # Section: Service management
 #=============================================================================
