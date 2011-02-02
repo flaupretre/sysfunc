@@ -174,7 +174,7 @@ sf_unsupported()
 {
 # $1: feature name
 
-sf_fatal "$1: Feature not supported in this environment: $_os" 2
+sf_fatal "$1: Feature not supported in this environment: `uname -s`" 2
 }
 
 ##----------------------------------------------------------------------------
@@ -318,7 +318,7 @@ echo
 
 sf_ask()
 {
-if [ "$_os" = Linux ] ; then
+if [ "`uname -s`" = Linux ] ; then
 	echo -n "$1 "
 else
 	echo "$1 \c"
@@ -800,9 +800,9 @@ sf_check_line()
 {
 local file pattern line fline qpattern
 
-file=$1
-pattern=$2
-line=$3
+file="$1"
+pattern="$2"
+line="$3"
 
 fline=`grep "$pattern" $file 2>/dev/null | head -1`
 [ "$fline" = "$line" ] && return
@@ -908,7 +908,7 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 sf_create_group()
 {
 
-case $_os in
+case `uname -s` in
 	AIX)
 		lsgroup $1 >/dev/null 2>&1
 		if [ $? != 0 ] ; then
@@ -941,7 +941,7 @@ sf_user_exists()
 {
 local status
 
-case $_os in
+case `uname -s` in
 	AIX)
 		lsuser $1 >/dev/null 2>&1
 		status=$?
@@ -1002,7 +1002,7 @@ sf_create_dir `dirname $home`
 
 add_cmd=''
 
-case $_os in
+case `uname -s` in
 	AIX)
 		[ -n "$groups" ] && add_cmd="$add_cmd groups=$groups"
 
@@ -1044,7 +1044,7 @@ case $_os in
 			>/dev/null
 
 		passwd_file=/etc/shadow
-		[ $_os = HP-UX ] && passwd_file=/etc/passwd
+		[ `uname -s` = HP-UX ] && passwd_file=/etc/passwd
 		[ -z "$locked" ] && sf_set_passwd $name "$8" $passwd_file
 		;;
 esac
@@ -1084,7 +1084,7 @@ local id os frel rel sub
 #-- Recognizes the current environment
 
 id=''
-case "$_os" in
+case "`uname -s`" in
 	HP-UX)
 		id="HPUX_`uname -r | sed 's/^B\.//'`"
 		;;
@@ -1148,7 +1148,7 @@ sf_has_dedicated_fs()
 
 sf_get_fs_mnt()
 {
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		df -kP "$1" | tail -1 | awk '{ print $6 }'
 		;;
@@ -1177,7 +1177,7 @@ sf_get_fs_size()
 {
 # $1=directory
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		sz=`df -kP "$1" | tail -1 | awk '{ print $2 }'`
 		;;
@@ -1220,7 +1220,7 @@ fi
 
 if [ "$newsize" -gt "$size" ] ; then
 	sf_msg1 "Extending $fs filesystem to $newsize Mb"
-	case "$_os" in
+	case "`uname -s`" in
 		AIX)
 			chfs -a size=${newsize}M $fs
 			rc=$?
@@ -1271,7 +1271,7 @@ fi
 
 [ $? = 0 ] || return 1
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		opts=''
 		# When supported, set filesystem label
@@ -1311,7 +1311,7 @@ local vg lv rc
 vg=$1
 lv=$2
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		lvs $vg/$lv >/dev/null 2>&1
 		rc=$?
@@ -1339,7 +1339,7 @@ local vg rc
 
 vg=$1
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		vgs $vg >/dev/null 2>&1
 		rc=$?
@@ -1380,7 +1380,7 @@ sf_lv_exists $vg $lv && return
 
 sf_msg1 "Creating LV $lv on VG $vg"
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		lvcreate --size ${size}M -n $lv $vg
 		rc=$?
@@ -1441,7 +1441,7 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 
 sf_package_list()
 {
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
 		;;
@@ -1464,7 +1464,7 @@ sf_installed_package()
 {
 local rc
 
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		rpm -q "$1" >/dev/null 2>&1
 		rc=$?
@@ -1495,7 +1495,7 @@ sf_enable_service()
 {
 for service in $*
 	do
-	case "$_os" in
+	case "`uname -s`" in
 		Linux)
 			[ -f /etc/init.d/$service ] || continue
 			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null && continue
@@ -1524,7 +1524,7 @@ sf_disable_service()
 {
 for service in $*
 	do
-	case "$_os" in
+	case "`uname -s`" in
 		Linux)
 			[ -f /etc/init.d/$service ] || continue
 			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null || continue
@@ -1630,7 +1630,7 @@ sf_dns_name_to_addr()
 
 sf_primary_ip_address()
 {
-case "$_os" in
+case "`uname -s`" in
 	Linux)
 		ifconfig eth0 | grep 'inet addr:' \
 			| sed 's/^.*inet addr:\([^ ]*\) .*$/\1/'
@@ -1653,9 +1653,6 @@ for i in cp mv rm
 done
 
 #-- Variables
-
-_os=`uname -s`
-export _os
 
 [ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
 export sf_tmpfile
