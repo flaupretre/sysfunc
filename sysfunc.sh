@@ -308,21 +308,17 @@ echo
 ##----------------------------------------------------------------------------
 # Ask a question to the user
 #
-#  This is a message without a terminating newline.
+#  Due to compatibility problems, don't use 'no newline' echo options anymore.
 #
 # Args:
 #	$1 : message
 # Returns: Always 0
-# Displays: message without terminating newline
+# Displays: message
 #-----------------------------------------------------------------------------
 
 sf_ask()
 {
-if [ "`uname -s`" = Linux ] ; then
-	echo -n "$1 "
-else
-	echo "$1 \c"
-fi
+echo "$1 "
 }
 
 ##----------------------------------------------------------------------------
