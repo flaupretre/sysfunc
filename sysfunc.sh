@@ -1421,58 +1421,6 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 }
 
 #=============================================================================
-# Section: Package management
-#=============================================================================
-
-##----------------------------------------------------------------------------
-# List installed packages
-#
-# Returns a sorted list of installed packages
-# Linux output: yum format (name-version-release.arch)
-#
-# Args: none
-# Returns: Always 0
-# Displays: package list
-#-----------------------------------------------------------------------------
-
-sf_package_list()
-{
-case "`uname -s`" in
-	Linux)
-		rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
-		;;
-	*)
-		sf_unsupported package_list
-		;;
-esac
-}
-
-##----------------------------------------------------------------------------
-# Check if a package is installed
-#
-# Args:
-#	$1 : Package name (without version)
-# Returns: 0 if package is present, !=0 if not.
-# Displays: Nothing
-#-----------------------------------------------------------------------------
-
-sf_installed_package()
-{
-local rc
-
-case "`uname -s`" in
-	Linux)
-		rpm -q "$1" >/dev/null 2>&1
-		rc=$?
-		;;
-	*)
-		sf_unsupported package_list
-		;;
-esac
-return $rc
-}
-
-#=============================================================================
 # Section: Service management
 #=============================================================================
 
@@ -1638,6 +1586,180 @@ esac
 }
 
 #=============================================================================
+# Section: Software management
+#=============================================================================
+
+##----------------------------------------------------------------------------
+# List installed software
+#
+# Returns a sorted list of installed software
+# Linux output: yum format (name-version-release.arch)
+#
+# Args: none
+# Returns: Always 0
+# Displays: software list
+#-----------------------------------------------------------------------------
+
+sf_soft_list()
+{
+case "`uname -s`" in
+	Linux)
+		$RPM -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
+		;;
+	*)
+		sf_unsupported sf_soft_list
+		;;
+esac
+}
+
+##----------------------------------------------------------------------------
+# Check if software is installed
+#
+# Args:
+#	$*: software name(s)
+# Returns: 0 if every argument software are installed. 1 if at least one of them
+# is not.
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_soft_is_installed()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		for _pkg ; do
+			$RPM -q "$_pkg" >/dev/null 2>&1 || return 1
+		done
+		;;
+	*)
+		sf_unsupported sf_soft_is_installed
+		;;
+esac
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Check if a newer version of a software is available
+#
+# Note : if the software is not installed, it is not considered as updateable
+# Note : yum returns 0 if no software are available for update
+#
+# Args:
+#	$*: software name(s)
+# Returns: 0 if at least one of the given software(s) can be updated.
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_soft_is_upgradeable()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		$YUM check-update $* >/dev/null 2>&1 || return 0
+		;;
+	*)
+		sf_unsupported sf_soft_is_upgradeable
+		;;
+esac
+
+return 1
+}
+
+##----------------------------------------------------------------------------
+# Check if the installed version of a software is installed and the latest
+# version
+#
+# Args:
+#	$*: software name(s)
+# Returns: 0 if every argument software are installed and up to date (for yum)
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_soft_is_up_to_date()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		sf_soft_is_installed $* || return 1
+		sf_soft_is_upgradeable $* && return 1
+		;;
+	*)
+		sf_unsupported sf_soft_is_up_to_date
+		;;
+esac
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Install or upgrade a software
+#
+# Install or updates a software depending on its presence on the host
+# If the software is up to date, no action.
+#
+# Args:
+#	$*: software name(s)
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_soft_install_upgrade()
+{
+local _pkg _to_install _to_update
+
+_to_install=''
+_to_update=''
+
+for _pkg
+	do
+	if ! sf_soft_is_installed "$_pkg" ; then
+		_to_install="$_to_install $_pkg"
+	else
+		if sf_soft_is_upgradeable "$_pkg" ; then
+			_to_update="$_to_update $_pkg"
+		fi
+	fi
+done
+
+if [ -n "$_to_update" ] ; then
+	sf_msg "Upgrading $_to_update ..."
+	$YUM update $_to_update
+fi
+
+if [ -n "$_to_install" ] ; then
+	sf_msg "Installing $_to_install ..."
+	$YUM install $_to_install
+fi
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Clean the software installation cache
+#
+# Args: None
+# Returns: Always 0
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_soft_clean_cache()
+{
+
+case "`uname -s`" in
+	Linux)
+		\rm -rf /var/cache/yum/*
+		;;
+	*)
+		sf_unsupported sf_soft_clean_cache
+		;;
+esac
+}
+
+#=============================================================================
 # MAIN
 #=============================================================================
 
@@ -1652,6 +1774,14 @@ done
 
 [ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
 export sf_tmpfile
+
+[ -z "$YUM" ] && YUM="yum"
+YUM="$YUM -y -t -d 1"
+export YUM
+
+[ -z "$RPM" ] && RPM="rpm"
+RPM="$RPM --nosignature"
+export RPM
 
 #-- Path
 
