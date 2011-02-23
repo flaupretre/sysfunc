@@ -1604,7 +1604,7 @@ sf_soft_list()
 {
 case "`uname -s`" in
 	Linux)
-		$RPM -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
+		$sf_rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
 		;;
 	*)
 		sf_unsupported sf_soft_list
@@ -1629,7 +1629,7 @@ local _pkg
 case "`uname -s`" in
 	Linux)
 		for _pkg ; do
-			$RPM -q "$_pkg" >/dev/null 2>&1 || return 1
+			$sf_rpm -q "$_pkg" >/dev/null 2>&1 || return 1
 		done
 		;;
 	*)
@@ -1658,7 +1658,7 @@ local _pkg
 
 case "`uname -s`" in
 	Linux)
-		$YUM check-update $* >/dev/null 2>&1 || return 0
+		$sf_yum check-update $* >/dev/null 2>&1 || return 0
 		;;
 	*)
 		sf_unsupported sf_soft_is_upgradeable
@@ -1714,26 +1714,119 @@ local _pkg _to_install _to_update
 _to_install=''
 _to_update=''
 
-for _pkg
-	do
-	if ! sf_soft_is_installed "$_pkg" ; then
-		_to_install="$_to_install $_pkg"
-	else
-		if sf_soft_is_upgradeable "$_pkg" ; then
-			_to_update="$_to_update $_pkg"
+case "`uname -s`" in
+	Linux)
+		for _pkg
+			do
+			if ! sf_soft_is_installed "$_pkg" ; then
+				_to_install="$_to_install $_pkg"
+			else
+				if sf_soft_is_upgradeable "$_pkg" ; then
+					_to_update="$_to_update $_pkg"
+				fi
+			fi
+		done
+
+		if [ -n "$_to_update" ] ; then
+			sf_msg "Upgrading $_to_update ..."
+			$sf_yum upgrade $_to_update
 		fi
-	fi
-done
 
-if [ -n "$_to_update" ] ; then
-	sf_msg "Upgrading $_to_update ..."
-	$YUM update $_to_update
-fi
+		if [ -n "$_to_install" ] ; then
+			sf_msg "Installing $_to_install ..."
+			$sf_yum install $_to_install
+		fi
+		;;
+	*)
+		sf_unsupported sf_soft_install_upgrade
+		;;
+esac
 
-if [ -n "$_to_install" ] ; then
-	sf_msg "Installing $_to_install ..."
-	$YUM install $_to_install
-fi
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Uninstall a software (including dependencies)
+#
+# Return without error if the software is not installed
+#
+# Args:
+#	$*: software name(s)
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_soft_uninstall()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		for _pkg ; do
+			sf_soft_is_installed "$_pkg" && $sf_yum remove "$_pkg"
+		done
+		;;
+	*)
+		sf_unsupported sf_soft_uninstall
+		;;
+esac
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Uninstall a software (ignoring spendencies)
+#
+# Return without error if the software is not installed
+#
+# Args:
+#	$*: software name(s)
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_soft_remove()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		for _pkg ; do
+			sf_soft_is_installed "$_pkg" && $sf_rpm -e --nodeps "$_pkg"
+		done
+		;;
+	*)
+		sf_unsupported sf_soft_remove
+		;;
+esac
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Reinstall a software, even at same version
+#
+# Args:
+#	$*: software name(s)
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_soft_reinstall()
+{
+local _pkg
+
+case "`uname -s`" in
+	Linux)
+		for _pkg ; do
+			sf_soft_removei "$_pkg"
+			sf_soft_install_upgrade "$_pkg"
+		done
+		;;
+	*)
+		sf_unsupported sf_soft_remove
+		;;
+esac
 
 return 0
 }
@@ -1775,13 +1868,13 @@ done
 [ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
 export sf_tmpfile
 
-[ -z "$YUM" ] && YUM="yum"
-YUM="$YUM -y -t -d 1"
-export YUM
+[ -z "$sf_yum" ] && sf_yum="yum"
+sf_yum="$sf_yum -y -t -d 1"
+export sf_yum
 
-[ -z "$RPM" ] && RPM="rpm"
-RPM="$RPM --nosignature"
-export RPM
+[ -z "$sf_rpm" ] && sf_rpm="rpm"
+sf_rpm="$sf_rpm --nosignature"
+export sf_rpm
 
 #-- Path
 
