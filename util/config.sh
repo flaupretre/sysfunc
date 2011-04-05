@@ -18,7 +18,12 @@
 
 PRODUCT=sysfunc
 DESCRIPTION="System utility shell functions"
+
+# WARNING: This definition is redundant with Makefile !
+# To be replaced by a clean autoconf-based mechanism.
+
 VERSION=1.1.3
+
 RELEASE=1
 
 export PRODUCT DESCRIPTION VERSION RELEASE

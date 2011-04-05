@@ -36,12 +36,16 @@ export tdir link_source link_target doc_dir files
 cd $sdir
 
 clean_dir $tdir
-filter <$PRODUCT.sh >$tdir/$PRODUCT.sh
+
+make clean all
+cp -p $PRODUCT.sh $tdir
 
 clean_dir $doc_dir
 cp -rp COPYING doc/* $doc_dir
 
 mk_link $link_target $link_source	#-- Create symbolic link
+
+make clean
 
 #--
 
