@@ -193,7 +193,7 @@ sf_error()
 {
 local msg
 
-msg="*Error : $1"
+msg="***ERROR: $1"
 sf_msg "$msg"
 [ -n "$ERRLOG" ] && echo "$msg" >>$ERRLOG
 }
@@ -431,6 +431,8 @@ fi
 ##----------------------------------------------------------------------------
 # Saves a file
 #
+# No action if the 'sf_nosave' environment variable is set to a non-empty string.
+#
 # If the input arg is the path of an existing regular file, the file is copied
 # to '$path.orig'
 # TODO: improve save features (multiple numbered saved versions,...)
@@ -442,6 +444,7 @@ fi
 
 sf_save()
 {
+[ "X$sf_nosave" = X ] || return
 if [ -f "$1" -a ! -f "$1.orig" ] ; then
 	sf_msg1 "Saving $1 to $1.orig"
 	[ -z "$sf_noexec" ] && cp -p "$1" "$1.orig"
@@ -600,14 +603,14 @@ if [ -f "$target" ] ; then
 	nstart=`grep -n "^.#sysfunc_start/$fname##" "$target" | sed 's!:.*$!!'`
 	if [ -n "$nstart" ] ; then
 		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$sf_tmpfile._start
-		tail --lines=+`expr $nstart + 1` <"$target" >$sf_tmpfile._2
+		tail -n +`expr $nstart + 1` <"$target" >$sf_tmpfile._2
 		nend=`grep -n "^.#sysfunc_end/$fname##" "$sf_tmpfile._2" | sed 's!:.*$!!'`
 		if [ -z "$nend" ] ; then # Corrupt block
-			fatal "check_block($1): Corrupt block detected - aborting"
+			sf_fatal "check_block($1): Corrupt block detected - aborting"
 			return
 		fi
 		( [ $nend != 1 ] && head -`expr $nend - 1` $sf_tmpfile._2 ) >$sf_tmpfile._block
-		tail --lines=+`expr $nend + 1` <$sf_tmpfile._2 >$sf_tmpfile._end
+		tail -n +`expr $nend + 1` <$sf_tmpfile._2 >$sf_tmpfile._end
 		diff "$source" $sf_tmpfile._block >/dev/null 2>&1 && return # Same block, no action
 		action='Replacing'
 	else
@@ -925,6 +928,33 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
+# Remove a group
+#
+# Args:
+#	$1: Group name
+# Returns: Status from system command
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_delete_group()
+{
+
+local status
+
+case `uname -s` in
+	Linux|SunOS)
+		groupdel "$1"
+		status=$?
+		;;
+
+	*)
+		sf_unsupported sf_delete_group
+		;;
+esac
+return $status
+}
+
+##----------------------------------------------------------------------------
 # Checks if a given user exists on the system
 #
 # Args:
@@ -946,6 +976,33 @@ case `uname -s` in
 	*)
 		grep "^$1:" /etc/passwd >/dev/null 2>&1
 		status=$?
+		;;
+esac
+return $status
+}
+
+##----------------------------------------------------------------------------
+# Remove a user account
+#
+# Args:
+#	$1: User name
+# Returns: Status from system command
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_delete_user()
+{
+
+local status
+
+case `uname -s` in
+	Linux|SunOS)
+		userdel "$1"
+		status=$?
+		;;
+
+	*)
+		sf_unsupported sf_delete_user
 		;;
 esac
 return $status
@@ -992,7 +1049,7 @@ groups=$6
 locked='y'
 [ $# = 9 ] && locked=''
 
-sf_msg1 "Creating account $1"
+sf_msg1 "Creating $1 user"
 [ -n "$sf_noexec" ] && return
 sf_create_dir `dirname $home`
 
@@ -1427,8 +1484,6 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 ##----------------------------------------------------------------------------
 # Enable service start/stop at system boot/shutdown
 #
-# Enable service for state 2, 3, 4, and 5 (default for chkconfig)
-#
 # Args:
 #	$*: Service names
 # Returns: Always 0
@@ -1437,17 +1492,41 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 
 sf_enable_service()
 {
-for service in $*
+local _svc _base _script _state _snum _knum
+
+_base=`sf_service_base`
+for _svc in $*
 	do
+	if ! sf_service_is_installed $_svc ; then
+		sf_error "$_svc: No such service"
+		continue
+	fi
+	sf_msg1 "Enabling service $_svc"
+
 	case "`uname -s`" in
 		Linux)
-			[ -f /etc/init.d/$service ] || continue
-			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null && continue
-			msg1 "Enabling service $service"
-			[ -z "$sf_noexec" ] && /sbin/chkconfig $service on
+			if [ -z "$sf_noexec" ] ; then
+				/sbin/chkconfig --add $_svc
+				/sbin/chkconfig $_svc reset
+			fi
+			;;
+		SunOS)
+			# We don't use states as defined on 'chkconfig' line in service
+			# script, as states do not correspond on Solaris.
+			_script=`sf_service_script $_svc`
+			grep '^# *chkconfig:' $_script | head -1 \
+				| sed 's/^.*: *[^ ][^ ]*  *//' | read _snum _knum
+			for _state in 3 # Start
+				do
+				sf_check_link ../init.d/$_svc $_base/rc$_state.d/S$_snum$_svc
+			done
+			for _state in 0 1 2 S # Kill
+				do
+				sf_check_link ../init.d/$_svc $_base/rc$_state.d/K$_knum$_svc
+			done
 			;;
 		*)
-			sf_unsupported enable_service
+			sf_unsupported sf_enable_service
 			;;
 	esac
 done
@@ -1455,8 +1534,6 @@ done
 
 ##----------------------------------------------------------------------------
 # Disable service start/stop at system boot/shutdown
-#
-# Disable service for every states
 #
 # Args:
 #	$*: Service names
@@ -1466,20 +1543,148 @@ done
 
 sf_disable_service()
 {
-for service in $*
+local _svc _base _script _state _snum _knum
+
+_base=`sf_service_base`
+for _svc in $*
 	do
+	if ! sf_service_is_installed $_svc ; then
+		sf_msg1 "$_svc: Service was already disabled"
+		continue
+	fi
+	sf_msg1 "$_svc: Disabling service"
+
 	case "`uname -s`" in
 		Linux)
-			[ -f /etc/init.d/$service ] || continue
-			chkconfig --list $service 2>/dev/null | grep ':on' >/dev/null || continue
-			sf_msg1 "Disabling service $service"
-			[ -z "$sf_noexec" ] && /sbin/chkconfig --level 0123456 $service off
+			if [ -z "$sf_noexec" ] ; then
+				/sbin/chkconfig --del $_svc
+			fi
+			;;
+		SunOS)
+			sf_delete $_base/rc?.d/[KS]??$_svc
 			;;
 		*)
-			sf_unsupported disable_service
+			sf_unsupported sf_disable_service
 			;;
 	esac
 done
+}
+
+##----------------------------------------------------------------------------
+# Install a service script (script to start/stop a service)
+#
+# Args:
+#	$1: Source script
+#	$2: Service name
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_install_service()
+{
+sf_check_copy "$1" `sf_service_script $2` 755
+}
+
+##----------------------------------------------------------------------------
+# Uninstall a service script (script to start/stop a service)
+#
+# Args:
+#	$1: Service name
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_uninstall_service()
+{
+sf_stop_service $1
+sf_disable_service $1
+sf_delete `sf_service_script $1`
+}
+
+##----------------------------------------------------------------------------
+# Check if a service script is installed
+#
+# Args:
+#	$1: Service name
+# Returns: 0 is installed, 1 if not
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_service_is_installed()
+{
+[ -x "`sf_service_script $1`" ]
+}
+
+##----------------------------------------------------------------------------
+# Start a service
+#
+# Args:
+#	$1: Service name
+# Returns: Return code from script execution
+# Displays: Output from service script
+#-----------------------------------------------------------------------------
+
+sf_start_service()
+{
+if sf_service_is_installed "$1" ] ; then
+	`sf_service_script $1` start
+else
+	sf_error "$1: Service is not installed"
+fi
+}
+
+##----------------------------------------------------------------------------
+# Stop a service
+#
+# Args:
+#	$1: Service name
+# Returns: Return code from script execution
+# Displays: Output from service script
+#-----------------------------------------------------------------------------
+
+sf_stop_service()
+{
+if sf_service_is_installed "$1" ] ; then
+	`sf_service_script $1` stop
+else
+	sf_error "$1: Service is not installed"
+fi
+}
+
+##----------------------------------------------------------------------------
+# Display the base directory of service scripts
+#
+# Args: None
+# Returns: Always 0
+# Displays: String
+#-----------------------------------------------------------------------------
+
+sf_service_base()
+{
+case `uname -s` in
+	Linux)
+		echo /etc/rc.d ;;
+	SunOS)
+		echo /etc ;;
+	HP-UX)
+		echo /sbin ;;
+	*)
+		sf_unsupported sf_service_base ;;
+esac
+}
+
+##----------------------------------------------------------------------------
+# Display the full path of the script corresponding to a given service
+#
+# Args:
+#	$1: Service name
+# Returns: Always 0
+# Displays: Script path
+#-----------------------------------------------------------------------------
+
+sf_service_script()
+{
+echo `sf_service_base`/init.d/$1
 }
 
 #=============================================================================
@@ -1556,7 +1761,7 @@ sf_dns_name_to_addr()
 {
 ( [ -n "$2" && echo "server $2"; echo "$1" ) \
 	| nslookup 2>/dev/null \
-	| grep '^Address:' | tail --lines=+2 | head -1 \
+	| grep '^Address:' | tail -n +2 | head -1 \
 	| sed -e 's/^Address:[ 	]*//g'
 }
 
@@ -1877,8 +2082,11 @@ sf_rpm="$sf_rpm --nosignature"
 export sf_rpm
 
 #-- Path
+# Using XPG-compliant commands first is mandatory on Solaris, as the
+# default syntax is not always compatible with Linux ('tail -n +<number>' for
+# instance).
 
-for i in /usr/sbin /bin /usr/bin /etc /usr/ccs/bin
+for i in /usr/sbin /bin /usr/bin /etc /usr/ccs/bin /usr/xpg4/bin /usr/xpg6/bin
 	do
 	[ -d "$i" ] && PATH="$i:$PATH"
 done
