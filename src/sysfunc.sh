@@ -327,21 +327,21 @@ echo "$1 "
 # Works at least for questions in english, french, and german :
 # Accepts 'Y', 'O', and 'J' for 'yes' (upper or lowercase), and
 # anything different is considered as 'no'
-#- If the $forceyes environment variable is set, the user is not asked
+#- If the $sf_forceyes environment variable is set, the user is not asked
 # and the 'yes' code is returned.
 #
 # Args:
 #	$1 : Question string
 # Returns: 0 for 'yes', 1 for 'no'
-# Displays: Question and typed answer if $forceyes not set, nothing if
-#            $forceyes is set.
+# Displays: Question and typed answer if $sf_forceyes not set, nothing if
+#            $sf_forceyes is set.
 #-----------------------------------------------------------------------------
 
 sf_yn_question()
 {
 local answer
 
-if [ -n "$forceyes" ] ; then
+if [ -n "$sf_forceyes" ] ; then
 	# sf_trace "Forcing answer to 'yes'"
 	return 0
 fi
