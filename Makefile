@@ -2,7 +2,7 @@
 # WARNING: This definition is redundant with util/config.sh !
 # To be replaced by a clean autoconf-based mechanism.
 
-VERSION = 1.1.3
+VERSION = 1.1.4
 
 #---
 
@@ -10,7 +10,7 @@ TARGETS = sysfunc.sh
 
 #----------------
 
-all: sysfunc.sh
+all: $(TARGETS)
 
 clean:
 	/bin/rm -rf $(TARGETS)
