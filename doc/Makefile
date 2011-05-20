@@ -1,6 +1,6 @@
 
 PROJECT=sysfunc
-SOURCE=../$(PROJECT).sh
+SOURCE=../src/$(PROJECT).sh
 
 PPC_DIR=../../../ppc
 

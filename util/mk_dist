@@ -15,15 +15,23 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
+#
+#	Build distribution tar/gz file
+#
+#=============================================================================
 
-PRODUCT=sysfunc
-DESCRIPTION="System utility shell functions"
+. ./config.sh
 
-# WARNING: This definition is redundant with Makefile !
-# To be replaced by a clean autoconf-based mechanism.
+cd ..
+f=$PRODUCT-$VERSION
+dir=../$f
 
-VERSION=1.1.6
+mkdir $dir
 
-RELEASE=1
+tar cf - --exclude .hg . | ( cd $dir ; tar xpf - )
 
-export PRODUCT DESCRIPTION VERSION RELEASE
+cd ..
+tar cf - ./$f | gzip --best >$f.tar.gz
+rm -rf ./$f
+
+echo "Created `pwd`/$f.tar.gz"

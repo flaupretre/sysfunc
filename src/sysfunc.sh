@@ -154,7 +154,7 @@ rc=1
 
 sf_error "$1"
 echo
-echo "******************* Abort *******************"
+echo "******************* Abort *******************" >&2
 exit $rc
 }
 
@@ -174,7 +174,7 @@ sf_unsupported()
 {
 # $1: feature name
 
-sf_fatal "$1: Feature not supported in this environment: `uname -s`" 2
+sf_fatal "$1: Feature not supported in this environment" 2
 }
 
 ##----------------------------------------------------------------------------
@@ -382,6 +382,36 @@ for i
 	if ls -d "$i" >/dev/null 2>&1 ; then
 		sf_msg1 "Deleting $i"
 		[ -z "$sf_noexec" ] && \rm -rf $i
+	fi
+done
+}
+
+##----------------------------------------------------------------------------
+# Find an executable file
+#
+# Args:
+#	$1 : Executable name
+#	$2 : Optional. List of directories to search. If not search, use PATH
+# Returns: Always 0
+# Displays: Absolute path if found, nothing if not found
+#-----------------------------------------------------------------------------
+
+sf_find_executable()
+{
+local file dirs dir f
+
+file="$1"
+shift
+dirs="$*"
+[ -z "$dirs" ] && dirs="$PATH"
+dirs="`echo $dirs | sed 's/:/ /g'`"
+
+for dir in $dirs
+	do
+	f="$dir/$file"
+	if [ -f "$f" -a -x "$f" ] ; then
+		echo "$f"
+		break
 	fi
 done
 }
@@ -1170,8 +1200,80 @@ esac
 echo $id
 }
 
+##----------------------------------------------------------------------------
+# Shutdown and restart the host
+#
+# Args: None
+# Returns: does not return
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_reboot()
+{
+case "`uname -s`" in
+	Linux)
+		shutdown -r now
+		;;
+	SunOS)
+		init 6
+		;;
+	*)
+		sf_unsupported reboot
+esac
+
+while true; do sleep 10; done	# Endless loop
+}
+
+##----------------------------------------------------------------------------
+# Shutdown and halt the host
+#
+# Args: None
+# Returns: does not return
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_shutdown()
+{
+case "`uname -s`" in
+	Linux)
+		shutdown -h now
+		;;
+	SunOS)
+		shutdown -y -i0 -g0
+		;;
+	*)
+		sf_unsupported shutdown
+esac
+
+while true; do sleep 10; done	# Endless loop
+}
+
+##----------------------------------------------------------------------------
+# Shutdown and poweroff the host
+#
+# Args: None
+# Returns: does not return
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_poweroff()
+{
+case "`uname -s`" in
+	Linux)
+		shutdown -h now
+		;;
+	SunOS)
+		shutdown -y -i5 -g0
+		;;
+	*)
+		sf_unsupported poweroff
+esac
+
+while true; do sleep 10; done	# Endless loop
+}
+
 #=============================================================================
-# Section: Filesystem management
+# Section: Filesystem/Volume management
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -1312,7 +1414,7 @@ type=$3
 owner=$4
 [ -z "$owner" ] && owner=root
 
-sf_has_dedicated_fs $mnt && return
+sf_has_dedicated_fs $mnt && return 0
 sf_msg1 "$mnt: Creating file system"
 
 if [ -d $mnt ] ; then # Securite
@@ -1412,7 +1514,7 @@ return $rc
 #	$1: Logical volume name
 #	$2: Volume group name
 #	$3: Size in Mbytes
-# Returns: Always 0
+# Returns: 0: OK, !=0: Error
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
@@ -1429,7 +1531,7 @@ if ! sf_vg_exists $vg ; then
 	return 1
 fi
 
-sf_lv_exists $vg $lv && return
+sf_lv_exists $vg $lv && return 0
 
 sf_msg1 "Creating LV $lv on VG $vg"
 
@@ -1439,7 +1541,43 @@ case "`uname -s`" in
 		rc=$?
 		;;
 	*)
-		sf_unsupported sf_create_fs
+		sf_unsupported sf_create_lv
+		;;
+esac
+
+return $rc
+}
+
+##----------------------------------------------------------------------------
+# Create a volume group
+#
+# Args:
+#	$1: volume group name
+#	$2: PE size (including optional unit, default=Mb)
+#	$3: Device path, without the /dev prefix
+# Returns: 0: OK, !=0: Error
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_create_vg()
+{
+local vg pesize device
+
+vg=$1
+pesize=$2
+device=$3
+
+sf_vg_exists $vg && return 0
+
+sf_msg1 "Creating VG $vg"
+
+case "`uname -s`" in
+	Linux)
+		vgcreate -s $pesize $vg /dev/$device
+		rc=$?
+		;;
+	*)
+		sf_unsupported sf_create_vg
 		;;
 esac
 
@@ -1458,7 +1596,7 @@ return $rc
 #	$4: File system type
 #	$5: Size in Mbytes
 #	$6: Optional. Directory owner[:group]
-# Returns: Always 0
+# Returns: 0: OK, !=0: Error
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
@@ -1475,6 +1613,7 @@ owner=$6
 
 sf_create_lv $lv $vg $size || return 1
 sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
+return 0
 }
 
 #=============================================================================
@@ -1490,14 +1629,14 @@ sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_enable_service()
+sf_svc_enable()
 {
 local _svc _base _script _state _snum _knum
 
-_base=`sf_service_base`
+_base=`sf_svc_base`
 for _svc in $*
 	do
-	if ! sf_service_is_installed $_svc ; then
+	if ! sf_svc_is_installed $_svc ; then
 		sf_error "$_svc: No such service"
 		continue
 	fi
@@ -1513,7 +1652,7 @@ for _svc in $*
 		SunOS)
 			# We don't use states as defined on 'chkconfig' line in service
 			# script, as states do not correspond on Solaris.
-			_script=`sf_service_script $_svc`
+			_script=`sf_svc_script $_svc`
 			grep '^# *chkconfig:' $_script | head -1 \
 				| sed 's/^.*: *[^ ][^ ]*  *//' | read _snum _knum
 			for _state in 3 # Start
@@ -1526,7 +1665,7 @@ for _svc in $*
 			done
 			;;
 		*)
-			sf_unsupported sf_enable_service
+			sf_unsupported sf_svc_enable
 			;;
 	esac
 done
@@ -1541,14 +1680,14 @@ done
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_disable_service()
+sf_svc_disable()
 {
 local _svc _base _script _state _snum _knum
 
-_base=`sf_service_base`
+_base=`sf_svc_base`
 for _svc in $*
 	do
-	if ! sf_service_is_installed $_svc ; then
+	if ! sf_svc_is_installed $_svc ; then
 		sf_msg1 "$_svc: Service was already disabled"
 		continue
 	fi
@@ -1564,7 +1703,7 @@ for _svc in $*
 			sf_delete $_base/rc?.d/[KS]??$_svc
 			;;
 		*)
-			sf_unsupported sf_disable_service
+			sf_unsupported sf_svc_disable
 			;;
 	esac
 done
@@ -1580,9 +1719,9 @@ done
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_install_service()
+sf_svc_install()
 {
-sf_check_copy "$1" `sf_service_script $2` 755
+sf_check_copy "$1" `sf_svc_script $2` 755
 }
 
 ##----------------------------------------------------------------------------
@@ -1594,11 +1733,11 @@ sf_check_copy "$1" `sf_service_script $2` 755
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_uninstall_service()
+sf_svc_uninstall()
 {
-sf_stop_service $1
-sf_disable_service $1
-sf_delete `sf_service_script $1`
+sf_svc_stop $1
+sf_svc_disable $1
+sf_delete `sf_svc_script $1`
 }
 
 ##----------------------------------------------------------------------------
@@ -1610,9 +1749,9 @@ sf_delete `sf_service_script $1`
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_service_is_installed()
+sf_svc_is_installed()
 {
-[ -x "`sf_service_script $1`" ]
+[ -x "`sf_svc_script $1`" ]
 }
 
 ##----------------------------------------------------------------------------
@@ -1624,10 +1763,10 @@ sf_service_is_installed()
 # Displays: Output from service script
 #-----------------------------------------------------------------------------
 
-sf_start_service()
+sf_svc_start()
 {
-if sf_service_is_installed "$1" ] ; then
-	`sf_service_script $1` start
+if sf_svc_is_installed "$1" ] ; then
+	`sf_svc_script $1` start
 else
 	sf_error "$1: Service is not installed"
 fi
@@ -1642,10 +1781,10 @@ fi
 # Displays: Output from service script
 #-----------------------------------------------------------------------------
 
-sf_stop_service()
+sf_svc_stop()
 {
-if sf_service_is_installed "$1" ] ; then
-	`sf_service_script $1` stop
+if sf_svc_is_installed "$1" ] ; then
+	`sf_svc_script $1` stop
 else
 	sf_error "$1: Service is not installed"
 fi
@@ -1659,7 +1798,7 @@ fi
 # Displays: String
 #-----------------------------------------------------------------------------
 
-sf_service_base()
+sf_svc_base()
 {
 case `uname -s` in
 	Linux)
@@ -1669,7 +1808,7 @@ case `uname -s` in
 	HP-UX)
 		echo /sbin ;;
 	*)
-		sf_unsupported sf_service_base ;;
+		sf_unsupported sf_svc_base ;;
 esac
 }
 
@@ -1682,9 +1821,9 @@ esac
 # Displays: Script path
 #-----------------------------------------------------------------------------
 
-sf_service_script()
+sf_svc_script()
 {
-echo `sf_service_base`/init.d/$1
+echo `sf_svc_base`/init.d/$1
 }
 
 #=============================================================================
@@ -1795,10 +1934,29 @@ esac
 #=============================================================================
 
 ##----------------------------------------------------------------------------
+# Check if software exist (installed or available for installation)
+#
+# Args: A list of software names to check
+# Returns: 0 if every software exists, !=0 if not
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_soft_exists()
+{
+local soft
+
+for soft in $*
+	do
+	$sf_yum list $1 >/dev/null 2>&1 || return 1
+done
+return 0
+}
+
+##----------------------------------------------------------------------------
 # List installed software
 #
 # Returns a sorted list of installed software
-# Linux output: yum format (name-version-release.arch)
+# Linux output: (name-version-release.arch)
 #
 # Args: none
 # Returns: Always 0
@@ -1807,14 +1965,11 @@ esac
 
 sf_soft_list()
 {
-case "`uname -s`" in
-	Linux)
-		$sf_rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort
-		;;
-	*)
-		sf_unsupported sf_soft_list
-		;;
-esac
+(
+if [ -n "$sf_rpm" ] ; then
+	$sf_rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n'
+fi
+) | sort
 }
 
 ##----------------------------------------------------------------------------
@@ -1831,17 +1986,11 @@ sf_soft_is_installed()
 {
 local _pkg
 
-case "`uname -s`" in
-	Linux)
-		for _pkg ; do
-			$sf_rpm -q "$_pkg" >/dev/null 2>&1 || return 1
-		done
-		;;
-	*)
-		sf_unsupported sf_soft_is_installed
-		;;
-esac
+[ -z "$sf_rpm" ] && sf_unsupported sf_soft_is_installed
 
+for _pkg ; do
+	$sf_rpm -q "$_pkg" >/dev/null 2>&1 || return 1
+done
 return 0
 }
 
@@ -1859,17 +2008,9 @@ return 0
 
 sf_soft_is_upgradeable()
 {
-local _pkg
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_is_upgradeable
 
-case "`uname -s`" in
-	Linux)
-		$sf_yum check-update $* >/dev/null 2>&1 || return 0
-		;;
-	*)
-		sf_unsupported sf_soft_is_upgradeable
-		;;
-esac
-
+$sf_yum check-update $* >/dev/null 2>&1 || return 0
 return 1
 }
 
@@ -1885,18 +2026,8 @@ return 1
 
 sf_soft_is_up_to_date()
 {
-local _pkg
-
-case "`uname -s`" in
-	Linux)
-		sf_soft_is_installed $* || return 1
-		sf_soft_is_upgradeable $* && return 1
-		;;
-	*)
-		sf_unsupported sf_soft_is_up_to_date
-		;;
-esac
-
+sf_soft_is_installed $* || return 1
+sf_soft_is_upgradeable $* && return 1
 return 0
 }
 
@@ -1916,36 +2047,31 @@ sf_soft_install_upgrade()
 {
 local _pkg _to_install _to_update
 
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_install_upgrade
+
 _to_install=''
 _to_update=''
 
-case "`uname -s`" in
-	Linux)
-		for _pkg
-			do
-			if ! sf_soft_is_installed "$_pkg" ; then
-				_to_install="$_to_install $_pkg"
-			else
-				if sf_soft_is_upgradeable "$_pkg" ; then
-					_to_update="$_to_update $_pkg"
-				fi
-			fi
-		done
-
-		if [ -n "$_to_update" ] ; then
-			sf_msg "Upgrading $_to_update ..."
-			$sf_yum upgrade $_to_update
+for _pkg
+	do
+	if ! sf_soft_is_installed "$_pkg" ; then
+		_to_install="$_to_install $_pkg"
+	else
+		if sf_soft_is_upgradeable "$_pkg" ; then
+			_to_update="$_to_update $_pkg"
 		fi
+	fi
+done
 
-		if [ -n "$_to_install" ] ; then
-			sf_msg "Installing $_to_install ..."
-			$sf_yum install $_to_install
-		fi
-		;;
-	*)
-		sf_unsupported sf_soft_install_upgrade
-		;;
-esac
+if [ -n "$_to_update" ] ; then
+	sf_msg "Upgrading $_to_update ..."
+	$sf_yum upgrade $_to_update
+fi
+
+if [ -n "$_to_install" ] ; then
+	sf_msg "Installing $_to_install ..."
+	$sf_yum install $_to_install
+fi
 
 return 0
 }
@@ -1965,16 +2091,11 @@ sf_soft_uninstall()
 {
 local _pkg
 
-case "`uname -s`" in
-	Linux)
-		for _pkg ; do
-			sf_soft_is_installed "$_pkg" && $sf_yum remove "$_pkg"
-		done
-		;;
-	*)
-		sf_unsupported sf_soft_uninstall
-		;;
-esac
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_uninstall
+
+for _pkg ; do
+	sf_soft_is_installed "$_pkg" && $sf_yum remove "$_pkg"
+done
 
 return 0
 }
@@ -1994,16 +2115,11 @@ sf_soft_remove()
 {
 local _pkg
 
-case "`uname -s`" in
-	Linux)
-		for _pkg ; do
-			sf_soft_is_installed "$_pkg" && $sf_rpm -e --nodeps "$_pkg"
-		done
-		;;
-	*)
-		sf_unsupported sf_soft_remove
-		;;
-esac
+[ -z "$sf_rpm" ] && sf_unsupported sf_soft_remove
+
+for _pkg ; do
+	sf_soft_is_installed "$_pkg" && $sf_rpm -e --nodeps "$_pkg"
+done
 
 return 0
 }
@@ -2021,17 +2137,10 @@ sf_soft_reinstall()
 {
 local _pkg
 
-case "`uname -s`" in
-	Linux)
-		for _pkg ; do
-			sf_soft_removei "$_pkg"
-			sf_soft_install_upgrade "$_pkg"
-		done
-		;;
-	*)
-		sf_unsupported sf_soft_remove
-		;;
-esac
+for _pkg ; do
+	sf_soft_remove "$_pkg"
+	sf_soft_install_upgrade "$_pkg"
+done
 
 return 0
 }
@@ -2046,15 +2155,7 @@ return 0
 
 sf_soft_clean_cache()
 {
-
-case "`uname -s`" in
-	Linux)
-		\rm -rf /var/cache/yum/*
-		;;
-	*)
-		sf_unsupported sf_soft_clean_cache
-		;;
-esac
+[ -d /var/cache/yum ] && \rm -rf /var/cache/yum/*
 }
 
 #=============================================================================
@@ -2070,17 +2171,6 @@ done
 
 #-- Variables
 
-[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
-export sf_tmpfile
-
-[ -z "$sf_yum" ] && sf_yum="yum"
-sf_yum="$sf_yum -y -t -d 1"
-export sf_yum
-
-[ -z "$sf_rpm" ] && sf_rpm="rpm"
-sf_rpm="$sf_rpm --nosignature"
-export sf_rpm
-
 #-- Path
 # Using XPG-compliant commands first is mandatory on Solaris, as the
 # default syntax is not always compatible with Linux ('tail -n +<number>' for
@@ -2091,6 +2181,21 @@ for i in /usr/sbin /bin /usr/bin /etc /usr/ccs/bin /usr/xpg4/bin /usr/xpg6/bin
 	[ -d "$i" ] && PATH="$i:$PATH"
 done
 export PATH
+
+[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
+export sf_tmpfile
+
+if [ -z "$sf_yum" ] ; then
+	sf_yum=`sf_find_executable yum`
+	[ -n "$sf_yum" ] && sf_yum="$sf_yum -y -t -d 1"
+fi
+export sf_yum
+
+if [ -z "$sf_rpm" ] ; then
+	sf_rpm=`sf_find_executable rpm`
+	[ -n "$sf_rpm" ] && sf_rpm="$sf_rpm --nosignature"
+fi
+export sf_rpm
 
 sf_cleanup
 
