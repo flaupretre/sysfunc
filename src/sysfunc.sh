@@ -1640,13 +1640,16 @@ for _svc in $*
 		sf_error "$_svc: No such service"
 		continue
 	fi
-	sf_msg1 "Enabling service $_svc"
 
 	case "`uname -s`" in
 		Linux)
-			if [ -z "$sf_noexec" ] ; then
-				/sbin/chkconfig --add $_svc
-				/sbin/chkconfig $_svc reset
+			chkconfig $_svc
+			if [ $? != 0 ] ; then
+				sf_msg1 "Enabling service $_svc"
+				if [ -z "$sf_noexec" ] ; then
+					/sbin/chkconfig --add $_svc
+					/sbin/chkconfig $_svc reset
+				fi
 			fi
 			;;
 		SunOS)
@@ -1682,25 +1685,33 @@ done
 
 sf_svc_disable()
 {
-local _svc _base _script _state _snum _knum
+local _svc _base _script _state _snum _knum _pattern _f
 
 _base=`sf_svc_base`
 for _svc in $*
 	do
 	if ! sf_svc_is_installed $_svc ; then
-		sf_msg1 "$_svc: Service was already disabled"
+		sf_trace "$_svc: No such service"
 		continue
 	fi
-	sf_msg1 "$_svc: Disabling service"
 
 	case "`uname -s`" in
 		Linux)
-			if [ -z "$sf_noexec" ] ; then
-				/sbin/chkconfig --del $_svc
+			chkconfig $_svc
+			if [ $? = 0 ] ; then
+				sf_msg1 "$_svc: Disabling service"
+				if [ -z "$sf_noexec" ] ; then
+					/sbin/chkconfig --del $_svc
+				fi
 			fi
 			;;
 		SunOS)
-			sf_delete $_base/rc?.d/[KS]??$_svc
+			_pattern="$_base/rc?.d/[KS]??$_svc"
+			_f="`ls -l $_pattern | head -1`"
+			if [ -f "$_f" ] ; then
+				sf_msg1 "$_svc: Disabling service"
+				sf_delete $_pattern
+			fi
 			;;
 		*)
 			sf_unsupported sf_svc_disable
