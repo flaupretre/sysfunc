@@ -79,7 +79,7 @@ for i ; do
 	cd $tdir
 
 	$WGET $i
-	chmod +x *
+	sf_chmod +x *
 	./*
 	status=$?
 
@@ -452,8 +452,8 @@ if [ ! -d "$path" ] ; then
 	if [ -z "$sf_noexec" ] ; then
 		mkdir -p "$path"
 		[ -d "$path" ] || sf_fatal "$path: Cannot create directory"
-		chown $owner $path
-		chmod $mode "$path"
+		sf_chown $owner $path
+		sf_chmod $mode "$path"
 	fi
 fi
 }
@@ -554,7 +554,7 @@ if [ -z "$sf_noexec" ] ; then
 	\rm -rf "$target"
 	sf_create_dir `dirname $target`
 	cp "$source" "$target"
-	chmod $mode "$target"
+	sf_chmod $mode "$target"
 fi
 }
 
@@ -673,7 +673,7 @@ if [ -z "$sf_noexec" ] ; then
 	echo "$comment#sysfunc_end/$fname##-------- Don't remove this line"
 	cat $sf_tmpfile._end
 	) >$target
-	chmod $mode "$target"
+	sf_chmod $mode "$target"
 fi
 }
 
@@ -696,6 +696,54 @@ id="`basename $1`"
 target="$2"
 
 grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
+}
+
+##----------------------------------------------------------------------------
+# Change the owner of a set of files/dirs
+#
+# Args:
+#       $1: owner[:group]
+#       $2+: List of paths
+# Returns: chown status code
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_chown()
+{
+local status owner
+
+status=0
+owner=$1
+shift
+if [ -z "$sf_noexec" ] ; then
+	chown "$owner" $*
+	status=$?
+fi
+return $status
+}
+
+##----------------------------------------------------------------------------
+# Change the mode of a set of files/dirs
+#
+# Args:
+#       $1: mode as accepted by chmod
+#       $2+: List of paths
+# Returns: chmod status code
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+sf_chmod()
+{
+local status mode
+
+status=0
+mode=$1
+shift
+if [ -z "$sf_noexec" ] ; then
+	chmod "$mode" $*
+	status=$?
+fi
+return $status
 }
 
 ##----------------------------------------------------------------------------
@@ -1443,7 +1491,7 @@ esac
 mount $dev $mnt
 [ $? = 0 ] || return 1
 
-chown $owner $mnt
+sf_chown $owner $mnt
 [ $? = 0 ] || return 1
 
 return 0
