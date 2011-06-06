@@ -18,4 +18,7 @@ clean:
 sysfunc.sh: src/sysfunc.sh
 	sed -e 's/%VERSION%/$(VERSION)/' <$< >$@
 
+install: sysfunc.sh
+	[ -f /usr/bin/sysfunc.sh ] || ln -s /opt/sysfunc/sysfunc.sh /usr/bin/sysfunc.sh
+
 #----------------
