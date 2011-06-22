@@ -801,7 +801,7 @@ fi
 sf_comment_out()
 {
 local com
-/
+
 if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
 
 grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
