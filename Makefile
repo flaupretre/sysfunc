@@ -2,7 +2,7 @@
 # WARNING: This definition is redundant with util/config.sh !
 # To be replaced by a clean autoconf-based mechanism.
 
-VERSION = 1.1.9
+VERSION = 1.1.10
 
 #---
 
