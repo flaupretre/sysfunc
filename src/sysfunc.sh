@@ -308,17 +308,23 @@ echo
 ##----------------------------------------------------------------------------
 # Ask a question to the user
 #
-#  Due to compatibility problems, don't use 'no newline' echo options anymore.
-#
 # Args:
-#	$1 : message
+#	$1 : Question
 # Returns: Always 0
-# Displays: message
+# Displays: message to stderr, answer to stdout
 #-----------------------------------------------------------------------------
 
 sf_ask()
 {
-echo "$1 "
+echo "$SHELL" | grep bash >/dev/null
+if [ $? = 0 ] ; then
+	echo -n "$1 " >&2
+else
+	echo "$1 \c" >&2
+fi
+
+read answer
+echo $answer
 }
 
 ##----------------------------------------------------------------------------
@@ -346,9 +352,8 @@ if [ -n "$sf_forceyes" ] ; then
 	return 0
 fi
 
-sf_ask "$1"
+answer=`sf_ask "$1"`
 
-read answer
 echo
 [ "$answer" != o -a "$answer" != O \
 	-a "$answer" != y -a "$answer" != Y \
