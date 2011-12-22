@@ -1702,6 +1702,7 @@ for _svc in $*
 				if [ -z "$sf_noexec" ] ; then
 					/sbin/chkconfig --add $_svc
 					/sbin/chkconfig $_svc reset
+					/sbin/chkconfig $_svc on
 				fi
 			fi
 			;;
