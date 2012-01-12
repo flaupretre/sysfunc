@@ -1566,14 +1566,15 @@ return $rc
 # Args:
 #	$1: Logical volume name
 #	$2: Volume group name
-#	$3: Size in Mbytes
+#	$3: Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all'
+#		takes the whole free size in the VG. 
 # Returns: 0: OK, !=0: Error
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 sf_create_lv()
 {
-local lv vg size
+local lv vg size sz_opt
 
 lv=$1
 vg=$2
@@ -1586,11 +1587,14 @@ fi
 
 sf_lv_exists $vg $lv && return 0
 
+sz_opt="--size $size"
+[ "$size" = all ] && sz_opt="--extents 100%FREE"
+
 sf_msg1 "Creating LV $lv on VG $vg"
 
 case "`uname -s`" in
 	Linux)
-		lvcreate --size ${size}M -n $lv $vg
+		lvcreate $sz_opt -n $lv $vg
 		rc=$?
 		;;
 	*)

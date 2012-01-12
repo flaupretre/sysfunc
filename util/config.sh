@@ -22,7 +22,7 @@ DESCRIPTION="System utility shell functions"
 # WARNING: This definition is redundant with Makefile !
 # To be replaced by a clean autoconf-based mechanism.
 
-VERSION=1.1.11
+VERSION=1.1.12
 
 RELEASE=1
 
