@@ -67,7 +67,7 @@ return 0
 
 sf_exec_url()
 {
-local wd tdir status
+typeset wd tdir status
 
 [ -n "$WGET" ] || WGET=wget
 
@@ -147,7 +147,7 @@ echo $f
 
 sf_fatal()
 {
-local rc
+typeset rc
 
 rc=1
 [ -n "$2" ] && rc=$2
@@ -191,7 +191,7 @@ sf_fatal "$1: Feature not supported in this environment" 2
 
 sf_error()
 {
-local msg
+typeset msg
 
 msg="***ERROR: $1"
 sf_msg "$msg"
@@ -229,7 +229,7 @@ sf_msg " *===* WARNING *===* : $1"
 
 sf_msg()
 {
-local prefix
+typeset prefix
 
 prefix=''
 [ -n "$sf_noexec" ] && prefix='(n)'
@@ -345,7 +345,7 @@ echo $answer
 
 sf_yn_question()
 {
-local answer
+typeset answer
 
 if [ -n "$sf_forceyes" ] ; then
 	# sf_trace "Forcing answer to 'yes'"
@@ -380,7 +380,7 @@ return 0
 
 sf_delete()
 {
-local i
+typeset i
 
 for i
 	do
@@ -403,7 +403,7 @@ done
 
 sf_find_executable()
 {
-local file dirs dir f
+typeset file dirs dir f
 
 file="$1"
 shift
@@ -443,7 +443,7 @@ done
 sf_create_dir()
 {
 
-local path owner mode
+typeset path owner mode
 
 path=$1
 owner=$2
@@ -497,7 +497,7 @@ fi
 
 sf_rename_to_old()
 {
-local dir base of f
+typeset dir base of f
 
 f="$1"
 [ -f "$f" ] || return
@@ -529,7 +529,7 @@ fi
 
 sf_check_copy()
 {
-local mode source target
+typeset mode source target
 
 istmp=''
 source="$1"
@@ -604,7 +604,7 @@ fi
 
 sf_check_block()
 {
-local mode source target flag comment nstart nend fname tmpdir
+typeset mode source target flag comment nstart nend fname tmpdir
 
 source="$1"
 target="$2"
@@ -695,7 +695,7 @@ fi
 
 sf_contains_block()
 {
-local id target
+typeset id target
 
 id="`basename $1`"
 target="$2"
@@ -715,7 +715,7 @@ grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
 
 sf_chown()
 {
-local status owner
+typeset status owner
 
 status=0
 owner=$1
@@ -739,7 +739,7 @@ return $status
 
 sf_chmod()
 {
-local status mode
+typeset status mode
 
 status=0
 mode=$1
@@ -767,7 +767,7 @@ return $status
 
 sf_check_link()
 {
-local link_target
+typeset link_target
 
 \ls -ld "$2" >/dev/null 2>&1
 if [ $? = 0 ] ; then
@@ -805,7 +805,7 @@ fi
 
 sf_comment_out()
 {
-local com
+typeset com
 
 if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
 
@@ -841,7 +841,7 @@ fi
 
 sf_uncomment()
 {
-local com
+typeset com
 
 if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
 
@@ -880,7 +880,7 @@ fi
 
 sf_check_line()
 {
-local file pattern line fline qpattern
+typeset file pattern line fline qpattern
 
 file="$1"
 pattern="$2"
@@ -927,7 +927,7 @@ fi
 
 sf_set_passwd()
 {
-local file user pass qpass
+typeset file user pass qpass
 
 user="$1"
 pass="$2"
@@ -957,7 +957,7 @@ EOF
 
 sf_set_passwd_aix()
 {
-local user pass qpass
+typeset user pass qpass
 
 user="$1"
 pass="$2"
@@ -1022,7 +1022,7 @@ return 0
 sf_delete_group()
 {
 
-local status
+typeset status
 
 case `uname -s` in
 	Linux|SunOS)
@@ -1048,7 +1048,7 @@ return $status
 
 sf_user_exists()
 {
-local status
+typeset status
 
 case `uname -s` in
 	AIX)
@@ -1076,7 +1076,7 @@ return $status
 sf_delete_user()
 {
 
-local status
+typeset status
 
 case `uname -s` in
 	Linux|SunOS)
@@ -1115,7 +1115,7 @@ return $status
 
 sf_create_user()
 {
-local name uid gid gecos home groups locked add_cmd shell passwd_file
+typeset name uid gid gecos home groups locked add_cmd shell passwd_file
 
 sf_user_exists $1 && return
 
@@ -1215,7 +1215,7 @@ return 0
 
 sf_compute_os_id()
 {
-local id os frel rel sub
+typeset id os frel rel sub
 
 #-- Recognizes the current environment
 
@@ -1415,7 +1415,7 @@ echo `expr $sz / 1024`
 
 sf_set_fs_space()
 {
-local fs size newsize rc
+typeset fs size newsize rc
 
 fs=`sf_get_fs_mnt $1`
 size=`sf_get_fs_size $1`
@@ -1459,7 +1459,7 @@ return $rc
 
 sf_create_fs()
 {
-local mnt dev type owner opts
+typeset mnt dev type owner opts
 
 mnt=$1
 dev=$2
@@ -1514,7 +1514,7 @@ return 0
 
 sf_lv_exists()
 {
-local vg lv rc
+typeset vg lv rc
 
 vg=$1
 lv=$2
@@ -1543,7 +1543,7 @@ return $rc
 
 sf_vg_exists()
 {
-local vg rc
+typeset vg rc
 
 vg=$1
 
@@ -1574,7 +1574,7 @@ return $rc
 
 sf_create_lv()
 {
-local lv vg size sz_opt
+typeset lv vg size sz_opt
 
 lv=$1
 vg=$2
@@ -1618,7 +1618,7 @@ return $rc
 
 sf_create_vg()
 {
-local vg pesize device
+typeset vg pesize device
 
 vg=$1
 pesize=$2
@@ -1659,7 +1659,7 @@ return $rc
 
 sf_create_lv_fs()
 {
-local mnt lv vg type size owner
+typeset mnt lv vg type size owner
 
 mnt=$1
 lv=$2
@@ -1688,7 +1688,7 @@ return 0
 
 sf_svc_enable()
 {
-local _svc _base _script _state _snum _knum
+typeset _svc _base _script _state _snum _knum
 
 _base=`sf_svc_base`
 for _svc in $*
@@ -1743,7 +1743,7 @@ done
 
 sf_svc_disable()
 {
-local _svc _base _script _state _snum _knum _pattern _f
+typeset _svc _base _script _state _snum _knum _pattern _f
 
 _base=`sf_svc_base`
 for _svc in $*
@@ -2012,7 +2012,7 @@ esac
 
 sf_soft_exists()
 {
-local soft
+typeset soft
 
 for soft in $*
 	do
@@ -2053,7 +2053,7 @@ fi
 
 sf_soft_is_installed()
 {
-local _pkg
+typeset _pkg
 
 [ -z "$sf_rpm" ] && sf_unsupported sf_soft_is_installed
 
@@ -2114,7 +2114,7 @@ return 0
 
 sf_soft_install_upgrade()
 {
-local _pkg _to_install _to_update
+typeset _pkg _to_install _to_update
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_install_upgrade
 
@@ -2158,7 +2158,7 @@ return 0
 
 sf_soft_uninstall()
 {
-local _pkg
+typeset _pkg
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_uninstall
 
@@ -2182,7 +2182,7 @@ return 0
 
 sf_soft_remove()
 {
-local _pkg
+typeset _pkg
 
 [ -z "$sf_rpm" ] && sf_unsupported sf_soft_remove
 
@@ -2204,7 +2204,7 @@ return 0
 
 sf_soft_reinstall()
 {
-local _pkg
+typeset _pkg
 
 for _pkg ; do
 	sf_soft_remove "$_pkg"
