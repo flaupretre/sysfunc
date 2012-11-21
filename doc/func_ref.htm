@@ -80,11 +80,12 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.3. <a href="#p11.3">sf_soft_is_installed</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.4. <a href="#p11.4">sf_soft_is_upgradeable</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.5. <a href="#p11.5">sf_soft_is_up_to_date</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.6. <a href="#p11.6">sf_soft_install_upgrade</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.7. <a href="#p11.7">sf_soft_uninstall</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.8. <a href="#p11.8">sf_soft_remove</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.9. <a href="#p11.9">sf_soft_reinstall</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.10. <a href="#p11.10">sf_soft_clean_cache</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.6. <a href="#p11.6">sf_soft_install</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.7. <a href="#p11.7">sf_soft_install_upgrade</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.8. <a href="#p11.8">sf_soft_uninstall</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.9. <a href="#p11.9">sf_soft_remove</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.10. <a href="#p11.10">sf_soft_reinstall</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.11. <a href="#p11.11">sf_soft_clean_cache</a></td></tr>
 </table>
 </p><p>&nbsp;</p><hr/>
 <h1>1<a name="p1">&nbsp;</a>- Utility functions</h1>
@@ -191,10 +192,10 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>4.6<a name="p4.6">&nbsp;</a>- sf_ask</h2>
 <p><b>Ask a question to the user</b></p>
-<p>Due to compatibility problems, don't use 'no newline' echo options anymore.</p>
-<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Question</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>message</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>message to stderr, answer to stdout</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>4.7<a name="p4.7">&nbsp;</a>- sf_yn_question</h2>
 <p><b>Asks a 'yes/no' question, gets answer, and return yes/no code</b></p>
@@ -455,7 +456,7 @@
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Logical volume name</td></tr>
 <tr><td width=20 align=center>$2</td><td>Volume group name</td></tr>
-<tr><td width=20 align=center>$3</td><td>Size in Mbytes</td></tr>
+<tr><td width=20 align=center>$3</td><td>Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all' takes the whole free size in the VG.</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
@@ -618,35 +619,42 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every argument software are installed and up to date (for yum)</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.6<a name="p11.6">&nbsp;</a>- sf_soft_install_upgrade</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.6<a name="p11.6">&nbsp;</a>- sf_soft_install</h2>
+<p><b>Install a software if not already present</b></p>
+<p>Install or updates a software depending on its presence on the host If the software is not up to date, no action.</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.7<a name="p11.7">&nbsp;</a>- sf_soft_install_upgrade</h2>
 <p><b>Install or upgrade a software</b></p>
 <p>Install or updates a software depending on its presence on the host If the software is up to date, no action.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.7<a name="p11.7">&nbsp;</a>- sf_soft_uninstall</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.8<a name="p11.8">&nbsp;</a>- sf_soft_uninstall</h2>
 <p><b>Uninstall a software (including dependencies)</b></p>
 <p>Return without error if the software is not installed</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.8<a name="p11.8">&nbsp;</a>- sf_soft_remove</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.9<a name="p11.9">&nbsp;</a>- sf_soft_remove</h2>
 <p><b>Uninstall a software (ignoring spendencies)</b></p>
 <p>Return without error if the software is not installed</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.9<a name="p11.9">&nbsp;</a>- sf_soft_reinstall</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.10<a name="p11.10">&nbsp;</a>- sf_soft_reinstall</h2>
 <p><b>Reinstall a software, even at same version</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.10<a name="p11.10">&nbsp;</a>- sf_soft_clean_cache</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.11<a name="p11.11">&nbsp;</a>- sf_soft_clean_cache</h2>
 <p><b>Clean the software installation cache</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>

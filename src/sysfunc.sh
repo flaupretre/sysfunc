@@ -2101,6 +2101,41 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
+# Install a software if not already present
+#
+# Install or updates a software depending on its presence on the host
+# If the software is not up to date, no action.
+#
+# Args:
+#	$*: software name(s)
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+sf_soft_install()
+{
+typeset _pkg _to_install
+
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_install
+
+_to_install=''
+
+for _pkg
+	do
+	if ! sf_soft_is_installed "$_pkg" ; then
+		_to_install="$_to_install $_pkg"
+	fi
+done
+
+if [ -n "$_to_install" ] ; then
+	sf_msg "Installing $_to_install ..."
+	$sf_yum install $_to_install
+fi
+
+return 0
+}
+
+##----------------------------------------------------------------------------
 # Install or upgrade a software
 #
 # Install or updates a software depending on its presence on the host
