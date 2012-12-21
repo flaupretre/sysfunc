@@ -1642,6 +1642,26 @@ return $rc
 }
 
 ##----------------------------------------------------------------------------
+# Returns default FS type for current environment
+#
+# Args: None
+# Returns: Always 0
+# Displays: Type
+#-----------------------------------------------------------------------------
+
+sf_fs_default_type()
+{
+typeset type
+
+case `uname -s` in
+	Linux) type=ext3;;
+	*) sf_unsupported "sf_fs_default_type";;
+esac
+
+echo $type
+}
+
+##----------------------------------------------------------------------------
 # Create a logical volume and a filesystem on it
 #
 # Combines sf_create_lv and sf_create_fs

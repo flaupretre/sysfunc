@@ -57,7 +57,8 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.7. <a href="#p8.7">sf_vg_exists</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.8. <a href="#p8.8">sf_create_lv</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.9. <a href="#p8.9">sf_create_vg</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.10. <a href="#p8.10">sf_create_lv_fs</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.10. <a href="#p8.10">sf_fs_default_type</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.11. <a href="#p8.11">sf_create_lv_fs</a></td></tr>
 <tr><td width=100% align=left>9. <a href="#p9"><b>Service management</b></a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.1. <a href="#p9.1">sf_svc_enable</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.2. <a href="#p9.2">sf_svc_disable</a></td></tr>
@@ -469,7 +470,13 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>8.10<a name="p8.10">&nbsp;</a>- sf_create_lv_fs</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.10<a name="p8.10">&nbsp;</a>- sf_fs_default_type</h2>
+<p><b>Returns default FS type for current environment</b></p>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Type</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.11<a name="p8.11">&nbsp;</a>- sf_create_lv_fs</h2>
 <p><b>Create a logical volume and a filesystem on it</b></p>
 <p>Combines sf_create_lv and sf_create_fs</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Mount point (directory)</td></tr>
