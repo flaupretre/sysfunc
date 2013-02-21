@@ -15,40 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
-#
-#	Build packages (rpm and tgz)
-#
+
+[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.conf$$.tmp
+export sf_tmpfile
+
+[ -z "$sf_db_path" ] && sf_db_path=/etc/sysfunc.db
+export sf_db_path
+
 #=============================================================================
-
-. pkg_func.sh
-
-tdir=/opt/$PRODUCT
-link_source1=/usr/bin/$PRODUCT.sh
-link_source2=/usr/bin/$PRODUCT
-link_target=$tdir/$PRODUCT.sh
-doc_dir=/usr/share/doc/$PRODUCT
-
-files="$tdir $link_source1 $link_source2 $doc_dir"
-
-export tdir link_source1 link_source2 link_target doc_dir files
-
-#-- Specific - Copy source files
-
-cd $sdir
-
-clean_dir $tdir
-
-cp *.sh $tdir
-chmod 555 $tdir/*.sh
-
-clean_dir $doc_dir
-cp -rp COPYING doc/* $doc_dir
-
-mk_link $link_target $link_source1	#-- Create symbolic link
-mk_link $link_target $link_source2	#-- Create symbolic link
-
-#--
-
-build_packages
-
-cleanup
