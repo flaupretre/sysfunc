@@ -1,104 +1,162 @@
 
-<table cellpadding=2 cellspacing=0 border=0><tr><td width=100% align=left>1. <a href="#p1"><b>File/dir management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.1. <a href="#p1.1">sf_delete</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.2. <a href="#p1.2">sf_find_executable</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.3. <a href="#p1.3">sf_create_dir</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.4. <a href="#p1.4">sf_save</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.5. <a href="#p1.5">sf_rename_to_old</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.6. <a href="#p1.6">sf_check_copy</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.7. <a href="#p1.7">sf_check_block</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.8. <a href="#p1.8">sf_contains_block</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.9. <a href="#p1.9">sf_chown</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.10. <a href="#p1.10">sf_chmod</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.11. <a href="#p1.11">sf_check_link</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.12. <a href="#p1.12">sf_comment_out</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.13. <a href="#p1.13">sf_uncomment</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.14. <a href="#p1.14">sf_check_line</a></td></tr>
-<tr><td width=100% align=left>2. <a href="#p2"><b>Filesystem/Volume management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.1. <a href="#p2.1">sf_has_dedicated_fs</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.2. <a href="#p2.2">sf_get_fs_mnt</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.3. <a href="#p2.3">sf_get_fs_size</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.4. <a href="#p2.4">sf_set_fs_space</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.5. <a href="#p2.5">sf_create_fs</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.6. <a href="#p2.6">sf_lv_exists</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.7. <a href="#p2.7">sf_vg_exists</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.8. <a href="#p2.8">sf_create_lv</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.9. <a href="#p2.9">sf_create_vg</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.10. <a href="#p2.10">sf_fs_default_type</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.11. <a href="#p2.11">sf_create_lv_fs</a></td></tr>
-<tr><td width=100% align=left>3. <a href="#p3"><b>Utility functions</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.1. <a href="#p3.1">sf_loaded</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.2. <a href="#p3.2">sf_version</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.3. <a href="#p3.3">sf_exec_url</a></td></tr>
-<tr><td width=100% align=left>4. <a href="#p4"><b>Temporary file management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 4.1. <a href="#p4.1">sf_cleanup</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 4.2. <a href="#p4.2">sf_get_tmp</a></td></tr>
-<tr><td width=100% align=left>5. <a href="#p5"><b>Error handling</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.1. <a href="#p5.1">sf_fatal</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.2. <a href="#p5.2">sf_unsupported</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.3. <a href="#p5.3">sf_error</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.4. <a href="#p5.4">sf_warning</a></td></tr>
-<tr><td width=100% align=left>6. <a href="#p6"><b>User interaction</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.1. <a href="#p6.1">sf_msg</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.2. <a href="#p6.2">sf_trace</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.3. <a href="#p6.3">sf_msg1</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.4. <a href="#p6.4">sf_msg_section</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.5. <a href="#p6.5">sf_banner</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.6. <a href="#p6.6">sf_ask</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.7. <a href="#p6.7">sf_yn_question</a></td></tr>
-<tr><td width=100% align=left>7. <a href="#p7"><b>Network</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.1. <a href="#p7.1">sf_domain_part</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.2. <a href="#p7.2">sf_host_part</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.3. <a href="#p7.3">sf_dns_addr_to_name</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.4. <a href="#p7.4">sf_dns_name_to_addr</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.5. <a href="#p7.5">sf_primary_ip_address</a></td></tr>
-<tr><td width=100% align=left>8. <a href="#p8"><b>OS management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.1. <a href="#p8.1">sf_compute_os_id</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.2. <a href="#p8.2">sf_reboot</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.3. <a href="#p8.3">sf_shutdown</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.4. <a href="#p8.4">sf_poweroff</a></td></tr>
-<tr><td width=100% align=left>9. <a href="#p9"><b>Software management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.1. <a href="#p9.1">sf_soft_exists</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.2. <a href="#p9.2">sf_soft_list</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.3. <a href="#p9.3">sf_soft_is_installed</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.4. <a href="#p9.4">sf_soft_is_upgradeable</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.5. <a href="#p9.5">sf_soft_is_up_to_date</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.6. <a href="#p9.6">sf_soft_install</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.7. <a href="#p9.7">sf_soft_install_upgrade</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.8. <a href="#p9.8">sf_soft_uninstall</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.9. <a href="#p9.9">sf_soft_remove</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.10. <a href="#p9.10">sf_soft_reinstall</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.11. <a href="#p9.11">sf_soft_clean_cache</a></td></tr>
-<tr><td width=100% align=left>10. <a href="#p10"><b>Service management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.1. <a href="#p10.1">sf_svc_enable</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.2. <a href="#p10.2">sf_svc_disable</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.3. <a href="#p10.3">sf_svc_install</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.4. <a href="#p10.4">sf_svc_uninstall</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.5. <a href="#p10.5">sf_svc_is_installed</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.6. <a href="#p10.6">sf_svc_start</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.7. <a href="#p10.7">sf_svc_stop</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.8. <a href="#p10.8">sf_svc_base</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.9. <a href="#p10.9">sf_svc_script</a></td></tr>
-<tr><td width=100% align=left>11. <a href="#p11"><b>User/group management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.1. <a href="#p11.1">sf_set_passwd</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.2. <a href="#p11.2">sf_set_passwd_aix</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.3. <a href="#p11.3">sf_create_group</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.4. <a href="#p11.4">sf_delete_group</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.5. <a href="#p11.5">sf_user_exists</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.6. <a href="#p11.6">sf_delete_user</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.7. <a href="#p11.7">sf_create_user</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.8. <a href="#p11.8">sf_help</a></td></tr>
+<table cellpadding=2 cellspacing=0 border=0><tr><td width=100% align=left>1. <a href="#p1"><b>System database</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.1. <a href="#p1.1">sf_db_clear</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.2. <a href="#p1.2">sf_db_unset</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.3. <a href="#p1.3">sf_db_set</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.4. <a href="#p1.4">sf_db_isset</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.5. <a href="#p1.5">sf_db_get</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.6. <a href="#p1.6">sf_db_dump</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.7. <a href="#p1.7">sf_db_expand</a></td></tr>
+<tr><td width=100% align=left>2. <a href="#p2"><b>File/dir management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.1. <a href="#p2.1">sf_delete</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.2. <a href="#p2.2">sf_find_executable</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.3. <a href="#p2.3">sf_create_dir</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.4. <a href="#p2.4">sf_save</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.5. <a href="#p2.5">sf_rename_to_old</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.6. <a href="#p2.6">sf_check_copy</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.7. <a href="#p2.7">sf_check_block</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.8. <a href="#p2.8">sf_contains_block</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.9. <a href="#p2.9">sf_chown</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.10. <a href="#p2.10">sf_chmod</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.11. <a href="#p2.11">sf_check_link</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.12. <a href="#p2.12">sf_comment_out</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.13. <a href="#p2.13">sf_uncomment</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.14. <a href="#p2.14">sf_check_line</a></td></tr>
+<tr><td width=100% align=left>3. <a href="#p3"><b>Filesystem/Volume management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.1. <a href="#p3.1">sf_has_dedicated_fs</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.2. <a href="#p3.2">sf_get_fs_mnt</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.3. <a href="#p3.3">sf_get_fs_size</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.4. <a href="#p3.4">sf_set_fs_space</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.5. <a href="#p3.5">sf_create_fs</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.6. <a href="#p3.6">sf_lv_exists</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.7. <a href="#p3.7">sf_vg_exists</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.8. <a href="#p3.8">sf_create_lv</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.9. <a href="#p3.9">sf_create_vg</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.10. <a href="#p3.10">sf_fs_default_type</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 3.11. <a href="#p3.11">sf_create_lv_fs</a></td></tr>
+<tr><td width=100% align=left>4. <a href="#p4"><b>Utility functions</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 4.1. <a href="#p4.1">sf_loaded</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 4.2. <a href="#p4.2">sf_version</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 4.3. <a href="#p4.3">sf_exec_url</a></td></tr>
+<tr><td width=100% align=left>5. <a href="#p5"><b>Temporary file management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.1. <a href="#p5.1">sf_cleanup</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 5.2. <a href="#p5.2">sf_get_tmp</a></td></tr>
+<tr><td width=100% align=left>6. <a href="#p6"><b>Error handling</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.1. <a href="#p6.1">sf_fatal</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.2. <a href="#p6.2">sf_unsupported</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.3. <a href="#p6.3">sf_error</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.4. <a href="#p6.4">sf_warning</a></td></tr>
+<tr><td width=100% align=left>7. <a href="#p7"><b>User interaction</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.1. <a href="#p7.1">sf_msg</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.2. <a href="#p7.2">sf_trace</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.3. <a href="#p7.3">sf_msg1</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.4. <a href="#p7.4">sf_msg_section</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.5. <a href="#p7.5">sf_banner</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.6. <a href="#p7.6">sf_ask</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.7. <a href="#p7.7">sf_yn_question</a></td></tr>
+<tr><td width=100% align=left>8. <a href="#p8"><b>Network</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.1. <a href="#p8.1">sf_domain_part</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.2. <a href="#p8.2">sf_host_part</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.3. <a href="#p8.3">sf_dns_addr_to_name</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.4. <a href="#p8.4">sf_dns_name_to_addr</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 8.5. <a href="#p8.5">sf_primary_ip_address</a></td></tr>
+<tr><td width=100% align=left>9. <a href="#p9"><b>OS management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.1. <a href="#p9.1">sf_compute_os_id</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.2. <a href="#p9.2">sf_reboot</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.3. <a href="#p9.3">sf_shutdown</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 9.4. <a href="#p9.4">sf_poweroff</a></td></tr>
+<tr><td width=100% align=left>10. <a href="#p10"><b>Software management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.1. <a href="#p10.1">sf_soft_exists</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.2. <a href="#p10.2">sf_soft_list</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.3. <a href="#p10.3">sf_soft_is_installed</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.4. <a href="#p10.4">sf_soft_is_upgradeable</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.5. <a href="#p10.5">sf_soft_is_up_to_date</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.6. <a href="#p10.6">sf_soft_install</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.7. <a href="#p10.7">sf_soft_install_upgrade</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.8. <a href="#p10.8">sf_soft_uninstall</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.9. <a href="#p10.9">sf_soft_remove</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.10. <a href="#p10.10">sf_soft_reinstall</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 10.11. <a href="#p10.11">sf_soft_clean_cache</a></td></tr>
+<tr><td width=100% align=left>11. <a href="#p11"><b>Service management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.1. <a href="#p11.1">sf_svc_enable</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.2. <a href="#p11.2">sf_svc_disable</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.3. <a href="#p11.3">sf_svc_install</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.4. <a href="#p11.4">sf_svc_uninstall</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.5. <a href="#p11.5">sf_svc_is_installed</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.6. <a href="#p11.6">sf_svc_start</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.7. <a href="#p11.7">sf_svc_stop</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.8. <a href="#p11.8">sf_svc_base</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.9. <a href="#p11.9">sf_svc_script</a></td></tr>
+<tr><td width=100% align=left>12. <a href="#p12"><b>User/group management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.1. <a href="#p12.1">sf_set_passwd</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.2. <a href="#p12.2">sf_set_passwd_aix</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.3. <a href="#p12.3">sf_create_group</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.4. <a href="#p12.4">sf_delete_group</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.5. <a href="#p12.5">sf_user_exists</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.6. <a href="#p12.6">sf_delete_user</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.7. <a href="#p12.7">sf_create_user</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.8. <a href="#p12.8">sf_help</a></td></tr>
 </table>
 </p><p>&nbsp;</p><hr/>
-<h1>1<a name="p1">&nbsp;</a>- File/dir management</h1>
-<h2>1.1<a name="p1.1">&nbsp;</a>- sf_delete</h2>
+<h1>1<a name="p1">&nbsp;</a>- System database</h1>
+<h2>1.1<a name="p1.1">&nbsp;</a>- sf_db_clear</h2>
+<p><b>Clear the whole database</b></p>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.2<a name="p1.2">&nbsp;</a>- sf_db_unset</h2>
+<p><b>Unset a variable</b></p>
+<p>No error if variable was not present in DB</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Variable name</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.3<a name="p1.3">&nbsp;</a>- sf_db_set</h2>
+<p><b>Set a variable</b></p>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Variable name</td></tr>
+<tr><td width=20 align=center>$2+</td><td>Value</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td></td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.4<a name="p1.4">&nbsp;</a>- sf_db_isset</h2>
+<p><b>Check if a variable is set</b></p>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Variable name</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if variable is set, &lt;&gt; 0 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.5<a name="p1.5">&nbsp;</a>- sf_db_get</h2>
+<p><b>Get a variable value</b></p>
+<p>If variable is not set, return an empty string (no error)</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Variable name</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Value or empty string if var not set</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.6<a name="p1.6">&nbsp;</a>- sf_db_dump</h2>
+<p><b>Dump the database</b></p>
+<p>Output format (each line) : &lt;name&gt;&lt;space&gt;&lt;value&gt;&lt;EOL&gt;</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.7<a name="p1.7">&nbsp;</a>- sf_db_expand</h2>
+<p><b></b></p>
+<p></p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td></td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td></td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table>
+<h1>2<a name="p2">&nbsp;</a>- File/dir management</h1>
+<h2>2.1<a name="p2.1">&nbsp;</a>- sf_delete</h2>
 <p><b>Recursively deletes a file or a directory</b></p>
 <p>Returns without error if arg is a non-existent path</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path to delete</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.2<a name="p1.2">&nbsp;</a>- sf_find_executable</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.2<a name="p2.2">&nbsp;</a>- sf_find_executable</h2>
 <p><b>Find an executable file</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Executable name</td></tr>
@@ -106,7 +164,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Absolute path if found, nothing if not found</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.3<a name="p1.3">&nbsp;</a>- sf_create_dir</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.3<a name="p2.3">&nbsp;</a>- sf_create_dir</h2>
 <p><b>Creates a directory</b></p>
 <p>If the given path argument corresponds to an already existing file (any type except directory or symbolic link to a directory), the program aborts with a fatal error. If you want to aAlways 0 this (if you want to create the directory, even if somathing else is already existing in this path), call sf_delete first. If the path given as arg contains a symbolic link pointing to an existing directory, it is left as-is.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path</td></tr>
@@ -115,21 +173,21 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.4<a name="p1.4">&nbsp;</a>- sf_save</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.4<a name="p2.4">&nbsp;</a>- sf_save</h2>
 <p><b>Saves a file</b></p>
 <p>No action if the 'sf_nosave' environment variable is set to a non-empty string. If the input arg is the path of an existing regular file, the file is copied to '$path.orig' TODO: improve save features (multiple numbered saved versions,...)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.5<a name="p1.5">&nbsp;</a>- sf_rename_to_old</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.5<a name="p2.5">&nbsp;</a>- sf_rename_to_old</h2>
 <p><b>Renames a file to '&lt;dir&gt;/old.&lt;filename&gt;</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.6<a name="p1.6">&nbsp;</a>- sf_check_copy</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.6<a name="p2.6">&nbsp;</a>- sf_check_copy</h2>
 <p><b>Copy a file or the content of function's standard input to a target file</b></p>
 <p>The copy takes place only if the source and target files are different. If the target file is already existing, it is saved before being overwritten. If the target path directory does not exist, it is created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Source path. Special value: '-' means that data to copy is read from stdin, allowing to produce dynamic content without a temp file.</td></tr>
@@ -138,7 +196,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.7<a name="p1.7">&nbsp;</a>- sf_check_block</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.7<a name="p2.7">&nbsp;</a>- sf_check_block</h2>
 <p><b>Replaces or prepends/appends a data block in a file</b></p>
 <p>The block is composed of entire lines and is surrounded by special comment lines when inserted in the target file. These comment lines identify the data block and allow the function to be called several times on the same target file with different data blocks. The block identifier is the base name of the source path.</p><p>If the given block is not present in the target file, it is appended or prepended, depending on the flag argument. If the block is already present in the file (was inserted by a previous run of this function), its content is compared with the new data, and replaced if different. In this case, it is replaced at the exact place where the previous block lied.</p><p>If the target file exists, it is saved before being overwritten.</p><p>If the target path directory does not exist, it is created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>If this arg starts with the '-' char, the data is to be read from stdin and the string after the '-' is the block identifier.</p><p>If it does not start with '-', it is the path to the source file (containing the data to insert).</td></tr>
@@ -149,7 +207,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.8<a name="p1.8">&nbsp;</a>- sf_contains_block</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.8<a name="p2.8">&nbsp;</a>- sf_contains_block</h2>
 <p><b>Checks if a file contains a block inserted by sf_check_block</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>The block identifier or source path</td></tr>
@@ -157,7 +215,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if the block is in the file, !=0 if not.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.9<a name="p1.9">&nbsp;</a>- sf_chown</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.9<a name="p2.9">&nbsp;</a>- sf_chown</h2>
 <p><b>Change the owner of a set of files/dirs</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>owner[:group]</td></tr>
@@ -165,7 +223,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>chown status code</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.10<a name="p1.10">&nbsp;</a>- sf_chmod</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.10<a name="p2.10">&nbsp;</a>- sf_chmod</h2>
 <p><b>Change the mode of a set of files/dirs</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>mode as accepted by chmod</td></tr>
@@ -173,7 +231,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>chmod status code</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.11<a name="p1.11">&nbsp;</a>- sf_check_link</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.11<a name="p2.11">&nbsp;</a>- sf_check_link</h2>
 <p><b>Creates or modifies a symbolic link</b></p>
 <p>The target is saved before being modified. Note: Don't use 'test -h' (not portable) If the target path directory does not exist, it is created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Link target</td></tr>
@@ -181,19 +239,19 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.12<a name="p1.12">&nbsp;</a>- sf_comment_out</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.12<a name="p2.12">&nbsp;</a>- sf_comment_out</h2>
 <p><b>Comment one line in a file</b></p>
 <p>The first line containing the (grep) pattern given in argument will be commented out by prefixing it with the comment character. If the pattern is not contained in the file, the file is left unchanged.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.13<a name="p1.13">&nbsp;</a>- sf_uncomment</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.13<a name="p2.13">&nbsp;</a>- sf_uncomment</h2>
 <p><b>Uncomment one line in a file</b></p>
 <p>The first commented line containing the (grep) pattern given in argument will be uncommented by removing the comment character. If the pattern is not contained in the file, the file is left unchanged.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.14<a name="p1.14">&nbsp;</a>- sf_check_line</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>2.14<a name="p2.14">&nbsp;</a>- sf_check_line</h2>
 <p><b>Checks if a given line is contained in a file</b></p>
 <p>Takes a pattern and a string as arguments. The first line matching the pattern is compared with the string. If they are different, the string argument replaces the line in the file. If they are the same, the file is left unchanged. If the pattern is not found, the string arg is appended to the file. If the file does not exist, it is created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>File path</td></tr>
@@ -203,29 +261,29 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>2<a name="p2">&nbsp;</a>- Filesystem/Volume management</h1>
-<h2>2.1<a name="p2.1">&nbsp;</a>- sf_has_dedicated_fs</h2>
+<h1>3<a name="p3">&nbsp;</a>- Filesystem/Volume management</h1>
+<h2>3.1<a name="p3.1">&nbsp;</a>- sf_has_dedicated_fs</h2>
 <p><b>Checks if a directory is a file system mount point</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Directory to check</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if true, !=0 if false</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.2<a name="p2.2">&nbsp;</a>- sf_get_fs_mnt</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.2<a name="p3.2">&nbsp;</a>- sf_get_fs_mnt</h2>
 <p><b>Gets the mount point of the filesystem containing a given path</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path (must correspond to an existing element)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>The mount directory of the filesystem containing the element</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.3<a name="p2.3">&nbsp;</a>- sf_get_fs_size</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.3<a name="p3.3">&nbsp;</a>- sf_get_fs_size</h2>
 <p><b>Get the size of the filesystem containing a given path</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path (must correspond to an existing element)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>FS size in Mbytes</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.4<a name="p2.4">&nbsp;</a>- sf_set_fs_space</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.4<a name="p3.4">&nbsp;</a>- sf_set_fs_space</h2>
 <p><b>Extend a file system to a given size</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>A path contained in the file system to extend</td></tr>
@@ -233,7 +291,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.5<a name="p2.5">&nbsp;</a>- sf_create_fs</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.5<a name="p3.5">&nbsp;</a>- sf_create_fs</h2>
 <p><b>Create a file system, mount it, and set system configuration to mount it</b></p>
 <p>at system start Refuses existing directory as mount point (security)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Mount point</td></tr>
@@ -243,7 +301,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if no error, 1 on error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.6<a name="p2.6">&nbsp;</a>- sf_lv_exists</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.6<a name="p3.6">&nbsp;</a>- sf_lv_exists</h2>
 <p><b>Checks if a given logical volume exists</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
@@ -251,14 +309,14 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.7<a name="p2.7">&nbsp;</a>- sf_vg_exists</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.7<a name="p3.7">&nbsp;</a>- sf_vg_exists</h2>
 <p><b>Checks if a given volume group exists</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.8<a name="p2.8">&nbsp;</a>- sf_create_lv</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.8<a name="p3.8">&nbsp;</a>- sf_create_lv</h2>
 <p><b>Create a logical volume</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Logical volume name</td></tr>
@@ -267,7 +325,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.9<a name="p2.9">&nbsp;</a>- sf_create_vg</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.9<a name="p3.9">&nbsp;</a>- sf_create_vg</h2>
 <p><b>Create a volume group</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>volume group name</td></tr>
@@ -276,13 +334,13 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.10<a name="p2.10">&nbsp;</a>- sf_fs_default_type</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.10<a name="p3.10">&nbsp;</a>- sf_fs_default_type</h2>
 <p><b>Returns default FS type for current environment</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Type</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>2.11<a name="p2.11">&nbsp;</a>- sf_create_lv_fs</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>3.11<a name="p3.11">&nbsp;</a>- sf_create_lv_fs</h2>
 <p><b>Create a logical volume and a filesystem on it</b></p>
 <p>Combines sf_create_lv and sf_create_fs</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Mount point (directory)</td></tr>
@@ -295,20 +353,20 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>3<a name="p3">&nbsp;</a>- Utility functions</h1>
-<h2>3.1<a name="p3.1">&nbsp;</a>- sf_loaded</h2>
+<h1>4<a name="p4">&nbsp;</a>- Utility functions</h1>
+<h2>4.1<a name="p4.1">&nbsp;</a>- sf_loaded</h2>
 <p><b>Checks if the library is already loaded</b></p>
 <p>Of course, if it can run, the library is loaded. So, it always returns 0.</p><p>Allows to support the 'official' way to load sysfunc : sf_loaded 2&gt;/dev/null || . sysfunc.sh</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>3.2<a name="p3.2">&nbsp;</a>- sf_version</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>4.2<a name="p4.2">&nbsp;</a>- sf_version</h2>
 <p><b>Displays library version</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Library version (string)</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>3.3<a name="p3.3">&nbsp;</a>- sf_exec_url</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>4.3<a name="p4.3">&nbsp;</a>- sf_exec_url</h2>
 <p><b>Retrieves executable data through an URL and executes it.</b></p>
 <p>Supports any URL accepted by wget.</p><p>By default, the 'wget' command is used. If the $WGET environment variable is set, it is used instead (use, for instance, to specify a proxy or an alternate configuration file).</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Url</td></tr>
@@ -316,22 +374,22 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>data displayed by the executed program</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>4<a name="p4">&nbsp;</a>- Temporary file management</h1>
-<h2>4.1<a name="p4.1">&nbsp;</a>- sf_cleanup</h2>
+<h1>5<a name="p5">&nbsp;</a>- Temporary file management</h1>
+<h2>5.1<a name="p5.1">&nbsp;</a>- sf_cleanup</h2>
 <p><b>Deletes all temporary files</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>4.2<a name="p4.2">&nbsp;</a>- sf_get_tmp</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>5.2<a name="p5.2">&nbsp;</a>- sf_get_tmp</h2>
 <p><b>Returns an unused temporary path</b></p>
 <p>The returned path can then be used to create a directory or a file.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>An unused temporary path</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>5<a name="p5">&nbsp;</a>- Error handling</h1>
-<h2>5.1<a name="p5.1">&nbsp;</a>- sf_fatal</h2>
+<h1>6<a name="p6">&nbsp;</a>- Error handling</h1>
+<h2>6.1<a name="p6.1">&nbsp;</a>- sf_fatal</h2>
 <p><b>Displays an error message and aborts execution</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
@@ -339,21 +397,21 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Does not return. Exits with the provided exit code if arg 2 set, with 1 if not.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error and abort messages</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>5.2<a name="p5.2">&nbsp;</a>- sf_unsupported</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.2<a name="p6.2">&nbsp;</a>- sf_unsupported</h2>
 <p><b>Fatal error on unsupported feature</b></p>
 <p>Call this function when a feature is not available on the current operating system (yet ?)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>feature name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Does not return. Exits with code 2.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error and abort messages</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>5.3<a name="p5.3">&nbsp;</a>- sf_error</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.3<a name="p6.3">&nbsp;</a>- sf_error</h2>
 <p><b>Displays an error message</b></p>
 <p>If the ERRLOG environment variable is set, it is supposed to contain a path. The error message will be appnded to the file at this path. If the file does not exist, it will be created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>5.4<a name="p5.4">&nbsp;</a>- sf_warning</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.4<a name="p6.4">&nbsp;</a>- sf_warning</h2>
 <p><b>Displays a warning message</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
@@ -361,50 +419,50 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Warning message</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>6<a name="p6">&nbsp;</a>- User interaction</h1>
-<h2>6.1<a name="p6.1">&nbsp;</a>- sf_msg</h2>
+<h1>7<a name="p7">&nbsp;</a>- User interaction</h1>
+<h2>7.1<a name="p7.1">&nbsp;</a>- sf_msg</h2>
 <p><b>Displays a message (string)</b></p>
 <p>If the $sf_noexec environment variable is set, prefix the message with '(n)'</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.2<a name="p6.2">&nbsp;</a>- sf_trace</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.2<a name="p7.2">&nbsp;</a>- sf_trace</h2>
 <p><b>Display trace message</b></p>
 <p>If the $sf_verbose environment variable is set, displays the message. If not, does not display anything.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message if verbose mode is active, nothing if not</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.3<a name="p6.3">&nbsp;</a>- sf_msg1</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.3<a name="p7.3">&nbsp;</a>- sf_msg1</h2>
 <p><b>Displays a message prefixed with spaces</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message prefixed with spaces</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.4<a name="p6.4">&nbsp;</a>- sf_msg_section</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.4<a name="p7.4">&nbsp;</a>- sf_msg_section</h2>
 <p><b>Displays a 'section' message</b></p>
 <p>This is a message prefixed with a linefeed and some hyphens. To be used as paragraph/section title.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.5<a name="p6.5">&nbsp;</a>- sf_banner</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.5<a name="p7.5">&nbsp;</a>- sf_banner</h2>
 <p><b>Displays a 'banner' message</b></p>
 <p>The message is displayed with an horizontal separator line above and below</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.6<a name="p6.6">&nbsp;</a>- sf_ask</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.6<a name="p7.6">&nbsp;</a>- sf_ask</h2>
 <p><b>Ask a question to the user</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Question</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message to stderr, answer to stdout</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.7<a name="p6.7">&nbsp;</a>- sf_yn_question</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>7.7<a name="p7.7">&nbsp;</a>- sf_yn_question</h2>
 <p><b>Asks a 'yes/no' question, gets answer, and return yes/no code</b></p>
 <p>Works at least for questions in english, french, and german : Accepts 'Y', 'O', and 'J' for 'yes' (upper or lowercase), and anything different is considered as 'no'</p><p>If the $sf_forceyes environment variable is set, the user is not asked and the 'yes' code is returned.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Question string</td></tr>
@@ -412,22 +470,22 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Question and typed answer if $sf_forceyes not set, nothing if $sf_forceyes is set.</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>7<a name="p7">&nbsp;</a>- Network</h1>
-<h2>7.1<a name="p7.1">&nbsp;</a>- sf_domain_part</h2>
+<h1>8<a name="p8">&nbsp;</a>- Network</h1>
+<h2>8.1<a name="p8.1">&nbsp;</a>- sf_domain_part</h2>
 <p><b>Suppresses the host name part from a FQDN</b></p>
 <p>Displays the input string without the beginning up to and including the first '.'.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Input FQDN</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>truncated string</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>7.2<a name="p7.2">&nbsp;</a>- sf_host_part</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.2<a name="p8.2">&nbsp;</a>- sf_host_part</h2>
 <p><b>Extracts a hostname from an FQDN</b></p>
 <p>Removes everything from the first dot up to the end of the string</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Input FQDN</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>truncated string</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>7.3<a name="p7.3">&nbsp;</a>- sf_dns_addr_to_name</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.3<a name="p8.3">&nbsp;</a>- sf_dns_addr_to_name</h2>
 <p><b>Resolves an IP address through the DNS</b></p>
 <p>If the address cannot be resolved, displays nothing</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>IP address</td></tr>
@@ -435,7 +493,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Host name as returned by the DNS or nothing if address could not be resolved.</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>7.4<a name="p7.4">&nbsp;</a>- sf_dns_name_to_addr</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.4<a name="p8.4">&nbsp;</a>- sf_dns_name_to_addr</h2>
 <p><b>Resolves a host name through the DNS</b></p>
 <p>If the name cannot be resolved, displays nothing</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Host name to resolve</td></tr>
@@ -443,131 +501,131 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>IP address as returned by the DNS or nothing if name could not be resolved.</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>7.5<a name="p7.5">&nbsp;</a>- sf_primary_ip_address</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>8.5<a name="p8.5">&nbsp;</a>- sf_primary_ip_address</h2>
 <p><b>Get the primary address of the system</b></p>
 <p>This is an arbitrary choice, such as the address assigned to the first network nterface. Feel free to improve !</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>IP address or nothing if no address was found</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>8<a name="p8">&nbsp;</a>- OS management</h1>
-<h2>8.1<a name="p8.1">&nbsp;</a>- sf_compute_os_id</h2>
+<h1>9<a name="p9">&nbsp;</a>- OS management</h1>
+<h2>9.1<a name="p9.1">&nbsp;</a>- sf_compute_os_id</h2>
 <p><b>Computes and displays a string defining the curent system environment</b></p>
 <p>The displayed string is a combination of the OS name, version, system architecture and may also depend on other parameters like, for instance, the RedHat ES/AS branches. It is an equivalent of the 'channel' concept used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use it in every script where I need a single string to identify the system environment the script is currently running on. If the current system is not recognized, the program aborts. By convention, environments recognized by this function must support the rest of the library. Contributors welcome ! Feel free to enhance this function with additional recognized systems, especially with other Linux distros, and send your patches.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>OS ID</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>8.2<a name="p8.2">&nbsp;</a>- sf_reboot</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>9.2<a name="p9.2">&nbsp;</a>- sf_reboot</h2>
 <p><b>Shutdown and restart the host</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>does not return</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>8.3<a name="p8.3">&nbsp;</a>- sf_shutdown</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>9.3<a name="p9.3">&nbsp;</a>- sf_shutdown</h2>
 <p><b>Shutdown and halt the host</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>does not return</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>8.4<a name="p8.4">&nbsp;</a>- sf_poweroff</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>9.4<a name="p9.4">&nbsp;</a>- sf_poweroff</h2>
 <p><b>Shutdown and poweroff the host</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>does not return</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>9<a name="p9">&nbsp;</a>- Software management</h1>
-<h2>9.1<a name="p9.1">&nbsp;</a>- sf_soft_exists</h2>
+<h1>10<a name="p10">&nbsp;</a>- Software management</h1>
+<h2>10.1<a name="p10.1">&nbsp;</a>- sf_soft_exists</h2>
 <p><b>Check if software exist (installed or available for installation)</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every software exists, !=0 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.2<a name="p9.2">&nbsp;</a>- sf_soft_list</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.2<a name="p10.2">&nbsp;</a>- sf_soft_list</h2>
 <p><b>List installed software</b></p>
 <p>Returns a sorted list of installed software Linux output: (name-version-release.arch)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>software list</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.3<a name="p9.3">&nbsp;</a>- sf_soft_is_installed</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.3<a name="p10.3">&nbsp;</a>- sf_soft_is_installed</h2>
 <p><b>Check if software is installed</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every argument software are installed. 1 if at least one of them is not.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.4<a name="p9.4">&nbsp;</a>- sf_soft_is_upgradeable</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.4<a name="p10.4">&nbsp;</a>- sf_soft_is_upgradeable</h2>
 <p><b>Check if a newer version of a software is available</b></p>
 <p>Note : if the software is not installed, it is not considered as updateable Note : yum returns 0 if no software are available for update</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if at least one of the given software(s) can be updated.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.5<a name="p9.5">&nbsp;</a>- sf_soft_is_up_to_date</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.5<a name="p10.5">&nbsp;</a>- sf_soft_is_up_to_date</h2>
 <p><b>Check if the installed version of a software is installed and the latest</b></p>
 <p>version</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every argument software are installed and up to date (for yum)</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.6<a name="p9.6">&nbsp;</a>- sf_soft_install</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.6<a name="p10.6">&nbsp;</a>- sf_soft_install</h2>
 <p><b>Install a software if not already present</b></p>
 <p>Install or updates a software depending on its presence on the host If the software is not up to date, no action.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.7<a name="p9.7">&nbsp;</a>- sf_soft_install_upgrade</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.7<a name="p10.7">&nbsp;</a>- sf_soft_install_upgrade</h2>
 <p><b>Install or upgrade a software</b></p>
 <p>Install or updates a software depending on its presence on the host If the software is up to date, no action.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.8<a name="p9.8">&nbsp;</a>- sf_soft_uninstall</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.8<a name="p10.8">&nbsp;</a>- sf_soft_uninstall</h2>
 <p><b>Uninstall a software (including dependencies)</b></p>
 <p>Return without error if the software is not installed</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.9<a name="p9.9">&nbsp;</a>- sf_soft_remove</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.9<a name="p10.9">&nbsp;</a>- sf_soft_remove</h2>
 <p><b>Uninstall a software (ignoring spendencies)</b></p>
 <p>Return without error if the software is not installed</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.10<a name="p9.10">&nbsp;</a>- sf_soft_reinstall</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.10<a name="p10.10">&nbsp;</a>- sf_soft_reinstall</h2>
 <p><b>Reinstall a software, even at same version</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>9.11<a name="p9.11">&nbsp;</a>- sf_soft_clean_cache</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>10.11<a name="p10.11">&nbsp;</a>- sf_soft_clean_cache</h2>
 <p><b>Clean the software installation cache</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>10<a name="p10">&nbsp;</a>- Service management</h1>
-<h2>10.1<a name="p10.1">&nbsp;</a>- sf_svc_enable</h2>
+<h1>11<a name="p11">&nbsp;</a>- Service management</h1>
+<h2>11.1<a name="p11.1">&nbsp;</a>- sf_svc_enable</h2>
 <p><b>Enable service start/stop at system boot/shutdown</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>Service names</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.2<a name="p10.2">&nbsp;</a>- sf_svc_disable</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.2<a name="p11.2">&nbsp;</a>- sf_svc_disable</h2>
 <p><b>Disable service start/stop at system boot/shutdown</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>Service names</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.3<a name="p10.3">&nbsp;</a>- sf_svc_install</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.3<a name="p11.3">&nbsp;</a>- sf_svc_install</h2>
 <p><b>Install a service script (script to start/stop a service)</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Source script</td></tr>
@@ -575,41 +633,41 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.4<a name="p10.4">&nbsp;</a>- sf_svc_uninstall</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.4<a name="p11.4">&nbsp;</a>- sf_svc_uninstall</h2>
 <p><b>Uninstall a service script (script to start/stop a service)</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.5<a name="p10.5">&nbsp;</a>- sf_svc_is_installed</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.5<a name="p11.5">&nbsp;</a>- sf_svc_is_installed</h2>
 <p><b>Check if a service script is installed</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 is installed, 1 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.6<a name="p10.6">&nbsp;</a>- sf_svc_start</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.6<a name="p11.6">&nbsp;</a>- sf_svc_start</h2>
 <p><b>Start a service</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Return code from script execution</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Output from service script</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.7<a name="p10.7">&nbsp;</a>- sf_svc_stop</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.7<a name="p11.7">&nbsp;</a>- sf_svc_stop</h2>
 <p><b>Stop a service</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Return code from script execution</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Output from service script</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.8<a name="p10.8">&nbsp;</a>- sf_svc_base</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.8<a name="p11.8">&nbsp;</a>- sf_svc_base</h2>
 <p><b>Display the base directory of service scripts</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>String</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>10.9<a name="p10.9">&nbsp;</a>- sf_svc_script</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>11.9<a name="p11.9">&nbsp;</a>- sf_svc_script</h2>
 <p><b>Display the full path of the script corresponding to a given service</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
@@ -617,8 +675,8 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Script path</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>11<a name="p11">&nbsp;</a>- User/group management</h1>
-<h2>11.1<a name="p11.1">&nbsp;</a>- sf_set_passwd</h2>
+<h1>12<a name="p12">&nbsp;</a>- User/group management</h1>
+<h2>12.1<a name="p12.1">&nbsp;</a>- sf_set_passwd</h2>
 <p><b>Change a user's password</b></p>
 <p>Works on HP-UX, Solaris, and Linux. Replaces an encrypted passwd in /etc/passwd or /etc/shadow. TODO: Unify with AIX and autodetect the file to use (passwd/shadow)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
@@ -627,7 +685,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.2<a name="p11.2">&nbsp;</a>- sf_set_passwd_aix</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.2<a name="p12.2">&nbsp;</a>- sf_set_passwd_aix</h2>
 <p><b>Set an AIX password</b></p>
 <p>TODO: Unify with other supported OS</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
@@ -635,40 +693,40 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.3<a name="p11.3">&nbsp;</a>- sf_create_group</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.3<a name="p12.3">&nbsp;</a>- sf_create_group</h2>
 <p><b>Create a user group</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.4<a name="p11.4">&nbsp;</a>- sf_delete_group</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.4<a name="p12.4">&nbsp;</a>- sf_delete_group</h2>
 <p><b>Remove a group</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Group name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Status from system command</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.5<a name="p11.5">&nbsp;</a>- sf_user_exists</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.5<a name="p12.5">&nbsp;</a>- sf_user_exists</h2>
 <p><b>Checks if a given user exists on the system</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name to check</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if user exists; != 0 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.6<a name="p11.6">&nbsp;</a>- sf_delete_user</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.6<a name="p12.6">&nbsp;</a>- sf_delete_user</h2>
 <p><b>Remove a user account</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Status from system command</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.7<a name="p11.7">&nbsp;</a>- sf_create_user</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.7<a name="p12.7">&nbsp;</a>- sf_create_user</h2>
 <p><b>Create a user</b></p>
 <p>To set the login shell, initialize the CREATE_USER_SHELL variable before calling the function. For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>11.8<a name="p11.8">&nbsp;</a>- sf_help</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>12.8<a name="p12.8">&nbsp;</a>- sf_help</h2>
 <p><b>Display help</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>No return</td></tr>
