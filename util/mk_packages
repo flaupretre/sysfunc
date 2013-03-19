@@ -39,7 +39,10 @@ cd $sdir
 clean_dir $tdir
 
 cp *.sh $tdir
-chmod 555 $tdir/*.sh
+mkdir $tdir/util
+cp util/config.sh $tdir/util/config.sh
+chmod 444 $tdir/*.sh $tdir/util/*
+chmod 555 $tdir/$PRODUCT.sh
 
 clean_dir $doc_dir
 cp -rp COPYING doc/* $doc_dir

@@ -44,11 +44,11 @@ return 0
 # Returns: Always 0
 # Displays: Library version (string)
 #-----------------------------------------------------------------------------
-# WARNING: This string must be the same as in util/config.sh !!
 
 sf_version()
 {
-echo "1.1.15"
+. $sf_install_dir/util/config.sh
+echo "$VERSION-$RELEASE"
 return 0
 }
 
