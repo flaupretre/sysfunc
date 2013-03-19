@@ -6,7 +6,8 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.4. <a href="#p1.4">sf_db_isset</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.5. <a href="#p1.5">sf_db_get</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.6. <a href="#p1.6">sf_db_dump</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.7. <a href="#p1.7">sf_db_expand</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.7. <a href="#p1.7">sf_db_import</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 1.8. <a href="#p1.8">sf_db_expand</a></td></tr>
 <tr><td width=100% align=left>2. <a href="#p2"><b>File/dir management</b></a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.1. <a href="#p2.1">sf_delete</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 2.2. <a href="#p2.2">sf_find_executable</a></td></tr>
@@ -87,15 +88,17 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.7. <a href="#p11.7">sf_svc_stop</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.8. <a href="#p11.8">sf_svc_base</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 11.9. <a href="#p11.9">sf_svc_script</a></td></tr>
-<tr><td width=100% align=left>12. <a href="#p12"><b>User/group management</b></a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.1. <a href="#p12.1">sf_set_passwd</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.2. <a href="#p12.2">sf_set_passwd_aix</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.3. <a href="#p12.3">sf_create_group</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.4. <a href="#p12.4">sf_delete_group</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.5. <a href="#p12.5">sf_user_exists</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.6. <a href="#p12.6">sf_delete_user</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.7. <a href="#p12.7">sf_create_user</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.8. <a href="#p12.8">sf_help</a></td></tr>
+<tr><td width=100% align=left>12. <a href="#p12"><b>Time/Data manipulation</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.1. <a href="#p12.1">sf_tm_now</a></td></tr>
+<tr><td width=100% align=left>13. <a href="#p13"><b>User/group management</b></a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.1. <a href="#p13.1">sf_set_passwd</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.2. <a href="#p13.2">sf_set_passwd_aix</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.3. <a href="#p13.3">sf_create_group</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.4. <a href="#p13.4">sf_delete_group</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.5. <a href="#p13.5">sf_user_exists</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.6. <a href="#p13.6">sf_delete_user</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.7. <a href="#p13.7">sf_create_user</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.8. <a href="#p13.8">sf_help</a></td></tr>
 </table>
 </p><p>&nbsp;</p><hr/>
 <h1>1<a name="p1">&nbsp;</a>- System database</h1>
@@ -140,7 +143,13 @@
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>1.7<a name="p1.7">&nbsp;</a>- sf_db_expand</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.7<a name="p1.7">&nbsp;</a>- sf_db_import</h2>
+<p><b>Import variables in dump format (one per line)</b></p>
+<p>Lines are read from stdin</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>1.8<a name="p1.8">&nbsp;</a>- sf_db_expand</h2>
 <p><b></b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td></td></tr>
@@ -675,8 +684,16 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Script path</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>12<a name="p12">&nbsp;</a>- User/group management</h1>
-<h2>12.1<a name="p12.1">&nbsp;</a>- sf_set_passwd</h2>
+<h1>12<a name="p12">&nbsp;</a>- Time/Data manipulation</h1>
+<h2>12.1<a name="p12.1">&nbsp;</a>- sf_tm_now</h2>
+<p><b>Display normalized time string for current time (UTC)</b></p>
+<p>? Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time&gt;)</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Time string</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table>
+<h1>13<a name="p13">&nbsp;</a>- User/group management</h1>
+<h2>13.1<a name="p13.1">&nbsp;</a>- sf_set_passwd</h2>
 <p><b>Change a user's password</b></p>
 <p>Works on HP-UX, Solaris, and Linux. Replaces an encrypted passwd in /etc/passwd or /etc/shadow. TODO: Unify with AIX and autodetect the file to use (passwd/shadow)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
@@ -685,7 +702,7 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.2<a name="p12.2">&nbsp;</a>- sf_set_passwd_aix</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.2<a name="p13.2">&nbsp;</a>- sf_set_passwd_aix</h2>
 <p><b>Set an AIX password</b></p>
 <p>TODO: Unify with other supported OS</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
@@ -693,40 +710,40 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.3<a name="p12.3">&nbsp;</a>- sf_create_group</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.3<a name="p13.3">&nbsp;</a>- sf_create_group</h2>
 <p><b>Create a user group</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.4<a name="p12.4">&nbsp;</a>- sf_delete_group</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.4<a name="p13.4">&nbsp;</a>- sf_delete_group</h2>
 <p><b>Remove a group</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Group name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Status from system command</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.5<a name="p12.5">&nbsp;</a>- sf_user_exists</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.5<a name="p13.5">&nbsp;</a>- sf_user_exists</h2>
 <p><b>Checks if a given user exists on the system</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name to check</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if user exists; != 0 if not</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.6<a name="p12.6">&nbsp;</a>- sf_delete_user</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.6<a name="p13.6">&nbsp;</a>- sf_delete_user</h2>
 <p><b>Remove a user account</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Status from system command</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.7<a name="p12.7">&nbsp;</a>- sf_create_user</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.7<a name="p13.7">&nbsp;</a>- sf_create_user</h2>
 <p><b>Create a user</b></p>
 <p>To set the login shell, initialize the CREATE_USER_SHELL variable before calling the function. For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>12.8<a name="p12.8">&nbsp;</a>- sf_help</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>13.8<a name="p13.8">&nbsp;</a>- sf_help</h2>
 <p><b>Display help</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>No return</td></tr>
