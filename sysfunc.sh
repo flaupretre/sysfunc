@@ -90,11 +90,11 @@ export PATH
 #-- Variables
 
 [ -z "$sf_install_dir" ] && sf_install_dir=/opt/sysfunc
-export sf_install_dir
+[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.sysfunc$$.tmp
+
+export sf_install_dir sf_tmpfile
 
 #-- Load modules
-
-. $sf_install_dir/config.sh
 
 for _m in $sf_install_dir/sf_*.sh
 	do
@@ -129,7 +129,7 @@ if [ $? = 0 ] ; then	# Executed
 	shift
 	type "$_func" >/dev/null 2>&1 || _sf_fatal "$_cmd: Unknown command"
 		
-	"$_func" $*
+	"$_func" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
 	_rc=$?
 	exit $_rc
 fi
