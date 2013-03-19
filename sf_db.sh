@@ -186,6 +186,27 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
+# Import variables in dump format (one per line)
+#
+# Lines are read from stdin
+#
+# Args: None
+# Returns: 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_db_import()
+{
+typeset line
+
+while read line
+	do
+	sf_db_set $line
+done
+return 0
+}
+
+##----------------------------------------------------------------------------
 # 
 #
 # Args:
