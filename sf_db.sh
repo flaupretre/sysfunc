@@ -111,7 +111,7 @@ _sf_db_tmp_replace
 # Args:
 #	$1: Variable name
 #	$2+: Value
-# Returns: 
+# Returns: 0
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
@@ -125,6 +125,20 @@ value="$*"
 
 sf_db_unset "$name"
 echo "$name $value" >>$SF_DB_PATH
+}
+
+##----------------------------------------------------------------------------
+# Set a variable with the "sf_now" timestamp value
+#
+# Args:
+#	$1: Variable name
+# Returns: 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_db_set_timestamp()
+{
+sf_db_set "$1" "`sf_tm_now`"
 }
 
 ##----------------------------------------------------------------------------
