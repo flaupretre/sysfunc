@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Error handling
+# Section: Message/Error handling
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ sf_fatal "$1: Feature not supported in this environment" 2
 ##----------------------------------------------------------------------------
 # Displays an error message
 #
-# If the ERRLOG environment variable is set, it is supposed to contain
+# If the SF_ERRLOG environment variable is set, it is supposed to contain
 # a path. The error message will be appnded to the file at this path. If
 # the file does not exist, it will be created.
 # Args:
@@ -81,7 +81,7 @@ typeset msg
 
 msg="***ERROR: $1"
 sf_msg "$msg"
-[ -n "$ERRLOG" ] && echo "$msg" >>$ERRLOG
+[ -n "$SF_ERRLOG" ] && echo "$msg" >>$SF_ERRLOG
 }
 
 ##----------------------------------------------------------------------------
@@ -125,8 +125,8 @@ echo "$prefix$1"
 ##----------------------------------------------------------------------------
 # Display trace message
 #
-# If the $sf_verbose environment variable is set, displays the message. If not,
-# does not display anything.
+# If the $sf_verbose environment variable is set or $sf_verbose_level >= 1,
+# displays the message.
 #
 # Args:
 #	$1 : message
@@ -136,7 +136,23 @@ echo "$prefix$1"
 
 sf_trace()
 {
-[ -n "$sf_verbose" ] && sf_msg1 ">>> $*"
+[ -n "$sf_verbose" -o "$sf_verbose_level" -ge 1 ] && echo ">>> $*"
+}
+
+##----------------------------------------------------------------------------
+# Display debug message
+#
+# If $sf_verbose_level >= 2, displays the message.
+#
+# Args:
+#	$1 : message
+# Returns: Always 0
+# Displays: message if verbose level set to debug (2) or more
+#-----------------------------------------------------------------------------
+
+sf_debug()
+{
+[ "$sf_verbose_level" -ge 2 ] && echo "D>> $*"
 }
 
 ##----------------------------------------------------------------------------
@@ -250,3 +266,9 @@ return 0
 }
 
 #=============================================================================
+
+# $sf_verbose remains for compatibility. $sf_verbose_level must
+# contain a numeric value.
+
+[ -z "$sf_verbose_level" ] && sf_verbose_level=0
+export sf_verbose_level
