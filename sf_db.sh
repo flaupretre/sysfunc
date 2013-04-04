@@ -48,6 +48,21 @@ _sf_db_exists()
 }
 
 ##----------------------------------------------------------------------------
+# Filter a name, leaving authorized chars only
+#
+# Args:
+#	$1: Variable name
+# Returns: 0
+# Displays: Normalized name
+##----------------------------------------------------------------------------
+
+sf_db_normalize()
+{
+echo "$1" | tr -cd 'a-zA-Z0-9:_./()-'
+echo
+}
+
+##----------------------------------------------------------------------------
 # Build a key (regexp usable in grep) from a variable name
 #
 # Args:
@@ -56,14 +71,9 @@ _sf_db_exists()
 # Displays: Key string
 ##----------------------------------------------------------------------------
 
-_sf_db_key()
+sf_db_key()
 {
-typeset name
-
-name="$1"
-
-key=`echo "$name" | sed -e 's,\.,\.,g'`
-echo "^$key "
+sf_db_normalize "$1" | sed -e 's,\.,\.,g'
 }
 
 ##----------------------------------------------------------------------------
@@ -100,7 +110,7 @@ name="$1"
 
 _sf_db_exists || return 0
 
-key=`_sf_db_key "$name"`
+key=`sf_db_key "$name"`
 grep -v "$key" $SF_DB_PATH >$SF_DB_TMP_PATH
 _sf_db_tmp_replace
 }
@@ -119,7 +129,7 @@ sf_db_set()
 {
 typeset name value
 
-name="$1"
+name=`sf_db_normalize "$1"`
 shift
 value="$*"
 
@@ -152,13 +162,11 @@ sf_db_set "$1" "`sf_tm_now`"
 
 sf_db_isset()
 {
-typeset key name
-
-name="$1"
+typeset key
 
 _sf_db_exists || return 1
 
-key=`_sf_db_key "$name"`
+key=`sf_db_key "$1"`
 grep "$key" $SF_DB_PATH >/dev/null
 }
 
@@ -178,9 +186,11 @@ sf_db_get()
 typeset key name
 
 name="$1"
-key=`_sf_db_key "$name"`
+key=`sf_db_key "$1"`
 
-grep "$key" $SF_DB_PATH 2>/dev/null | sed 's,^[^ ]* ,,'
+# 'head -1' by security (should never be used)
+
+grep "$key" $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
 }
 
 ##----------------------------------------------------------------------------
@@ -190,13 +200,26 @@ grep "$key" $SF_DB_PATH 2>/dev/null | sed 's,^[^ ]* ,,'
 #
 # Args: None
 # Returns: 0
-# Displays: nothing
+# Displays: DB content
 #-----------------------------------------------------------------------------
 
 sf_db_dump()
 {
 _sf_db_exists && sort <$SF_DB_PATH
 return 0
+}
+
+##----------------------------------------------------------------------------
+# List DB keys alphabetically, one per line
+#
+# Args: None
+# Returns: 0
+# Displays: DB keys
+#-----------------------------------------------------------------------------
+
+sf_db_list()
+{
+sf_db_dump | awk '{ print $1 }'
 }
 
 ##----------------------------------------------------------------------------
@@ -221,18 +244,44 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# 
+# Replaces patterns in the form '{{%<variable name>%}}' by their value.
+# Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}).
+# Patterns which do not correspond to an existing variable are replaced by an
+# empty string.
+# Input: stdin, output: stdout.
 #
 # Args:
 #	$1: 
-# Returns: 
-# Displays: nothing
+# Returns: 0
+# Displays: Output
 #-----------------------------------------------------------------------------
 
 sf_db_expand()
 {
-:
-// TODO
+typeset name value esc_val _tmp1 _tmp2
+
+_tmp1=/tmp/.sf_db_expand.tmp1.$$
+_tmp2=/tmp/.sf_db_expand.tmp2.$$
+
+sf_db_dump | while read name value
+	do
+	esc_val=`echo "$value" | sed -e 's!,!\,!g'`
+	echo "s,{{%$name%}},$esc_val,g"
+done >$SF_DB_TMP_PATH
+
+\rm -rf $_tmp1 $_tmp2
+cat >$_tmp1
+
+while true
+	do
+	sed -f $SF_DB_TMP_PATH <$_tmp1 >$_tmp2
+	diff $_tmp1 $_tmp2 >/dev/null && break
+	cp $_tmp2 $_tmp1
+done
+
+sed 's,{{%[^%]*%}},,g' <$_tmp2 # Suppress unresolved patterns
+
+\rm -rf $_tmp1 $_tmp2 $SF_DB_TMP_PATH
 }
 
 #=============================================================================
