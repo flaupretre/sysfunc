@@ -250,7 +250,7 @@ sf_yn_question()
 typeset answer
 
 if [ -n "$sf_forceyes" ] ; then
-	# sf_trace "Forcing answer to 'yes'"
+	sf_debug "Forcing answer to 'yes'"
 	return 0
 fi
 
