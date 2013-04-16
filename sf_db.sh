@@ -120,7 +120,7 @@ _sf_db_tmp_replace
 #
 # Args:
 #	$1: Variable name
-#	$2+: Value
+#	$2: Value
 # Returns: 0
 # Displays: nothing
 #-----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ typeset name value
 
 name=`sf_db_normalize "$1"`
 shift
-value="$*"
+value="$2"
 
 sf_db_unset "$name"
 echo "$name $value" >>$SF_DB_PATH
