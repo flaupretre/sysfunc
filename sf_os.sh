@@ -30,56 +30,139 @@
 # it in every script where I need a single string to identify the system
 # environment the script is currently running on.
 # If the current system is not recognized, the program aborts.
-#By convention, environments recognized by this function must support
+# By convention, environments recognized by this function support
 # the rest of the library.
 #
 # Contributors welcome ! Feel free to enhance this function with additional
-# recognized systems, especially with other Linux distros, and send your
+# recognized systems, especially with other Linux distros, and send me your
 # patches.
 #
 # Args: None
 # Returns: Always 0
-# Displays: OS ID
+# Displays: OS ID string
+#-----------------------------------------------------------------------------
+
+sf_os_id()
+{
+typeset sub version distrib res
+
+#-- Recognizes the current environment
+
+res=''
+version=`sf_os_version`
+distrib=`sf_os_distrib`
+
+res="${distrib}_{version}"
+
+if [ "$distrib" = RHEL ] ; then		# Special case for RHEL
+	[ `uname -i` = x86_64 ] && res="${res}_64"
+	if [ "$version" -lt 5 ] ; then
+		sub=`sed 's/^.* Linux \(.S\).*$/\1/' </etc/redhat-release`
+		res="${res}_$sub"
+	fi
+fi
+
+echo $res
+}
+
+##----------------------------------------------------------------------------
+# Alias of sf_os_id() (obsolete - for compatibility only)
+# Other info: see sf_os_id()
 #-----------------------------------------------------------------------------
 
 sf_compute_os_id()
 {
-typeset id os frel rel sub
+sf_os_id
+}
 
-#-- Recognizes the current environment
+##----------------------------------------------------------------------------
+# Display the current OS distribution
+#
+# Args: None
+# Returns: 0
+# Displays: OS distrib
+#-----------------------------------------------------------------------------
 
-id=''
-case "`uname -s`" in
+sf_os_distrib()
+{
+typeset res
+
+res=''
+case "`sf_os_family`" in
 	HP-UX)
-		id="HPUX_`uname -r | sed 's/^B\.//'`"
-		;;
+		res=HPUX ;;
+	Linux)
+		[ -f /etc/redhat-release ] && res=RHEL ;;
+	SunOS)
+		res=SOLARIS ;;
+	AIX)
+		res=AIX ;;
+esac
 
+[ -z "$res" ] && sf_unsupported sf_os_distrib
+
+echo $res
+}
+
+##----------------------------------------------------------------------------
+# Display the current OS family (Linux, SunOS,...)
+#
+# Args: None
+# Returns: 0
+# Displays: OS distrib
+#-----------------------------------------------------------------------------
+
+
+sf_os_family()
+{
+uname -s
+}
+
+##----------------------------------------------------------------------------
+# Display the current OS version
+#
+# Args: None
+# Returns: 0
+# Displays: OS distrib
+#-----------------------------------------------------------------------------
+
+sf_os_version()
+{
+typeset frel res
+
+res=''
+case "`sf_os_family`" in
+	HP-UX)
+		res="`uname -r | sed 's/^B\.//'`"
+		;;
 	Linux)
 		frel=/etc/redhat-release
-		if [ -f $frel ] ; then
-			rel=`sed 's/^.* release \(.\).*$/\1/' <$frel`
-			id="RHEL_$rel"
-			[ `uname -i` = x86_64 ] && id="${id}_64"
-			if [ "$rel" -lt 5 ] ; then
-				sub=`sed 's/^.* Linux \(.S\).*$/\1/' <$frel`
-				id="${id}_$sub"
-			fi
-		fi
+		[ -f $frel ] && res=`sed 's/^.* release \(.\).*$/\1/' <$frel`
 		;;
-
 	SunOS)
-		rel=`uname -r | sed 's/^5\.//'`
-		id="SOLARIS_$rel"
+		res=`uname -r | sed 's/^5\.//'`
 		;;
-
 	AIX)
-		id="${_os}_`uname -v`.`uname -r`"
+		res="`uname -v`.`uname -r`"
 		;;
 esac
 
-[ -z "$id" ] &&	sf_unsupported sf_compute_os_id
+[ -z "$res" ] && sf_unsupported sf_os_version
 
-echo $id
+echo $res
+}
+
+##----------------------------------------------------------------------------
+# Display the current OS architecture (aka 'hardware platform')
+#
+# Args: None
+# Returns: 0
+# Displays: OS distrib
+#-----------------------------------------------------------------------------
+
+sf_os_arch()
+{
+uname -i
 }
 
 ##----------------------------------------------------------------------------
