@@ -130,7 +130,6 @@ sf_db_set()
 typeset name value
 
 name=`sf_db_normalize "$1"`
-shift
 value="$2"
 
 sf_db_unset "$name"
