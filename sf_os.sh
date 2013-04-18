@@ -52,7 +52,7 @@ res=''
 version=`sf_os_version`
 distrib=`sf_os_distrib`
 
-res="${distrib}_{version}"
+res="${distrib}_${version}"
 
 if [ "$distrib" = RHEL ] ; then		# Special case for RHEL
 	[ `uname -i` = x86_64 ] && res="${res}_64"
