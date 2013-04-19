@@ -97,7 +97,7 @@ _sf_db_tmp_replace()
 # No error if variable was not present in DB
 #
 # Args:
-#	$1: Variable name
+#	$*: Variable names
 # Returns: 0
 # Displays: nothing
 #-----------------------------------------------------------------------------
@@ -106,13 +106,15 @@ sf_db_unset()
 {
 typeset key name
 
-name="$1"
-
 _sf_db_exists || return 0
 
-key=`sf_db_key "$name"`
-grep -v "$key" $SF_DB_PATH >$SF_DB_TMP_PATH
-_sf_db_tmp_replace
+for name
+	do
+	[ -z "$name" ] && break
+	key=`sf_db_key "$name"`
+	grep -v "$key" $SF_DB_PATH >$SF_DB_TMP_PATH
+	_sf_db_tmp_replace
+done
 }
 
 ##----------------------------------------------------------------------------
