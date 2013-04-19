@@ -139,6 +139,44 @@ echo "$name $value" >>$SF_DB_PATH
 }
 
 ##----------------------------------------------------------------------------
+# Duplicate a variable (copy content)
+# If the source variable is not set, target is created with an empty value
+#
+# Args:
+#	$1: Source variable name
+#	$2: Target variable name
+# Returns: 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_db_copy()
+{
+typeset source target
+
+source=`sf_db_normalize "$1"`
+target=`sf_db_normalize "$2"`
+
+sf_db_set $target "`sf_db_get $source`"
+}
+
+##----------------------------------------------------------------------------
+# Rename a variable (keep content)
+# If the source variable is not set, target is created with an empty value
+#
+# Args:
+#	$1: Source variable name
+#	$2: Target variable name
+# Returns: 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+sf_db_rename()
+{
+sf_db_copy "$1" "$2"
+sf_db_unset "$1"
+}
+
+##----------------------------------------------------------------------------
 # Set a variable with the "sf_now" timestamp value
 #
 # Args:
