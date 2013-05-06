@@ -223,7 +223,7 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# Uninstall a software (ignoring spendencies)
+# Uninstall a software (ignoring dependencies)
 #
 # Return without error if the software is not installed
 #
