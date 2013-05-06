@@ -18,7 +18,7 @@
 
 PRODUCT=sysfunc
 DESCRIPTION="System utility shell functions"
-VERSION=1.1.15
+VERSION=1.1.16
 
 RELEASE=1
 
