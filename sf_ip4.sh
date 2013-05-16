@@ -37,7 +37,7 @@ typeset ip a bip
 ip="$1"
 bip="`echo $ip | sed 's,\., ,g'`"
 if [ -n "$BASH" ] ; then
-	a=($bip)
+	eval 'a=($bip)' # eval needed to avoid syntax error in ksh
 else
 	set -A a $bip
 fi
@@ -83,8 +83,8 @@ sf_ip4_validate_ip "$mask"
 bip="`echo $ip | sed 's,\., ,g'`"
 bmask="`echo $mask | sed 's,\., ,g'`"
 if [ -n "$BASH" ] ; then
-	aip=($bip)
-	amask=($bmask)
+	eval 'aip=($bip)'	# eval needed to avoid syntax error in ksh
+	eval 'amask=($bmask)'
 else
 	set -A aip $bip
 	set -A amask $bmask
