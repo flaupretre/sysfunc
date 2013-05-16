@@ -112,7 +112,7 @@ for name
 	do
 	[ -z "$name" ] && break
 	key=`sf_db_key "$name"`
-	grep -v "$key" $SF_DB_PATH >$SF_DB_TMP_PATH
+	grep -v "^$key " $SF_DB_PATH >$SF_DB_TMP_PATH
 	_sf_db_tmp_replace
 done
 }
@@ -206,7 +206,7 @@ typeset key
 _sf_db_exists || return 1
 
 key=`sf_db_key "$1"`
-grep "$key" $SF_DB_PATH >/dev/null
+grep "^$key " $SF_DB_PATH >/dev/null
 }
 
 ##----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ key=`sf_db_key "$1"`
 
 # 'head -1' by security (should never be used)
 
-grep "$key" $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
+grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
 }
 
 ##----------------------------------------------------------------------------
