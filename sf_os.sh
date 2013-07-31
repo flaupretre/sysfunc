@@ -67,7 +67,12 @@ echo $res
 
 ##----------------------------------------------------------------------------
 # Alias of sf_os_id() (obsolete - for compatibility only)
+#
 # Other info: see sf_os_id()
+#
+# Args: None
+# Returns: Always 0
+# Displays: OS ID string
 #-----------------------------------------------------------------------------
 
 sf_compute_os_id()
@@ -111,7 +116,6 @@ echo $res
 # Returns: 0
 # Displays: OS distrib
 #-----------------------------------------------------------------------------
-
 
 sf_os_family()
 {

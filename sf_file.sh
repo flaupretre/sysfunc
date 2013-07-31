@@ -79,10 +79,10 @@ done
 #
 # If the given path argument corresponds to an already existing
 # file (any type except directory or symbolic link to a directory), the
-# program aborts with a fatal error. If you want to aAlways 0
-# this (if you want to create the directory, even if somathing else is
+# program aborts with a fatal error. If you want to avoid
+# this (if you want to create the directory, even if something else is
 # already existing in this path), call sf_delete first.
-# If the path given as arg contains a symbolic link pointing to an existing
+#- If the path given as arg contains a symbolic link pointing to an existing
 # directory, it is left as-is.
 #
 # Args:
@@ -121,9 +121,11 @@ fi
 #
 # No action if the 'sf_nosave' environment variable is set to a non-empty string.
 #
-# If the input arg is the path of an existing regular file, the file is copied
+#-If the input arg is the path of an existing regular file, the file is copied
 # to '$path.orig'
-# TODO: improve save features (multiple numbered saved versions,...)
+#
+#- TODO: improve save features (multiple numbered saved versions,...)
+#
 # Args:
 #	$1 : Path
 # Returns: Always 0
@@ -408,8 +410,7 @@ return $status
 # Creates or modifies a symbolic link
 #
 # The target is saved before being modified.
-# Note: Don't use 'test -h' (not portable)
-# If the target path directory does not exist, it is created.
+#- If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Link target
@@ -417,6 +418,7 @@ return $status
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
+#- Note: Don't use 'test -h' (not portable)
 
 sf_check_link()
 {

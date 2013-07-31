@@ -23,7 +23,7 @@
 
 ##----------------------------------------------------------------------------
 # Display normalized time string for current time (UTC)
-#?
+#
 # Format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
 #
 # Args: None

@@ -3,7 +3,7 @@ PROJECT=sysfunc
 
 PPC_DIR=../../../ppc
 
-TARGETS = func_ref.htm
+TARGETS = func_ref.htm func_ref.md
 
 #-----------------
 
@@ -21,8 +21,13 @@ save: clean
 # Ignores functions starting with '_', sort functions
 
 func_ref.htm:
-	cat ../*.sh >doc.tmp
-	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" -e '_' -s
+	cat ../sf_*.sh >doc.tmp
+	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" html -e '_' -s
+	/bin/rm -f doc.tmp
+
+func_ref.md:
+	cat ../sf_*.sh >doc.tmp
+	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" md -e '_' -s
 	/bin/rm -f doc.tmp
 
 #----------------
