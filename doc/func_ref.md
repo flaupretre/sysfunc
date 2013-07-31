@@ -144,7 +144,11 @@ Lines are read from stdin
 ## sf\_db\_expand ##
 **Replaces patterns in the form '{{%&lt;variable name>%}}' by their value.**
 
-Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}). Patterns which do not correspond to an existing variable are replaced by an empty string. Input: stdin, output: stdout.
+Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}).
+
+Patterns which do not correspond to an existing variable are replaced by an empty string.
+
+Input: stdin, output: stdout.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td></td></tr>
@@ -221,7 +225,11 @@ TODO: improve save features (multiple numbered saved versions,...)
 ## sf\_check\_copy ##
 **Copy a file or the content of function's standard input to a target file**
 
-The copy takes place only if the source and target files are different. If the target file is already existing, it is saved before being overwritten. If the target path directory does not exist, it is created.
+The copy takes place only if the source and target files are different.
+
+If the target file is already existing, it is saved before being overwritten.
+
+If the target path directory does not exist, it is created.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Source path. Special value: '-' means that data to copy is read from stdin, allowing to produce dynamic content without a temp file.</td></tr>
@@ -768,7 +776,13 @@ This is an arbitrary choice, such as the address assigned to the first network n
 ## sf\_os\_id ##
 **Computes and displays a string defining the curent system environment**
 
-The displayed string is a combination of the OS name, version, system architecture and may also depend on other parameters like, for instance, the RedHat ES/AS branches. It is an equivalent of the 'channel' concept used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use it in every script where I need a single string to identify the system environment the script is currently running on. If the current system is not recognized, the program aborts. By convention, environments recognized by this function support the rest of the library. Contributors welcome ! Feel free to enhance this function with additional recognized systems, especially with other Linux distros, and send me your patches.
+The displayed string is a combination of the OS name, version, system architecture and may also depend on other parameters like, for instance, the RedHat ES/AS branches. It is an equivalent of the 'channel' concept used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use it in every script where I need a single string to identify the system environment the script is currently running on.
+
+If the current system is not recognized, the program aborts.
+
+By convention, environments recognized by this function support the rest of the library.
+
+Contributors welcome ! Feel free to enhance this function with additional recognized systems, especially with other Linux distros, and send me your patches.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
@@ -870,7 +884,9 @@ Other info: see sf\_os\_id()
 ## sf\_soft\_list ##
 **List installed software**
 
-Returns a sorted list of installed software Linux output: (name-version-release.arch)
+Returns a sorted list of installed software
+
+Linux output: (name-version-release.arch)
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
@@ -891,7 +907,9 @@ Returns a sorted list of installed software Linux output: (name-version-release.
 ## sf\_soft\_is\_upgradeable ##
 **Check if a newer version of a software is available**
 
-Note : if the software is not installed, it is not considered as updateable Note : yum returns 0 if no software are available for update
+Note : if the software is not installed, it is not considered as updateable
+
+Note : yum returns 0 if no software are available for update
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
@@ -900,9 +918,9 @@ Note : if the software is not installed, it is not considered as updateable Note
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 ## sf\_soft\_is\_up\_to\_date ##
-**Check if the installed version of a software is installed and the latest**
+**Check if a software is installed and the latest version**
 
-version
+
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
@@ -913,7 +931,9 @@ version
 ## sf\_soft\_install ##
 **Install a software if not already present**
 
-Install or updates a software depending on its presence on the host If the software is not up to date, no action.
+Install or updates a software depending on its presence on the host
+
+If the software is installed but not up to date, no action.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
@@ -924,7 +944,9 @@ Install or updates a software depending on its presence on the host If the softw
 ## sf\_soft\_install\_upgrade ##
 **Install or upgrade a software**
 
-Install or updates a software depending on its presence on the host If the software is up to date, no action.
+Install or updates a software depending on its presence on the host
+
+If the software is up to date, no action.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
@@ -1077,7 +1099,7 @@ Return without error if the software is not installed
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Script path</td></tr>
 </table>
 
-# Time/Data manipulation #
+# Time/Date manipulation #
 ## sf\_tm\_now ##
 **Display normalized time string for current time (UTC)**
 
@@ -1093,7 +1115,11 @@ Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time>)
 ## sf\_set\_passwd ##
 **Change a user's password**
 
-Works on HP-UX, Solaris, and Linux. Replaces an encrypted passwd in /etc/passwd or /etc/shadow. TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
+Works on HP-UX, Solaris, and Linux.
+
+Replaces an encrypted passwd in /etc/passwd or /etc/shadow.
+
+TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
@@ -1161,7 +1187,9 @@ TODO: Unify with other supported OS
 ## sf\_create\_user ##
 **Create a user**
 
-To set the login shell, initialize the CREATE\_USER\_SHELL variable before calling the function. For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.
+To set the login shell, initialize the CREATE\_USER\_SHELL variable before calling the function.
+
+For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
