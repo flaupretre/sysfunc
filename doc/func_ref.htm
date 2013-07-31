@@ -104,7 +104,7 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.7. <a href="#p12.7">sf_svc_stop</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.8. <a href="#p12.8">sf_svc_base</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 12.9. <a href="#p12.9">sf_svc_script</a></td></tr>
-<tr><td width=100% align=left>13. <a href="#p13"><b>Time/Data manipulation</b></a></td></tr>
+<tr><td width=100% align=left>13. <a href="#p13"><b>Time/Date manipulation</b></a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 13.1. <a href="#p13.1">sf_tm_now</a></td></tr>
 <tr><td width=100% align=left>14. <a href="#p14"><b>User/group management</b></a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 14.1. <a href="#p14.1">sf_set_passwd</a></td></tr>
@@ -209,7 +209,7 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>1.14<a name="p1.14">&nbsp;</a>- sf_db_expand</h2>
 <p><b>Replaces patterns in the form '{{%&lt;variable name&gt;%}}' by their value.</b></p>
-<p>Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}). Patterns which do not correspond to an existing variable are replaced by an empty string. Input: stdin, output: stdout.</p>
+<p>Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}).</p><p>Patterns which do not correspond to an existing variable are replaced by an empty string.</p><p>Input: stdin, output: stdout.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td></td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Output</td></tr>
@@ -256,7 +256,7 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>2.6<a name="p2.6">&nbsp;</a>- sf_check_copy</h2>
 <p><b>Copy a file or the content of function's standard input to a target file</b></p>
-<p>The copy takes place only if the source and target files are different. If the target file is already existing, it is saved before being overwritten. If the target path directory does not exist, it is created.</p>
+<p>The copy takes place only if the source and target files are different.</p><p>If the target file is already existing, it is saved before being overwritten.</p><p>If the target path directory does not exist, it is created.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Source path. Special value: '-' means that data to copy is read from stdin, allowing to produce dynamic content without a temp file.</td></tr>
 <tr><td width=20 align=center>$2</td><td>Target path</td></tr>
 <tr><td width=20 align=center>$3</td><td>Optional. File creation mode. Default=644</td></tr>
@@ -609,7 +609,7 @@
 <h1>10<a name="p10">&nbsp;</a>- OS management</h1>
 <h2>10.1<a name="p10.1">&nbsp;</a>- sf_os_id</h2>
 <p><b>Computes and displays a string defining the curent system environment</b></p>
-<p>The displayed string is a combination of the OS name, version, system architecture and may also depend on other parameters like, for instance, the RedHat ES/AS branches. It is an equivalent of the 'channel' concept used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use it in every script where I need a single string to identify the system environment the script is currently running on. If the current system is not recognized, the program aborts. By convention, environments recognized by this function support the rest of the library. Contributors welcome ! Feel free to enhance this function with additional recognized systems, especially with other Linux distros, and send me your patches.</p>
+<p>The displayed string is a combination of the OS name, version, system architecture and may also depend on other parameters like, for instance, the RedHat ES/AS branches. It is an equivalent of the 'channel' concept used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use it in every script where I need a single string to identify the system environment the script is currently running on.</p><p>If the current system is not recognized, the program aborts.</p><p>By convention, environments recognized by this function support the rest of the library.</p><p>Contributors welcome ! Feel free to enhance this function with additional recognized systems, especially with other Linux distros, and send me your patches.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>OS ID string</td></tr>
 </table>
@@ -671,7 +671,7 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>11.2<a name="p11.2">&nbsp;</a>- sf_soft_list</h2>
 <p><b>List installed software</b></p>
-<p>Returns a sorted list of installed software Linux output: (name-version-release.arch)</p>
+<p>Returns a sorted list of installed software</p><p>Linux output: (name-version-release.arch)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>software list</td></tr>
 </table>
@@ -684,28 +684,28 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>11.4<a name="p11.4">&nbsp;</a>- sf_soft_is_upgradeable</h2>
 <p><b>Check if a newer version of a software is available</b></p>
-<p>Note : if the software is not installed, it is not considered as updateable Note : yum returns 0 if no software are available for update</p>
+<p>Note : if the software is not installed, it is not considered as updateable</p><p>Note : yum returns 0 if no software are available for update</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if at least one of the given software(s) can be updated.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>11.5<a name="p11.5">&nbsp;</a>- sf_soft_is_up_to_date</h2>
-<p><b>Check if the installed version of a software is installed and the latest</b></p>
-<p>version</p>
+<p><b>Check if a software is installed and the latest version</b></p>
+<p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every argument software are installed and up to date (for yum)</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>11.6<a name="p11.6">&nbsp;</a>- sf_soft_install</h2>
 <p><b>Install a software if not already present</b></p>
-<p>Install or updates a software depending on its presence on the host If the software is not up to date, no action.</p>
+<p>Install or updates a software depending on its presence on the host</p><p>If the software is installed but not up to date, no action.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>11.7<a name="p11.7">&nbsp;</a>- sf_soft_install_upgrade</h2>
 <p><b>Install or upgrade a software</b></p>
-<p>Install or updates a software depending on its presence on the host If the software is up to date, no action.</p>
+<p>Install or updates a software depending on its presence on the host</p><p>If the software is up to date, no action.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name(s)</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
@@ -803,10 +803,10 @@
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Script path</td></tr>
 </table>
 </td><td width=50>&nbsp;</td></tr></table>
-<h1>13<a name="p13">&nbsp;</a>- Time/Data manipulation</h1>
+<h1>13<a name="p13">&nbsp;</a>- Time/Date manipulation</h1>
 <h2>13.1<a name="p13.1">&nbsp;</a>- sf_tm_now</h2>
 <p><b>Display normalized time string for current time (UTC)</b></p>
-<p>? Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time&gt;)</p>
+<p>Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time&gt;)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Time string</td></tr>
 </table>
@@ -814,7 +814,7 @@
 <h1>14<a name="p14">&nbsp;</a>- User/group management</h1>
 <h2>14.1<a name="p14.1">&nbsp;</a>- sf_set_passwd</h2>
 <p><b>Change a user's password</b></p>
-<p>Works on HP-UX, Solaris, and Linux. Replaces an encrypted passwd in /etc/passwd or /etc/shadow. TODO: Unify with AIX and autodetect the file to use (passwd/shadow)</p>
+<p>Works on HP-UX, Solaris, and Linux.</p><p>Replaces an encrypted passwd in /etc/passwd or /etc/shadow.</p><p>TODO: Unify with AIX and autodetect the file to use (passwd/shadow)</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Username</td></tr>
 <tr><td width=20 align=center>$2</td><td>Encrypted password</td></tr>
 <tr><td width=20 align=center>$3</td><td>File path</td></tr>
@@ -858,7 +858,7 @@
 </table>
 </td><td width=50>&nbsp;</td></tr></table><h2>14.7<a name="p14.7">&nbsp;</a>- sf_create_user</h2>
 <p><b>Create a user</b></p>
-<p>To set the login shell, initialize the CREATE_USER_SHELL variable before calling the function. For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.</p>
+<p>To set the login shell, initialize the CREATE_USER_SHELL variable before calling the function.</p><p>For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>

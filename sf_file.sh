@@ -170,8 +170,8 @@ fi
 # Copy a file or the content of function's standard input to a target file
 #
 # The copy takes place only if the source and target files are different.
-# If the target file is already existing, it is saved before being overwritten.
-# If the target path directory does not exist, it is created.
+#- If the target file is already existing, it is saved before being overwritten.
+#- If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Source path. Special value: '-' means that data to copy is read from

@@ -1081,7 +1081,7 @@ Return without error if the software is not installed
 ## sf\_tm\_now ##
 **Display normalized time string for current time (UTC)**
 
-? Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time>)
+Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time>)
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>

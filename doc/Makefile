@@ -7,7 +7,7 @@ TARGETS = func_ref.htm func_ref.md
 
 #-----------------
 
-.PHONY: clean
+.PHONY: clean install
 
 all: $(TARGETS)
 
@@ -31,3 +31,8 @@ func_ref.md:
 	/bin/rm -f doc.tmp
 
 #----------------
+# 'install' generates the markdown function ref and copies it to the wiki tree
+# Commit/push of the wiki repository must be done then.
+
+install: func_ref.md
+	cp func_ref.md ../../wiki/Function-reference.md
