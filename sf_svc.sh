@@ -29,7 +29,7 @@
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_svc_enable()
+function sf_svc_enable
 {
 typeset _svc _base _script _state _snum _knum
 
@@ -84,7 +84,7 @@ done
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_svc_disable()
+function sf_svc_disable
 {
 typeset _svc _base _script _state _snum _knum _pattern _f
 
@@ -131,7 +131,7 @@ done
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_svc_install()
+function sf_svc_install
 {
 sf_check_copy "$1" `sf_svc_script $2` 755
 }
@@ -145,7 +145,7 @@ sf_check_copy "$1" `sf_svc_script $2` 755
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_svc_uninstall()
+function sf_svc_uninstall
 {
 sf_svc_stop $1
 sf_svc_disable $1
@@ -161,7 +161,7 @@ sf_delete `sf_svc_script $1`
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_svc_is_installed()
+function sf_svc_is_installed
 {
 [ -x "`sf_svc_script $1`" ]
 }
@@ -175,7 +175,7 @@ sf_svc_is_installed()
 # Displays: Output from service script
 #-----------------------------------------------------------------------------
 
-sf_svc_start()
+function sf_svc_start
 {
 if sf_svc_is_installed "$1" ] ; then
 	`sf_svc_script $1` start
@@ -193,7 +193,7 @@ fi
 # Displays: Output from service script
 #-----------------------------------------------------------------------------
 
-sf_svc_stop()
+function sf_svc_stop
 {
 if sf_svc_is_installed "$1" ] ; then
 	`sf_svc_script $1` stop
@@ -210,7 +210,7 @@ fi
 # Displays: String
 #-----------------------------------------------------------------------------
 
-sf_svc_base()
+function sf_svc_base
 {
 case `uname -s` in
 	Linux)
@@ -233,7 +233,7 @@ esac
 # Displays: Script path
 #-----------------------------------------------------------------------------
 
-sf_svc_script()
+function sf_svc_script
 {
 echo `sf_svc_base`/init.d/$1
 }

@@ -29,7 +29,7 @@
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_has_dedicated_fs()
+function sf_has_dedicated_fs
 {
 [ -d "$1" ] || return 1
 
@@ -45,7 +45,7 @@ sf_has_dedicated_fs()
 # Displays: The mount directory of the filesystem containing the element
 #-----------------------------------------------------------------------------
 
-sf_get_fs_mnt()
+function sf_get_fs_mnt
 {
 case "`uname -s`" in
 	Linux)
@@ -72,7 +72,7 @@ esac
 # Displays: FS size in Mbytes
 #-----------------------------------------------------------------------------
 
-sf_get_fs_size()
+function sf_get_fs_size
 {
 # $1=directory
 
@@ -104,7 +104,7 @@ echo `expr $sz / 1024`
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_set_fs_space()
+function sf_set_fs_space
 {
 typeset fs size newsize rc
 
@@ -148,7 +148,7 @@ return $rc
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_fs()
+function sf_create_fs
 {
 typeset mnt dev type owner opts
 
@@ -203,7 +203,7 @@ return 0
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_lv_exists()
+function sf_lv_exists
 {
 typeset vg lv rc
 
@@ -232,7 +232,7 @@ return $rc
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_vg_exists()
+function sf_vg_exists
 {
 typeset vg rc
 
@@ -263,7 +263,7 @@ return $rc
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_lv()
+function sf_create_lv
 {
 typeset lv vg size sz_opt
 
@@ -307,7 +307,7 @@ return $rc
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_vg()
+function sf_create_vg
 {
 typeset vg pesize device
 
@@ -340,7 +340,7 @@ return $rc
 # Displays: Type
 #-----------------------------------------------------------------------------
 
-sf_fs_default_type()
+function sf_fs_default_type
 {
 typeset type
 
@@ -368,7 +368,7 @@ echo $type
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_lv_fs()
+function sf_create_lv_fs
 {
 typeset mnt lv vg type size owner
 

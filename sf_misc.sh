@@ -32,7 +32,7 @@
 # Displays: Nothing
 ##----------------------------------------------------------------------------
 
-sf_loaded()
+function sf_loaded
 {
 return 0
 }
@@ -45,7 +45,7 @@ return 0
 # Displays: Library version (string)
 #-----------------------------------------------------------------------------
 
-sf_version()
+function sf_version
 {
 . $sf_install_dir/util/config.sh
 echo "$VERSION-$RELEASE"
@@ -66,7 +66,7 @@ return 0
 # Displays: data displayed by the executed program
 #-----------------------------------------------------------------------------
 
-sf_exec_url()
+function sf_exec_url
 {
 typeset wd tdir status
 
@@ -103,7 +103,7 @@ return $status
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_cleanup()
+function sf_cleanup
 {
 \rm -rf $sf_tmpfile*
 }
@@ -118,7 +118,7 @@ sf_cleanup()
 # Displays: An unused temporary path
 #-----------------------------------------------------------------------------
 
-sf_get_tmp()
+function sf_get_tmp
 {
 n=0
 while true

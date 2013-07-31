@@ -28,7 +28,7 @@
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_soft_exists()
+function sf_soft_exists
 {
 typeset soft
 
@@ -50,7 +50,7 @@ return 0
 # Displays: software list
 #-----------------------------------------------------------------------------
 
-sf_soft_list()
+function sf_soft_list
 {
 (
 if [ -n "$sf_rpm" ] ; then
@@ -69,7 +69,7 @@ fi
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_soft_is_installed()
+function sf_soft_is_installed
 {
 typeset _pkg
 
@@ -93,7 +93,7 @@ return 0
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_soft_is_upgradeable()
+function sf_soft_is_upgradeable
 {
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_is_upgradeable
 
@@ -110,7 +110,7 @@ return 1
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_soft_is_up_to_date()
+function sf_soft_is_up_to_date
 {
 sf_soft_is_installed $* || return 1
 sf_soft_is_upgradeable $* && return 1
@@ -129,7 +129,7 @@ return 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_soft_install()
+function sf_soft_install
 {
 typeset _pkg _to_install
 
@@ -164,7 +164,7 @@ return 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_soft_install_upgrade()
+function sf_soft_install_upgrade
 {
 typeset _pkg _to_install _to_update
 
@@ -208,7 +208,7 @@ return 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_soft_uninstall()
+function sf_soft_uninstall
 {
 typeset _pkg
 
@@ -232,7 +232,7 @@ return 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_soft_remove()
+function sf_soft_remove
 {
 typeset _pkg
 
@@ -254,7 +254,7 @@ return 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_soft_reinstall()
+function sf_soft_reinstall
 {
 typeset _pkg
 
@@ -274,7 +274,7 @@ return 0
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_soft_clean_cache()
+function sf_soft_clean_cache
 {
 [ -d /var/cache/yum ] && \rm -rf /var/cache/yum/*
 }

@@ -31,7 +31,7 @@
 # Displays: Error and abort messages
 #-----------------------------------------------------------------------------
 
-sf_fatal()
+function sf_fatal
 {
 typeset rc
 
@@ -56,7 +56,7 @@ exit $rc
 # Displays: Error and abort messages
 #-----------------------------------------------------------------------------
 
-sf_unsupported()
+function sf_unsupported
 {
 # $1: feature name
 
@@ -75,7 +75,7 @@ sf_fatal "$1: Feature not supported in this environment" 2
 # Displays: Error message
 #-----------------------------------------------------------------------------
 
-sf_error()
+function sf_error
 {
 typeset msg
 
@@ -93,7 +93,7 @@ sf_msg "$msg"
 # Displays: Warning message
 #-----------------------------------------------------------------------------
 
-sf_warning()
+function sf_warning
 {
 sf_msg " *===* WARNING *===* : $1"
 }
@@ -113,7 +113,7 @@ sf_msg " *===* WARNING *===* : $1"
 # Displays: Message
 #-----------------------------------------------------------------------------
 
-sf_msg()
+function sf_msg
 {
 typeset prefix
 
@@ -134,7 +134,7 @@ echo "$prefix$1"
 # Displays: message if verbose mode is active, nothing if not
 #-----------------------------------------------------------------------------
 
-sf_trace()
+function sf_trace
 {
 [ -n "$sf_verbose" -o "$sf_verbose_level" -ge 1 ] && echo ">>> $*"
 }
@@ -150,7 +150,7 @@ sf_trace()
 # Displays: message if verbose level set to debug (2) or more
 #-----------------------------------------------------------------------------
 
-sf_debug()
+function sf_debug
 {
 [ "$sf_verbose_level" -ge 2 ] && echo "D>> $*"
 }
@@ -164,7 +164,7 @@ sf_debug()
 # Displays: message prefixed with spaces
 #-----------------------------------------------------------------------------
 
-sf_msg1()
+function sf_msg1
 {
 sf_msg "        $*"
 }
@@ -181,7 +181,7 @@ sf_msg "        $*"
 # Displays: Message
 #-----------------------------------------------------------------------------
 
-sf_msg_section()
+function sf_msg_section
 {
 sf_msg ''
 sf_msg "--- $1"
@@ -198,7 +198,7 @@ sf_msg "--- $1"
 # Displays: message
 #-----------------------------------------------------------------------------
 
-sf_banner()
+function sf_banner
 {
 echo
 echo "==================================================================="
@@ -216,7 +216,7 @@ echo
 # Displays: message to stderr, answer to stdout
 #-----------------------------------------------------------------------------
 
-sf_ask()
+function sf_ask
 {
 echo "$SHELL" | grep bash >/dev/null
 if [ $? = 0 ] ; then
@@ -245,7 +245,7 @@ echo $answer
 #            $sf_forceyes is set.
 #-----------------------------------------------------------------------------
 
-sf_yn_question()
+function sf_yn_question
 {
 typeset answer
 

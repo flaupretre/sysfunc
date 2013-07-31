@@ -31,7 +31,7 @@
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_delete()
+function sf_delete
 {
 typeset i
 
@@ -54,7 +54,7 @@ done
 # Displays: Absolute path if found, nothing if not found
 #-----------------------------------------------------------------------------
 
-sf_find_executable()
+function sf_find_executable
 {
 typeset file dirs dir f
 
@@ -93,7 +93,7 @@ done
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_dir()
+function sf_create_dir
 {
 
 typeset path owner mode
@@ -132,7 +132,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_save()
+function sf_save
 {
 [ "X$sf_nosave" = X ] || return
 if [ -f "$1" -a ! -f "$1.orig" ] ; then
@@ -150,7 +150,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_rename_to_old()
+function sf_rename_to_old
 {
 typeset dir base of f
 
@@ -182,7 +182,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_check_copy()
+function sf_check_copy
 {
 typeset mode source target
 
@@ -257,7 +257,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_check_block()
+function sf_check_block
 {
 typeset mode source target flag comment nstart nend fname tmpdir
 
@@ -348,7 +348,7 @@ fi
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_contains_block()
+function sf_contains_block
 {
 typeset id target
 
@@ -368,7 +368,7 @@ grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_chown()
+function sf_chown
 {
 typeset status owner
 
@@ -392,7 +392,7 @@ return $status
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_chmod()
+function sf_chmod
 {
 typeset status mode
 
@@ -420,7 +420,7 @@ return $status
 #-----------------------------------------------------------------------------
 #- Note: Don't use 'test -h' (not portable)
 
-sf_check_link()
+function sf_check_link
 {
 typeset link_target
 
@@ -458,7 +458,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_comment_out()
+function sf_comment_out
 {
 typeset com
 
@@ -494,7 +494,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_uncomment()
+function sf_uncomment
 {
 typeset com
 
@@ -533,7 +533,7 @@ fi
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_check_line()
+function sf_check_line
 {
 typeset file pattern line fline qpattern
 

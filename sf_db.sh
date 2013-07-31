@@ -29,7 +29,7 @@
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_clear()
+function sf_db_clear
 {
 \rm -rf "$SF_DB_PATH" "$SF_DB_TMP_PATH"
 }
@@ -42,7 +42,7 @@ sf_db_clear()
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-_sf_db_exists()
+function _sf_db_exists
 {
 [ -f "$SF_DB_PATH" ]
 }
@@ -56,7 +56,7 @@ _sf_db_exists()
 # Displays: Normalized name
 ##----------------------------------------------------------------------------
 
-sf_db_normalize()
+function sf_db_normalize
 {
 echo "$1" | tr -cd 'a-zA-Z0-9:_./()-'
 echo
@@ -71,7 +71,7 @@ echo
 # Displays: Key string
 ##----------------------------------------------------------------------------
 
-sf_db_key()
+function sf_db_key
 {
 sf_db_normalize "$1" | sed -e 's,\.,\.,g'
 }
@@ -85,7 +85,7 @@ sf_db_normalize "$1" | sed -e 's,\.,\.,g'
 # Displays: Key string
 ##----------------------------------------------------------------------------
 
-_sf_db_tmp_replace()
+function _sf_db_tmp_replace
 {
 \rm -rf "$SF_DB_PATH"
 \mv "$SF_DB_TMP_PATH" "$SF_DB_PATH"
@@ -102,7 +102,7 @@ _sf_db_tmp_replace()
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_unset()
+function sf_db_unset
 {
 typeset key name
 
@@ -127,7 +127,7 @@ done
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_set()
+function sf_db_set
 {
 typeset name value
 
@@ -150,7 +150,7 @@ echo "$name $value" >>$SF_DB_PATH
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_copy()
+function sf_db_copy
 {
 typeset source target
 
@@ -172,7 +172,7 @@ sf_db_set $target "`sf_db_get $source`"
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_rename()
+function sf_db_rename
 {
 sf_db_copy "$1" "$2"
 sf_db_unset "$1"
@@ -187,7 +187,7 @@ sf_db_unset "$1"
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_set_timestamp()
+function sf_db_set_timestamp
 {
 sf_db_set "$1" "`sf_tm_now`"
 }
@@ -201,7 +201,7 @@ sf_db_set "$1" "`sf_tm_now`"
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_isset()
+function sf_db_isset
 {
 typeset key
 
@@ -222,7 +222,7 @@ grep "^$key " $SF_DB_PATH >/dev/null
 # Displays: Value or empty string if var not set
 #-----------------------------------------------------------------------------
 
-sf_db_get()
+function sf_db_get
 {
 typeset key name
 
@@ -244,7 +244,7 @@ grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
 # Displays: DB content
 #-----------------------------------------------------------------------------
 
-sf_db_dump()
+function sf_db_dump
 {
 _sf_db_exists && sort <$SF_DB_PATH
 return 0
@@ -258,7 +258,7 @@ return 0
 # Displays: DB keys
 #-----------------------------------------------------------------------------
 
-sf_db_list()
+function sf_db_list
 {
 sf_db_dump | awk '{ print $1 }'
 }
@@ -273,7 +273,7 @@ sf_db_dump | awk '{ print $1 }'
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_db_import()
+function sf_db_import
 {
 typeset line
 
@@ -298,7 +298,7 @@ return 0
 # Displays: Output
 #-----------------------------------------------------------------------------
 
-sf_db_expand()
+function sf_db_expand
 {
 typeset name value esc_val _tmp1 _tmp2
 

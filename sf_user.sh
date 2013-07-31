@@ -35,7 +35,7 @@
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
-sf_set_passwd()
+function sf_set_passwd
 {
 typeset file user pass qpass
 
@@ -65,7 +65,7 @@ EOF
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_set_passwd_aix()
+function sf_set_passwd_aix
 {
 typeset user pass qpass
 
@@ -97,7 +97,7 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_group()
+function sf_create_group
 {
 
 case `uname -s` in
@@ -129,7 +129,7 @@ return 0
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_delete_group()
+function sf_delete_group
 {
 
 typeset status
@@ -156,7 +156,7 @@ return $status
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_user_exists()
+function sf_user_exists
 {
 typeset status
 
@@ -183,7 +183,7 @@ return $status
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_delete_user()
+function sf_delete_user
 {
 
 typeset status
@@ -223,7 +223,7 @@ return $status
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-sf_create_user()
+function sf_create_user
 {
 typeset name uid gid gecos home groups locked add_cmd shell passwd_file
 

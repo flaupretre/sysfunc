@@ -42,7 +42,7 @@
 # Displays: OS ID string
 #-----------------------------------------------------------------------------
 
-sf_os_id()
+function sf_os_id
 {
 typeset sub version distrib res
 
@@ -75,7 +75,7 @@ echo $res
 # Displays: OS ID string
 #-----------------------------------------------------------------------------
 
-sf_compute_os_id()
+function sf_compute_os_id
 {
 sf_os_id
 }
@@ -88,7 +88,7 @@ sf_os_id
 # Displays: OS distrib
 #-----------------------------------------------------------------------------
 
-sf_os_distrib()
+function sf_os_distrib
 {
 typeset res
 
@@ -117,7 +117,7 @@ echo $res
 # Displays: OS distrib
 #-----------------------------------------------------------------------------
 
-sf_os_family()
+function sf_os_family
 {
 uname -s
 }
@@ -130,7 +130,7 @@ uname -s
 # Displays: OS distrib
 #-----------------------------------------------------------------------------
 
-sf_os_version()
+function sf_os_version
 {
 typeset frel res
 
@@ -164,7 +164,7 @@ echo $res
 # Displays: OS distrib
 #-----------------------------------------------------------------------------
 
-sf_os_arch()
+function sf_os_arch
 {
 uname -i
 }
@@ -177,7 +177,7 @@ uname -i
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_reboot()
+function sf_reboot
 {
 case "`uname -s`" in
 	Linux)
@@ -201,7 +201,7 @@ while true; do sleep 10; done	# Endless loop
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_shutdown()
+function sf_shutdown
 {
 case "`uname -s`" in
 	Linux)
@@ -225,7 +225,7 @@ while true; do sleep 10; done	# Endless loop
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-sf_poweroff()
+function sf_poweroff
 {
 case "`uname -s`" in
 	Linux)

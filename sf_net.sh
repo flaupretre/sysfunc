@@ -32,7 +32,7 @@
 # Displays: truncated string
 #-----------------------------------------------------------------------------
 
-sf_domain_part()
+function sf_domain_part
 {
 sed 's/^[^\.]*\.//'
 }
@@ -48,7 +48,7 @@ sed 's/^[^\.]*\.//'
 # Displays: truncated string
 #-----------------------------------------------------------------------------
 
-sf_host_part()
+function sf_host_part
 {
 sed 's/^\([^\.]*\)\..*$/\1/'
 }
@@ -66,7 +66,7 @@ sed 's/^\([^\.]*\)\..*$/\1/'
 # not be resolved.
 #-----------------------------------------------------------------------------
 
-sf_dns_addr_to_name()
+function sf_dns_addr_to_name
 {
 ( [ -n "$2" && echo "server $2"; echo "$1" ) \
 	| nslookup 2>/dev/null | grep '^Name:' | head -1 \
@@ -86,7 +86,7 @@ sf_dns_addr_to_name()
 # not be resolved.
 #-----------------------------------------------------------------------------
 
-sf_dns_name_to_addr()
+function sf_dns_name_to_addr
 {
 ( [ -n "$2" && echo "server $2"; echo "$1" ) \
 	| nslookup 2>/dev/null \
@@ -106,7 +106,7 @@ sf_dns_name_to_addr()
 # Displays: IP address or nothing if no address was found
 #-----------------------------------------------------------------------------
 
-sf_primary_ip_address()
+function sf_primary_ip_address
 {
 case "`uname -s`" in
 	Linux)

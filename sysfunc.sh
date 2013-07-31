@@ -24,7 +24,7 @@
 # Displays: Help message
 #-----------------------------------------------------------------------------
 
-sf_help()
+function sf_help
 {
 _sf_usage
 }
@@ -38,7 +38,7 @@ _sf_usage
 # Displays: Message
 #-----------------------------------------------------------------------------
 
-_sf_fatal()
+function _sf_fatal
 {
 sf_error "$*"
 echo
@@ -54,7 +54,7 @@ exit 1
 # Displays: Message
 #-----------------------------------------------------------------------------
 
-_sf_usage()
+function _sf_usage
 {
 sf_msg 'Usage: sysfunc <cmd> [args]'
 echo
