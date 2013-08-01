@@ -1,7 +1,7 @@
 
 PROJECT=sysfunc
 
-PPC_DIR=../../../ppc
+PPC_DIR=../../../ppc/public
 
 TARGETS = func_ref.htm func_ref.md
 
