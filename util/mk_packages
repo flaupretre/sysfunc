@@ -36,19 +36,19 @@ export tdir link_source1 link_source2 link_target doc_dir files
 
 cd $sdir
 
-clean_dir $tdir
+clean_dir $base/$tdir
 
-cp *.sh $tdir
-mkdir $tdir/util
-cp util/config.sh $tdir/util/config.sh
-chmod 444 $tdir/*.sh $tdir/util/*
-chmod 555 $tdir/$PRODUCT.sh
+cp *.sh $base/$tdir
+mkdir $base/$tdir/util
+cp util/config.sh $base/$tdir/util/config.sh
+chmod 444 $base/$tdir/*.sh $base/$tdir/util/*
+chmod 555 $base/$tdir/$PRODUCT.sh
 
-clean_dir $doc_dir
-cp -rp COPYING doc/* $doc_dir
+clean_dir $base/$doc_dir
+cp -rp COPYING doc/* $base/$doc_dir
 
-mk_link $link_target $link_source1	#-- Create symbolic link
-mk_link $link_target $link_source2	#-- Create symbolic link
+mk_link $link_target $base/$link_source1	#-- Create symbolic link
+mk_link $link_target $base/$link_source2	#-- Create symbolic link
 
 #--
 
