@@ -16,10 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-PRODUCT=sysfunc
-DESCRIPTION="System utility shell functions"
-VERSION=1.1.18
+INSTALL_DIR = /opt/sysfunc
 
-RELEASE=1
+SOFTWARE_VERSION = 1.1.19
 
-export PRODUCT DESCRIPTION VERSION RELEASE
+#============================================================================

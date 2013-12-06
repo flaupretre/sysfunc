@@ -1,8 +1,0 @@
-Group: System Environment/Configuration
-License: GNU LESSER GENERAL PUBLIC LICENSE, Version 3
-URL: http://sysfunc.tekwire.net
-Packager: Francois Laupretre
-Source: none
-BuildArch: noarch
-AutoReqProv: no
-provides: %PRODUCT%

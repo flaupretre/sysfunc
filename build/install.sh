@@ -15,43 +15,42 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
-#
-#	Build packages (rpm and tgz)
-#
-#=============================================================================
 
-. pkg_func.sh
+function make_dir
+{
+[ -d $1 ] || mkdir -p $1
+}
 
-tdir=/opt/$PRODUCT
-link_source1=/usr/bin/$PRODUCT.sh
-link_source2=/usr/bin/$PRODUCT
-link_target=$tdir/$PRODUCT.sh
-doc_dir=/usr/share/doc/$PRODUCT
+#----------
 
-files="$tdir $link_source1 $link_source2 $doc_dir"
+CMD=`basename $0`
+cd `dirname $0`/..
+BASE_DIR=`/bin/pwd`
+INSTALL_BASE=
+[ -n "$RPM_BUILD_ROOT" ] && INSTALL_BASE="$RPM_BUILD_ROOT"
+INSTALL_TARGET_DIR="$1"
+INSTALL_DIR="$INSTALL_BASE$1"
 
-export tdir link_source1 link_source2 link_target doc_dir files
+export BASE_DIR INSTALL_DIR
 
-#-- Specific - Copy source files
+cd $BASE_DIR
 
-cd $sdir
+#-- Re-create target tree and copy base files
 
-clean_dir $base/$tdir
+make_dir $INSTALL_DIR
 
-cp *.sh $base/$tdir
-mkdir $base/$tdir/util
-cp util/config.sh $base/$tdir/util/config.sh
-chmod 444 $base/$tdir/*.sh $base/$tdir/util/*
-chmod 555 $base/$tdir/$PRODUCT.sh
+rm -rf $INSTALL_DIR/*
 
-clean_dir $base/$doc_dir
-cp -rp COPYING doc/* $base/$doc_dir
+cp sysfunc.sh.ppc $INSTALL_DIR/sysfunc.sh
+chmod 500 $INSTALL_DIR/sysfunc.sh
 
-mk_link $link_target $base/$link_source1	#-- Create symbolic link
-mk_link $link_target $base/$link_source2	#-- Create symbolic link
+make_dir $INSTALL_BASE/usr/bin
+/bin/rm -rf $INSTALL_BASE/usr/bin/sysfunc
+ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_BASE/usr/bin/sysfunc
+/bin/rm -rf $INSTALL_BASE/usr/bin/sysfunc.sh
+ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_BASE/usr/bin/sysfunc.sh
 
-#--
+make_dir $INSTALL_BASE/usr/share/doc/sysfunc
+cp -rp COPYING doc/func_ref.* $INSTALL_BASE/usr/share/doc/sysfunc
 
-build_packages
-
-cleanup
+###############################################################################

@@ -1,0 +1,32 @@
+Name: sysfunc
+Version: %SOFTWARE_VERSION%
+Release: 1
+Summary: System utility shell functions
+License: GNU LESSER GENERAL PUBLIC LICENSE, Version 3
+Group: System Environment/Configuration
+Source: %{name}-%{version}.tar.gz
+BuildArch: noarch
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
+Packager: Francois Laupretre <francois@tekwire.net>
+Prefix: %INSTALL_DIR%
+%description
+System utility shell functions
+
+%prep
+%setup -q
+
+%build
+make
+
+%install
+make install INSTALL_DIR=%{prefix}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%{prefix}
+/usr/bin/sysfunc
+/usr/bin/sysfunc.sh
+/usr/share/doc/sysfunc
