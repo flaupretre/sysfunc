@@ -241,4 +241,30 @@ esac
 while true; do sleep 10; done	# Endless loop
 }
 
+##----------------------------------------------------------------------------
+# Find a Posix-compatible shell on the current host
+#
+# Search a bash shell first, then ksh
+#
+# Args: None
+# Returns: Always 0
+# Displays: Shell path if found, nothing if not found
+#-----------------------------------------------------------------------------
+
+function sf_find_posix_shell
+{
+typeset s d
+
+for s in bash ksh
+	do
+	for d in /bin /usr/bin /sbin /usr/sbin /usr/local/bin /usr/local/sbin
+		do
+		if [ -x $d/$s ] ; then
+			echo $d/$s
+			return
+		fi
+	done
+done
+}
+
 #=============================================================================
