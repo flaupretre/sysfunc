@@ -47,9 +47,7 @@ return 0
 
 function sf_version
 {
-. $sf_install_dir/util/config.sh
-echo "$VERSION-$RELEASE"
-return 0
+echo "%SOFTWARE_VERSION%"
 }
 
 ##----------------------------------------------------------------------------
@@ -91,12 +89,10 @@ done
 return $status
 }
 
-#=============================================================================
-# Section: Temporary file management
-#=============================================================================
-
 ##----------------------------------------------------------------------------
-# Deletes all temporary files
+# Cleanup at exit
+#
+# This function discards every allocated resources (tmp files,...)
 #
 # Args: none
 # Returns: Always 0
@@ -105,30 +101,30 @@ return $status
 
 function sf_cleanup
 {
-\rm -rf $sf_tmpfile*
+sf_tmp_cleanup
+sf_error_cleanup
 }
 
 ##----------------------------------------------------------------------------
-# Returns an unused temporary path
+# Finish execution
 #
-# The returned path can then be used to create a directory or a file.
+# This function discards every allocated resources (tmp files,...)
 #
-# Args: none
-# Returns: Always 0
-# Displays: An unused temporary path
+# Args:
+#	$1: Ooptional. Exit code. Default: 0
+# Returns: Never returns. Exits from program.
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
-function sf_get_tmp
+function sf_finish
 {
-n=0
-while true
-	do
-	f="$sf_tmpfile._tmp.$n"
-	[ -e $f ] || break
-	n=`expr $n + 1`
-done
+typeset rc
+rc=0
+[ "$#" != 0 ] && rc="$1"
 
-echo $f
+sf_cleanup
+
+exit $rc
 }
 
 #=============================================================================
