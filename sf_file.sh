@@ -184,15 +184,15 @@ fi
 
 function sf_check_copy
 {
-typeset mode source target
-
-istmp=''
+typeset mode source target tmpsource
+tmpsource=
 source="$1"
 
 #-- Special case: source='-' => read data from stdin and create temp file
 
 if [ "X$source" = 'X-' ] ; then
-	source=$sf_tmpfile._check_copy
+	tmpsource=y
+	source=`sf_tmpfile`
 	dd of=$source 2>/dev/null
 fi
 
@@ -204,7 +204,11 @@ mode="$3"
 [ -f "$source" ] || return
 
 if [ -f "$target" ] ; then
-	diff "$source" "$target" >/dev/null 2>&1 && return
+	diff "$source" "$target" >/dev/null 2>&1
+	if [ $? = 0 ] ; then
+		[ -n "$tmpsource" ] && \rm $source
+		return
+	fi
 	sf_save $target
 fi
 
@@ -216,6 +220,8 @@ if [ -z "$sf_noexec" ] ; then
 	cp "$source" "$target"
 	sf_chmod $mode "$target"
 fi
+
+[ -n "$tmpsource" ] && \rm $source
 }
 
 ##----------------------------------------------------------------------------
@@ -259,7 +265,7 @@ fi
 
 function sf_check_block
 {
-typeset mode source target flag comment nstart nend fname tmpdir
+typeset mode source target flag comment nstart nend fname tmp_dir action tmp_start tmp_end tmp_2 tmp_block
 
 source="$1"
 target="$2"
@@ -276,10 +282,8 @@ echo "X$source" | grep '^X-' >/dev/null 2>&1
 if [ $? = 0 ] ; then
 	fname="`echo "X$source" | sed 's/^..//'`"
 	fname=`basename $fname`
-	tmpdir=$sf_tmpfile._dir.check_block
-	\rm -rf $tmpdir
-	mkdir -p $tmpdir
-	source=$tmpdir/$fname
+	tmp_dir=`sf_tmpdir`
+	source=$tmp_dir/$fname
 	dd of=$source 2>/dev/null
 else
 	fname=`basename $source`
@@ -289,36 +293,41 @@ fi
 
 #-- Extrait bloc
 
+tmp_start=`sf_tmpfile`
+tmp_end=`sf_tmpfile`
+tmp_2=`sf_tmpfile`
+tmp_block=`sf_tmpfile`
+
 if [ -f "$target" ] ; then
 	nstart=`grep -n "^.#sysfunc_start/$fname##" "$target" | sed 's!:.*$!!'`
 	if [ -n "$nstart" ] ; then
-		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$sf_tmpfile._start
-		tail -n +`expr $nstart + 1` <"$target" >$sf_tmpfile._2
-		nend=`grep -n "^.#sysfunc_end/$fname##" "$sf_tmpfile._2" | sed 's!:.*$!!'`
+		( [ $nstart != 1 ] && head -`expr $nstart - 1` "$target" ) >$tmp_start
+		tail -n +`expr $nstart + 1` <"$target" >$tmp_2
+		nend=`grep -n "^.#sysfunc_end/$fname##" "$tmp_2" | sed 's!:.*$!!'`
 		if [ -z "$nend" ] ; then # Corrupt block
 			sf_fatal "check_block($1): Corrupt block detected - aborting"
 			return
 		fi
-		( [ $nend != 1 ] && head -`expr $nend - 1` $sf_tmpfile._2 ) >$sf_tmpfile._block
-		tail -n +`expr $nend + 1` <$sf_tmpfile._2 >$sf_tmpfile._end
-		diff "$source" $sf_tmpfile._block >/dev/null 2>&1 && return # Same block, no action
+		( [ $nend != 1 ] && head -`expr $nend - 1` $tmp_2 ) >$tmp_block
+		tail -n +`expr $nend + 1` <$tmp_2 >$tmp_end
+		diff "$source" $tmp_block >/dev/null 2>&1 && return # Same block, no action
 		action='Replacing'
 	else
 		if [ "$flag" = "prepend" ] ; then
-			>$sf_tmpfile._start
-			cp $target $sf_tmpfile._end
+			>$tmp_start
+			cp $target $tmp_end
 			action='Prepending'
 		else
-			cp $target $sf_tmpfile._start
-			>$sf_tmpfile._end
+			cp $target $tmp_start
+			>$tmp_end
 			action='Appending'
 		fi
 	fi
 	sf_save $target
 else
 	action='Creating from'
-	>$sf_tmpfile._start
-	>$sf_tmpfile._end
+	>$tmp_start
+	>$tmp_end
 fi
 
 sf_msg1 "$target: $action data block"
@@ -327,14 +336,16 @@ if [ -z "$sf_noexec" ] ; then
 	\rm -f "$target"
 	sf_create_dir `dirname $target`
 	(
-	cat $sf_tmpfile._start
+	cat $tmp_start
 	echo "$comment#sysfunc_start/$fname##------ Don't remove this line"
 	cat $source
 	echo "$comment#sysfunc_end/$fname##-------- Don't remove this line"
-	cat $sf_tmpfile._end
+	cat $tmp_end
 	) >$target
 	sf_chmod $mode "$target"
 fi
+
+\rm -rf $tmp_dir $tmp_start $tmp_end $tmp_2 $tmp_block
 }
 
 ##----------------------------------------------------------------------------
