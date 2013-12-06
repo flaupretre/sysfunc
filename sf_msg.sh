@@ -20,6 +20,17 @@
 # Section: Message/Error handling
 #=============================================================================
 
+#-----------------------------------------------------------------------------
+# Cleanup error file
+#
+# Called by sf_finish
+#-----------------------------------------------------------------------------
+
+function sf_error_cleanup
+{
+\rm -rf $_sf_error_list
+}
+
 ##----------------------------------------------------------------------------
 # Displays an error message and aborts execution
 #
@@ -39,9 +50,9 @@ rc=1
 [ -n "$2" ] && rc=$2
 
 sf_error "$1"
-echo
-echo "******************* Abort *******************" >&2
-exit $rc
+sf_newline >&2
+__msg "************ Fatal error - Aborting ************" >&2
+sf_finish $rc
 }
 
 ##----------------------------------------------------------------------------
@@ -67,7 +78,7 @@ sf_fatal "$1: Feature not supported in this environment" 2
 # Displays an error message
 #
 # If the SF_ERRLOG environment variable is set, it is supposed to contain
-# a path. The error message will be appnded to the file at this path. If
+# a path. The error message will be appended to the file at this path. If
 # the file does not exist, it will be created.
 # Args:
 #	$1 : Message
@@ -77,11 +88,34 @@ sf_fatal "$1: Feature not supported in this environment" 2
 
 function sf_error
 {
-typeset msg
+sf_msg "***ERROR: $1" >&2
+echo "$1" >>$_sf_error_list
+}
 
-msg="***ERROR: $1"
-sf_msg "$msg"
-[ -n "$SF_ERRLOG" ] && echo "$msg" >>$SF_ERRLOG
+##----------------------------------------------------------------------------
+# Display a list of errors detected so far
+#
+# Args: None
+# Returns: Always 0
+# Displays: List of error messages, one by line
+#-----------------------------------------------------------------------------
+
+function sf_show_errors
+{
+cat $_sf_error_list 2>/dev/null
+}
+
+##----------------------------------------------------------------------------
+# Display a count of errors detected so far
+#
+# Args: None
+# Returns: Always 0
+# Displays: Error count
+#-----------------------------------------------------------------------------
+
+function sf_error_count
+{
+sf_show_errors | wc -l
 }
 
 ##----------------------------------------------------------------------------
@@ -95,12 +129,17 @@ sf_msg "$msg"
 
 function sf_warning
 {
-sf_msg " *===* WARNING *===* : $1"
+sf_msg " *===* WARNING *===* : $1" >&2
 }
 
-#=============================================================================
-# Section: User interaction
-#=============================================================================
+#----------------------------------------------------------------------------
+# Core message display (internal)
+#----------------------------------------------------------------------------
+
+function __msg
+{
+echo "$*"
+}
 
 ##----------------------------------------------------------------------------
 # Displays a message (string)
@@ -119,7 +158,7 @@ typeset prefix
 
 prefix=''
 [ -n "$sf_noexec" ] && prefix='(n)'
-echo "$prefix$1"
+__msg "$prefix$1"
 }
 
 ##----------------------------------------------------------------------------
@@ -136,7 +175,7 @@ echo "$prefix$1"
 
 function sf_trace
 {
-[ -n "$sf_verbose" -o "$sf_verbose_level" -ge 1 ] && echo ">>> $*"
+[ -n "$sf_verbose" -o "$sf_verbose_level" -ge 1 ] && __msg ">>> $*" >&2
 }
 
 ##----------------------------------------------------------------------------
@@ -152,7 +191,7 @@ function sf_trace
 
 function sf_debug
 {
-[ "$sf_verbose_level" -ge 2 ] && echo "D>> $*"
+[ "$sf_verbose_level" -ge 2 ] && __msg "D>> $*" >&2
 }
 
 ##----------------------------------------------------------------------------
@@ -188,6 +227,32 @@ sf_msg "--- $1"
 }
 
 ##----------------------------------------------------------------------------
+# Displays a separator line
+#
+# Args: None
+# Returns: Always 0
+# Displays: separator line
+#-----------------------------------------------------------------------------
+
+function sf_separator
+{
+__msg "==================================================================="
+}
+
+##----------------------------------------------------------------------------
+# Display a new line
+#
+# Args: None
+# Returns: Always 0
+# Displays: new line
+#-----------------------------------------------------------------------------
+
+function sf_newline
+{
+__msg
+}
+
+##----------------------------------------------------------------------------
 # Displays a 'banner' message
 #
 # The message is displayed with an horizontal separator line above and below
@@ -200,12 +265,16 @@ sf_msg "--- $1"
 
 function sf_banner
 {
-echo
-echo "==================================================================="
-echo " $1"
-echo "==================================================================="
-echo
+sf_newline
+sf_separator
+__msg " $1"
+sf_separator
+sf_newline
 }
+
+#=============================================================================
+# Section: User interaction
+#=============================================================================
 
 ##----------------------------------------------------------------------------
 # Ask a question to the user
@@ -226,7 +295,7 @@ else
 fi
 
 read answer
-echo $answer
+__msg $answer
 }
 
 ##----------------------------------------------------------------------------
@@ -256,7 +325,7 @@ fi
 
 answer=`sf_ask "$1"`
 
-echo
+__msg
 [ "$answer" != o -a "$answer" != O \
 	-a "$answer" != y -a "$answer" != Y \
 	-a "$answer" != j -a "$answer" != J ] \
@@ -271,4 +340,6 @@ return 0
 # contain a numeric value.
 
 [ -z "$sf_verbose_level" ] && sf_verbose_level=0
-export sf_verbose_level
+[ -z "$_sf_error_list" ] && _sf_error_list=/tmp/._sf.errors.$$
+
+export sf_verbose_level _sf_error_list
