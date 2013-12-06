@@ -81,7 +81,7 @@ done
 # default syntax is not always compatible with Linux ('tail -n +<number>' for
 # instance).
 
-for i in /usr/sbin /bin /usr/bin /etc /usr/ccs/bin /usr/xpg4/bin /usr/xpg6/bin
+for i in /usr/sbin /bin /usr/bin /sbin /etc /usr/ccs/bin /usr/xpg4/bin /usr/xpg6/bin
 	do
 	[ -d "$i" ] && PATH="$i:$PATH"
 done
@@ -89,17 +89,9 @@ export PATH
 
 #-- Variables
 
-[ -z "$sf_install_dir" ] && sf_install_dir=/opt/sysfunc
-[ -z "$sf_tmpfile" ] && sf_tmpfile=/tmp/.sysfunc$$.tmp
+[ -z "$sf_install_dir" ] && sf_install_dir="%INSTALL_DIR%"
 
-export sf_install_dir sf_tmpfile
-
-#-- Load modules
-
-for _m in $sf_install_dir/sf_*.sh
-	do
-	. $_m
-done
+export sf_install_dir
 
 #-- Find utilities
 
@@ -114,10 +106,6 @@ if [ -z "$sf_rpm" ] ; then
 	[ -n "$sf_rpm" ] && sf_rpm="$sf_rpm --nosignature"
 fi
 export sf_rpm
-
-#-- Cleanup tmp file
-
-sf_cleanup
 
 #-- Check if sourced or executed
 
