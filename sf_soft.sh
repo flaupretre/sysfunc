@@ -145,8 +145,8 @@ for _pkg
 done
 
 if [ -n "$_to_install" ] ; then
-	sf_msg "Installing $_to_install ..."
-	$sf_yum install $_to_install
+	sf_msg1 "Installing $_to_install ..."
+	[ -z "$sf_noexec" ] && $sf_yum install $_to_install
 fi
 
 return 0
@@ -185,13 +185,13 @@ for _pkg
 done
 
 if [ -n "$_to_update" ] ; then
-	sf_msg "Upgrading $_to_update ..."
-	$sf_yum upgrade $_to_update
+	sf_msg1 "Upgrading $_to_update ..."
+	[ -z "$sf_noexec" ] && $sf_yum upgrade $_to_update
 fi
 
 if [ -n "$_to_install" ] ; then
-	sf_msg "Installing $_to_install ..."
-	$sf_yum install $_to_install
+	sf_msg1 "Installing $_to_install ..."
+	[ -z "$sf_noexec" ] && $sf_yum install $_to_install
 fi
 
 return 0
@@ -215,7 +215,10 @@ typeset _pkg
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_uninstall
 
 for _pkg ; do
-	sf_soft_is_installed "$_pkg" && $sf_yum remove "$_pkg"
+	if sf_soft_is_installed "$_pkg" ; then
+		sf_msg1 "Uninstalling $_pkg ..."
+		[ -z "$sf_noexec" ] && $sf_yum remove "$_pkg"
+	fi
 done
 
 return 0
@@ -239,7 +242,10 @@ typeset _pkg
 [ -z "$sf_rpm" ] && sf_unsupported sf_soft_remove
 
 for _pkg ; do
-	sf_soft_is_installed "$_pkg" && $sf_rpm -e --nodeps "$_pkg"
+	if sf_soft_is_installed "$_pkg" ; then
+		sf_msg1 "Uninstalling $_pkg ..."
+		[ -z "$sf_noexec" ] && $sf_rpm -e --nodeps "$_pkg"
+	fi
 done
 
 return 0
