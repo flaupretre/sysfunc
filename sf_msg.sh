@@ -26,7 +26,7 @@
 # Called by sf_finish
 #-----------------------------------------------------------------------------
 
-function sf_error_cleanup
+function _sf_error_cleanup
 {
 \rm -rf $_sf_error_list
 }

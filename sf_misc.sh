@@ -101,8 +101,8 @@ return $status
 
 function sf_cleanup
 {
-sf_tmp_cleanup
-sf_error_cleanup
+_sf_tmp_cleanup
+_sf_error_cleanup
 }
 
 ##----------------------------------------------------------------------------

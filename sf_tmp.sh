@@ -23,14 +23,14 @@
 ##----------------------------------------------------------------------------
 # Deletes all temporary files
 #
-# Called by sf_cleanup()
+# This function is automatically called by sf_cleanup()
 #
 # Args: none
 # Returns: Always 0
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-function sf_tmp_cleanup
+function _sf_tmp_cleanup
 {
 if [ -f "$_sf_tmpfile_list" ] ; then
 	\rm -rf `cat $_sf_tmpfile_list` $_sf_tmpfile_list
