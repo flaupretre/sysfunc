@@ -552,27 +552,26 @@ By default, the 'wget' command is used. If the $WGET environment variable is set
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>the return code of the executed program</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>data displayed by the executed program</td></tr>
 </table>
-
-# Temporary file management #
 ## sf\_cleanup ##
-**Deletes all temporary files**
+**Cleanup at exit**
 
-
+This function discards every allocated resources (tmp files,...)
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
-## sf\_get\_tmp ##
-**Returns an unused temporary path**
+## sf\_finish ##
+**Finish execution**
 
-The returned path can then be used to create a directory or a file.
+This function discards every allocated resources (tmp files,...)
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>An unused temporary path</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Ooptional. Exit code. Default: 0</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Never returns. Exits from program.</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
 </table>
 
 # Message/Error handling #
@@ -602,13 +601,33 @@ Call this function when a feature is not available on the current operating syst
 ## sf\_error ##
 **Displays an error message**
 
-If the SF\_ERRLOG environment variable is set, it is supposed to contain a path. The error message will be appnded to the file at this path. If the file does not exist, it will be created.
+If the SF\_ERRLOG environment variable is set, it is supposed to contain a path. The error message will be appended to the file at this path. If the file does not exist, it will be created.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
 <tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Message</td></tr>
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error message</td></tr>
+</table>
+## sf\_show\_errors ##
+**Display a list of errors detected so far**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>List of error messages, one by line</td></tr>
+</table>
+## sf\_error\_count ##
+**Display a count of errors detected so far**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Error count</td></tr>
 </table>
 ## sf\_warning ##
 **Displays a warning message**
@@ -621,8 +640,6 @@ If the SF\_ERRLOG environment variable is set, it is supposed to contain a path.
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Warning message</td></tr>
 </table>
-
-# User interaction #
 ## sf\_msg ##
 **Displays a message (string)**
 
@@ -678,6 +695,26 @@ This is a message prefixed with a linefeed and some hyphens. To be used as parag
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Message</td></tr>
 </table>
+## sf\_separator ##
+**Displays a separator line**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>separator line</td></tr>
+</table>
+## sf\_newline ##
+**Display a new line**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>new line</td></tr>
+</table>
 ## sf\_banner ##
 **Displays a 'banner' message**
 
@@ -689,6 +726,8 @@ The message is displayed with an horizontal separator line above and below
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message</td></tr>
 </table>
+
+# User interaction #
 ## sf\_ask ##
 **Ask a question to the user**
 
@@ -868,6 +907,16 @@ Other info: see sf\_os\_id()
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>does not return</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+## sf\_find\_posix\_shell ##
+**Find a Posix-compatible shell on the current host**
+
+Search a bash shell first, then ksh
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Shell path if found, nothing if not found</td></tr>
 </table>
 
 # Software management #
@@ -1109,6 +1158,38 @@ Format: DD-Mmm-YYYY HH:MM:SS (&lt;Unix time>)
 <tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Time string</td></tr>
+</table>
+
+# Temporary file management #
+## sf\_get\_tmp ##
+**Returns an unused temporary path**
+
+The returned path can then be used to create a directory or a file. ** This function is deprecated. Please use sf\_tmpfile or sf\_tmpdir instead.
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>An unused temporary path</td></tr>
+</table>
+## sf\_tmpfile ##
+**Creates an empty temporary file and returns its path**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Temporary file path</td></tr>
+</table>
+## sf\_tmpdir ##
+**Creates an empty temporary dir and returns its path**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Temporary dir path</td></tr>
 </table>
 
 # User/group management #
