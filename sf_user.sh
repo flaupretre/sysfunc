@@ -91,8 +91,8 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 # Create a user group
 #
 # Args:
-#	$1 = Group name
-#	$2 = Group Id
+#	$1: Group name
+#	$2: Group Id
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -210,15 +210,15 @@ return $status
 # not set.
 #
 # Args:
-#	$1 = User name
-#	$2 = uid
-#	$3 = gid
-#	$4 = description (gecos)
-#	$5 = home dir (can be '' for '/none')
-#	$6 = Additional groups (separated with ',')
-#	$7 = encrypted password (Linux)
-#	$8 = encrypted password (HP-UX & SunOS)
-#	$9 = encrypted password (AIX)
+#	$1: User name
+#	$2: uid
+#	$3: gid
+#	$4: description (gecos)
+#	$5: home dir (can be '' for '/none')
+#	$6: Additional groups (separated with ',')
+#	$7: encrypted password (Linux)
+#	$8: encrypted password (HP-UX & SunOS)
+#	$9: encrypted password (AIX)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------

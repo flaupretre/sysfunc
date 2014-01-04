@@ -462,9 +462,9 @@ fi
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
-#	$1 = File path
-#	$2 = Pattern to search (grep regex syntax)
-#	$3 = Optional. Comment char (one char string). Default='#'
+#	$1: File path
+#	$2: Pattern to search (grep regex syntax)
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -498,9 +498,9 @@ fi
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
-#	$1 = File path
-#	$2 = Pattern to search (grep regex syntax)
-#	$3 = Optional. Comment char (one char string). Default='#'
+#	$1: File path
+#	$2: Pattern to search (grep regex syntax)
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------

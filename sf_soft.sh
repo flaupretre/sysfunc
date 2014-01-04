@@ -23,20 +23,23 @@
 ##----------------------------------------------------------------------------
 # Check if software exist (installed or available for installation)
 #
-# Args: A list of software names to check
-# Returns: 0 if every software exists, !=0 if not
+# Args:
+#	$*: A list of software names to check
+# Returns: The number of software from the input list which DON'T exist
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_soft_exists
 {
-typeset soft
+typeset soft rc
+rc=0
 
 for soft in $*
 	do
-	$sf_yum list $1 >/dev/null 2>&1 || return 1
+	$sf_yum list $1 >/dev/null 2>&1 || rc=`expr $rc + 1`
 done
-return 0
+
+return $rc
 }
 
 ##----------------------------------------------------------------------------

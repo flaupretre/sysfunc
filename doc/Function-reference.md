@@ -316,7 +316,10 @@ If the target path directory does not exist, it is created.
 The first line containing the (grep) pattern given in argument will be commented out by prefixing it with the comment character. If the pattern is not contained in the file, the file is left unchanged.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>File path</td></tr>
+<tr><td width=20 align=center>$2</td><td>Pattern to search (grep regex syntax)</td></tr>
+<tr><td width=20 align=center>$3</td><td>Optional. Comment char (one char string). Default='#'</td></tr>
+</table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
@@ -326,7 +329,10 @@ The first line containing the (grep) pattern given in argument will be commented
 The first commented line containing the (grep) pattern given in argument will be uncommented by removing the comment character. If the pattern is not contained in the file, the file is left unchanged.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>File path</td></tr>
+<tr><td width=20 align=center>$2</td><td>Pattern to search (grep regex syntax)</td></tr>
+<tr><td width=20 align=center>$3</td><td>Optional. Comment char (one char string). Default='#'</td></tr>
+</table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
@@ -926,8 +932,9 @@ Search a bash shell first, then ksh
 
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every software exists, !=0 if not</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>A list of software names to check</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>The number of software from the input list which DON'T exist</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 ## sf\_soft\_list ##
@@ -1228,7 +1235,9 @@ TODO: Unify with other supported OS
 
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Group name</td></tr>
+<tr><td width=20 align=center>$2</td><td>Group Id</td></tr>
+</table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
@@ -1273,7 +1282,16 @@ To set the login shell, initialize the CREATE\_USER\_SHELL variable before calli
 For accounts with no access allowed (blocked accounts), $7, $8, and $9 are not set.
 
 <table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name</td></tr>
+<tr><td width=20 align=center>$2</td><td>uid</td></tr>
+<tr><td width=20 align=center>$3</td><td>gid</td></tr>
+<tr><td width=20 align=center>$4</td><td>description (gecos)</td></tr>
+<tr><td width=20 align=center>$5</td><td>home dir (can be '' for '/none')</td></tr>
+<tr><td width=20 align=center>$6</td><td>Additional groups (separated with ',')</td></tr>
+<tr><td width=20 align=center>$7</td><td>encrypted password (Linux)</td></tr>
+<tr><td width=20 align=center>$8</td><td>encrypted password (HP-UX &amp; SunOS)</td></tr>
+<tr><td width=20 align=center>$9</td><td>encrypted password (AIX)</td></tr>
+</table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
