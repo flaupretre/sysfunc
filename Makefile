@@ -56,8 +56,7 @@ $(TGZ_FILE): clean
 	mv /tmp/$(TGZ_FILE) .
 
 rpm: tgz spec
-	cp $(TGZ_FILE) $(HOME)/rpmbuild/SOURCES
-	rpmbuild -bb $(SOFTWARE_NAME).spec
+	rpmbuild -bb --define="_sourcedir `pwd`" $(SOFTWARE_NAME).spec
 	
 clean:
 	/bin/rm -rf sysfunc.sh.ppc $(SOFTWARE_NAME).spec $(TGZ_FILE)
