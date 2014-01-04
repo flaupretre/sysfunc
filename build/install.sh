@@ -16,6 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
+# $INSTALL_ROOT variable can be set by the calling environment and is optional.
+# If not set, everything will be installed relative to '/'.
+
+
 function make_dir
 {
 [ -d $1 ] || mkdir -p $1
@@ -26,10 +30,9 @@ function make_dir
 CMD=`basename $0`
 cd `dirname $0`/..
 BASE_DIR=`/bin/pwd`
-INSTALL_BASE=
-[ -n "$RPM_BUILD_ROOT" ] && INSTALL_BASE="$RPM_BUILD_ROOT"
+
 INSTALL_TARGET_DIR="$1"
-INSTALL_DIR="$INSTALL_BASE$1"
+INSTALL_DIR="$INSTALL_ROOT$1"
 
 export BASE_DIR INSTALL_DIR
 
@@ -44,13 +47,13 @@ rm -rf $INSTALL_DIR/*
 cp sysfunc.sh.ppc $INSTALL_DIR/sysfunc.sh
 chmod 500 $INSTALL_DIR/sysfunc.sh
 
-make_dir $INSTALL_BASE/usr/bin
-/bin/rm -rf $INSTALL_BASE/usr/bin/sysfunc
-ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_BASE/usr/bin/sysfunc
-/bin/rm -rf $INSTALL_BASE/usr/bin/sysfunc.sh
-ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_BASE/usr/bin/sysfunc.sh
+make_dir $INSTALL_ROOT/usr/bin
+/bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc
+ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc
+/bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc.sh
+ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc.sh
 
-make_dir $INSTALL_BASE/usr/share/doc/sysfunc
-cp -rp COPYING doc/func_ref.* $INSTALL_BASE/usr/share/doc/sysfunc
+make_dir $INSTALL_ROOT/usr/share/doc/sysfunc
+cp -rp COPYING doc/func_ref.* $INSTALL_ROOT/usr/share/doc/sysfunc
 
 ###############################################################################

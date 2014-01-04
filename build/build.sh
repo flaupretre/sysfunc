@@ -27,32 +27,17 @@ INSTALL_DIR="$2"
 export BASE_DIR SOFTWARE_VERSION INSTALL_DIR
 
 
-#=====================================
-
-function __entering()
-{
-echo "#>>==== Entering $*"
-echo
-}
-
-function __exiting()
-{
-echo "#<<==== Exiting $*"
-echo
-}
-
 #==== MAIN ====
-
 #-- Aggregate source files to preprocessed file
 
 cd $BASE_DIR
 
 (
 for i in sf_*.sh ; do
-	__entering $i
+	echo "#>>==== Entering $i"
 	cat $i
 	echo # force newline at EOF
-	__exiting $i
+	echo "#<<==== Exiting $i"
 done
 cat sysfunc.sh
 ) | sed -e "s,%INSTALL_DIR%,$INSTALL_DIR,g" \

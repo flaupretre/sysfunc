@@ -19,7 +19,7 @@ System utility shell functions
 make
 
 %install
-make install INSTALL_DIR=%{prefix}
+INSTALL_ROOT=$RPM_BUILD_ROOT make install INSTALL_DIR=%{prefix} 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
