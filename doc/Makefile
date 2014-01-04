@@ -3,7 +3,7 @@ PROJECT=sysfunc
 
 PPC_DIR=../../../ppc/public
 
-TARGETS = func_ref.htm func_ref.md
+TARGETS = Function-reference.htm Function-reference.md
 
 #-----------------
 
@@ -20,12 +20,12 @@ save: clean
 #----------------
 # Ignores functions starting with '_', sort functions
 
-func_ref.htm:
+Function-reference.htm:
 	cat ../sf_*.sh >doc.tmp
 	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" html -e '_' -s
 	/bin/rm -f doc.tmp
 
-func_ref.md:
+Function-reference.md:
 	cat ../sf_*.sh >doc.tmp
 	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" md -e '_' -s
 	/bin/rm -f doc.tmp
@@ -34,5 +34,5 @@ func_ref.md:
 # 'install' generates the markdown function ref and copies it to the wiki tree
 # Commit/push of the wiki repository must be done then.
 
-install: func_ref.md
-	cp func_ref.md ../../wiki/Function-reference.md
+install: Function-reference.md
+	cp Function-reference.md ../../wiki/Function-reference.md
