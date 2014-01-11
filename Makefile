@@ -16,6 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
+#=====================================
+# For a non-default install directory, run 'make ... INSTALL_DIR=<inst_dir>'
+#=====================================
+
 SOFTWARE_NAME = sysfunc
 
 include config.mk
