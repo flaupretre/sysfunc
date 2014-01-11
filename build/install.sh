@@ -54,6 +54,6 @@ ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc
 ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc.sh
 
 make_dir $INSTALL_ROOT/usr/share/doc/sysfunc
-cp -rp COPYING doc/func_ref.* $INSTALL_ROOT/usr/share/doc/sysfunc
+cp -rp COPYING doc/Function-reference.* $INSTALL_ROOT/usr/share/doc/sysfunc
 
 ###############################################################################
