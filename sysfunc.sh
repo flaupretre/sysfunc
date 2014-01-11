@@ -116,9 +116,11 @@ if [ $? = 0 ] ; then	# Executed
 	_func="sf_$_cmd"
 	shift
 	type "$_func" >/dev/null 2>&1 || _sf_fatal "$_cmd: Unknown command"
-		
-	"$_func" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
-	_rc=$?
+	cmd="$_func"
+	for arg ; do	# Preserve potential empty strings
+		cmd="$cmd '$arg'"
+	done
+	eval "$cmd ; _rc=\$?"
 	exit $_rc
 fi
 
