@@ -55,9 +55,8 @@ $(TGZ_FILE): clean
 	/bin/rm -rf /tmp/$(TGZ_PREFIX)
 	mkdir /tmp/$(TGZ_PREFIX)
 	tar cf - . | ( cd /tmp/$(TGZ_PREFIX) ; tar xpf - )
-	( cd /tmp ; tar cf - ./$(TGZ_PREFIX) ) | gzip >/tmp/$(TGZ_FILE)
+	( cd /tmp ; rm -rf $(TGZ_PREFIX)/.git ; tar cf - ./$(TGZ_PREFIX) ) | gzip >$(TGZ_FILE)
 	/bin/rm -rf /tmp/$(TGZ_PREFIX)
-	mv /tmp/$(TGZ_FILE) .
 
 rpm: tgz spec
 	rpmbuild -bb --define="_sourcedir `pwd`" $(SOFTWARE_NAME).spec
