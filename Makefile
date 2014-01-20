@@ -43,9 +43,7 @@ install: sysfunc.sh.ppc
 	chmod +x build/install.sh
 	build/install.sh $(INSTALL_DIR)
 
-spec: $(SOFTWARE_NAME).spec
-
-$(SOFTWARE_NAME).spec: build/$(SOFTWARE_NAME).spec.in
+specfile: build/specfile.in
 	chmod +x build/mkspec.sh
 	build/mkspec.sh "$(SOFTWARE_VERSION)" "$(INSTALL_DIR)"
 
@@ -58,10 +56,10 @@ $(TGZ_FILE): clean
 	( cd /tmp ; rm -rf $(TGZ_PREFIX)/.git ; tar cf - ./$(TGZ_PREFIX) ) | gzip >$(TGZ_FILE)
 	/bin/rm -rf /tmp/$(TGZ_PREFIX)
 
-rpm: tgz spec
-	rpmbuild -bb --define="_sourcedir `pwd`" $(SOFTWARE_NAME).spec
+rpm: tgz specfile
+	rpmbuild -bb --define="_sourcedir `pwd`" specfile
 	
 clean:
-	/bin/rm -rf sysfunc.sh.ppc $(SOFTWARE_NAME).spec $(TGZ_FILE)
+	/bin/rm -rf sysfunc.sh.ppc specfile $(TGZ_FILE)
 
 #============================================================================
