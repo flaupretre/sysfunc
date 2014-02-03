@@ -56,7 +56,7 @@ typeset n f
 n=0
 while true
 	do
-	f="$_sf_tmpfile_prefix.$n"
+	f="$_sf_tmpfile_prefix$n"
 	[ -e $f ] || break
 	n=`expr $n + 1`
 done
@@ -100,8 +100,7 @@ echo $f
 }
 
 #=============================================================================
+# Note: Each process must have its own list and prefix
 
-[ -z "$_sf_tmpfile_prefix" ] && _sf_tmpfile_prefix=/tmp/sf.$$.tmp
-[ -z "$_sf_tmpfile_list" ] && _sf_tmpfile_list="/tmp/._sf.tmpfiles.$$"
-
-export _sf_tmpfile_prefix _sf_tmpfile_list
+_sf_tmpfile_prefix="/tmp/._sf.$$.tmp."
+_sf_tmpfile_list="/tmp/._sf.$$.tmplist"
