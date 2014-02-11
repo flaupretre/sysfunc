@@ -572,4 +572,27 @@ else
 fi
 }
 
+#------------------------------------------------
+# Sort a file in-place
+#
+# Args:
+#	$1: Path
+#	$2-*: Optional. Sort options
+# Returns: Sort return code
+#------------------------------------------------
+
+function sf_sort_file
+{
+typeset file tmp rc
+file="$1"
+shift
+
+tmp=`sf_tmpfile`
+cp $file $tmp
+sort $* <$tmp >$file
+rc=$?
+rm -f $tmp
+return $rc
+}
+
 #=============================================================================
