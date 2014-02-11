@@ -88,8 +88,33 @@ sf_fatal "$1: Feature not supported in this environment" 2
 
 function sf_error
 {
+typeset errfile
+
 sf_msg "***ERROR: $1" >&2
-echo "$1" >>$_sf_error_list
+
+errfile=$_sf_error_list
+[ -n "$SF_ERRLOG" ] && errfile="$SF_ERRLOG"
+echo "$1" >>$errfile
+}
+
+##----------------------------------------------------------------------------
+# Import errors into the error system
+#
+# This mechanism is generally used in conjunction with the $SF_ERRLOG variable.
+# This variable is used to temporarily distract errors from the normal flow.
+# Then, this function can be called to reinject errors into the default error
+# repository.
+#
+# Args:
+#	$1 : Optional. File to import (1 error per line). If not set, takes input
+#        from stdin.
+# Returns: Always 0
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+function sf_error_import
+{
+cat $1 >>$_sf_error_list
 }
 
 ##----------------------------------------------------------------------------
@@ -102,7 +127,7 @@ echo "$1" >>$_sf_error_list
 
 function sf_show_errors
 {
-cat $_sf_error_list 2>/dev/null
+sort -u <$_sf_error_list 2>/dev/null
 }
 
 ##----------------------------------------------------------------------------
@@ -340,6 +365,6 @@ return 0
 # contain a numeric value.
 
 [ -z "$sf_verbose_level" ] && sf_verbose_level=0
-[ -z "$_sf_error_list" ] && _sf_error_list=/tmp/._sf.errors.$$
+_sf_error_list=/tmp/._sf.errors.$$
 
 export sf_verbose_level _sf_error_list
