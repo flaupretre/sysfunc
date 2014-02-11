@@ -127,7 +127,7 @@ cat $1 >>$_sf_error_list
 
 function sf_show_errors
 {
-sort -u <$_sf_error_list 2>/dev/null
+sort -u $_sf_error_list 2>/dev/null
 }
 
 ##----------------------------------------------------------------------------
@@ -365,6 +365,9 @@ return 0
 # contain a numeric value.
 
 [ -z "$sf_verbose_level" ] && sf_verbose_level=0
+
+# File containing error messages. Does not exist before first error is raised.
+
 _sf_error_list=/tmp/._sf.errors.$$
 
 export sf_verbose_level _sf_error_list
