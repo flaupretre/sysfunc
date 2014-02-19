@@ -615,6 +615,17 @@ If the SF\_ERRLOG environment variable is set, it is supposed to contain a path.
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error message</td></tr>
 </table>
+## sf\_error\_import ##
+**Import errors into the error system**
+
+This mechanism is generally used in conjunction with the $SF\_ERRLOG variable. This variable is used to temporarily distract errors from the normal flow. Then, this function can be called to reinject errors into the default error repository.
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Optional. File to import (1 error per line). If not set, takes input from stdin.</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
 ## sf\_show\_errors ##
 **Display a list of errors detected so far**
 

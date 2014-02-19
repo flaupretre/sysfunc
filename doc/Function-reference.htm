@@ -55,17 +55,18 @@
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.1. <a href="#p6.1">sf_fatal</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.2. <a href="#p6.2">sf_unsupported</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.3. <a href="#p6.3">sf_error</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.4. <a href="#p6.4">sf_show_errors</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.5. <a href="#p6.5">sf_error_count</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.6. <a href="#p6.6">sf_warning</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.7. <a href="#p6.7">sf_msg</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.8. <a href="#p6.8">sf_trace</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.9. <a href="#p6.9">sf_debug</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.10. <a href="#p6.10">sf_msg1</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.11. <a href="#p6.11">sf_msg_section</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.12. <a href="#p6.12">sf_separator</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.13. <a href="#p6.13">sf_newline</a></td></tr>
-<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.14. <a href="#p6.14">sf_banner</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.4. <a href="#p6.4">sf_error_import</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.5. <a href="#p6.5">sf_show_errors</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.6. <a href="#p6.6">sf_error_count</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.7. <a href="#p6.7">sf_warning</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.8. <a href="#p6.8">sf_msg</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.9. <a href="#p6.9">sf_trace</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.10. <a href="#p6.10">sf_debug</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.11. <a href="#p6.11">sf_msg1</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.12. <a href="#p6.12">sf_msg_section</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.13. <a href="#p6.13">sf_separator</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.14. <a href="#p6.14">sf_newline</a></td></tr>
+<tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 6.15. <a href="#p6.15">sf_banner</a></td></tr>
 <tr><td width=100% align=left>7. <a href="#p7"><b>User interaction</b></a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.1. <a href="#p7.1">sf_ask</a></td></tr>
 <tr><td width=100% align=left>&nbsp;&nbsp;&nbsp;&nbsp; 7.2. <a href="#p7.2">sf_yn_question</a></td></tr>
@@ -515,73 +516,80 @@
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.4<a name="p6.4">&nbsp;</a>- sf_show_errors</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.4<a name="p6.4">&nbsp;</a>- sf_error_import</h2>
+<p><b>Import errors into the error system</b></p>
+<p>This mechanism is generally used in conjunction with the $SF_ERRLOG variable. This variable is used to temporarily distract errors from the normal flow. Then, this function can be called to reinject errors into the default error repository.</p>
+<table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Optional. File to import (1 error per line). If not set, takes input from stdin.</td></tr>
+</table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.5<a name="p6.5">&nbsp;</a>- sf_show_errors</h2>
 <p><b>Display a list of errors detected so far</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>List of error messages, one by line</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.5<a name="p6.5">&nbsp;</a>- sf_error_count</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.6<a name="p6.6">&nbsp;</a>- sf_error_count</h2>
 <p><b>Display a count of errors detected so far</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Error count</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.6<a name="p6.6">&nbsp;</a>- sf_warning</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.7<a name="p6.7">&nbsp;</a>- sf_warning</h2>
 <p><b>Displays a warning message</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Warning message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.7<a name="p6.7">&nbsp;</a>- sf_msg</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.8<a name="p6.8">&nbsp;</a>- sf_msg</h2>
 <p><b>Displays a message (string)</b></p>
 <p>If the $sf_noexec environment variable is set, prefix the message with '(n)'</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.8<a name="p6.8">&nbsp;</a>- sf_trace</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.9<a name="p6.9">&nbsp;</a>- sf_trace</h2>
 <p><b>Display trace message</b></p>
 <p>If the $sf_verbose environment variable is set or $sf_verbose_level &gt;= 1, displays the message.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message if verbose mode is active, nothing if not</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.9<a name="p6.9">&nbsp;</a>- sf_debug</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.10<a name="p6.10">&nbsp;</a>- sf_debug</h2>
 <p><b>Display debug message</b></p>
 <p>If $sf_verbose_level &gt;= 2, displays the message.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message if verbose level set to debug (2) or more</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.10<a name="p6.10">&nbsp;</a>- sf_msg1</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.11<a name="p6.11">&nbsp;</a>- sf_msg1</h2>
 <p><b>Displays a message prefixed with spaces</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>message prefixed with spaces</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.11<a name="p6.11">&nbsp;</a>- sf_msg_section</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.12<a name="p6.12">&nbsp;</a>- sf_msg_section</h2>
 <p><b>Displays a 'section' message</b></p>
 <p>This is a message prefixed with a linefeed and some hyphens. To be used as paragraph/section title.</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
 </table></td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Message</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.12<a name="p6.12">&nbsp;</a>- sf_separator</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.13<a name="p6.13">&nbsp;</a>- sf_separator</h2>
 <p><b>Displays a separator line</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>separator line</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.13<a name="p6.13">&nbsp;</a>- sf_newline</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.14<a name="p6.14">&nbsp;</a>- sf_newline</h2>
 <p><b>Display a new line</b></p>
 <p></p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td>None</td></tr><tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>new line</td></tr>
 </table>
-</td><td width=50>&nbsp;</td></tr></table><h2>6.14<a name="p6.14">&nbsp;</a>- sf_banner</h2>
+</td><td width=50>&nbsp;</td></tr></table><h2>6.15<a name="p6.15">&nbsp;</a>- sf_banner</h2>
 <p><b>Displays a 'banner' message</b></p>
 <p>The message is displayed with an horizontal separator line above and below</p>
 <table width=100% border=0><tr><td width=50>&nbsp;</td><td><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>message</td></tr>
