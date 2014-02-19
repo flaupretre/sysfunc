@@ -202,6 +202,60 @@ return $status
 }
 
 ##----------------------------------------------------------------------------
+# Return UID of a given user
+#
+# Args:
+#	$1: User name
+# Returns: 0 if user exists, 1 if not
+# Displays: UID if user exists, nothing if not
+#-----------------------------------------------------------------------------
+
+function sf_user_uid
+{
+typeset res
+res=''
+
+case `uname -s` in
+	Linux)
+		res=`awk -F: -vUSER=${user} '$1==USER {print $3}' /etc/passwd`
+		;;
+	*)
+		sf_unsupported sf_user_uid
+		;;
+esac
+[ -z "$res" ] && return 1
+echo $res
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Return GID of a given user
+#
+# Args:
+#	$1: User name
+# Returns: 0 if user exists, 1 if not
+# Displays: Primary GID if user exists, nothing if not
+#-----------------------------------------------------------------------------
+
+function sf_user_gid
+{
+typeset res
+res=''
+
+case `uname -s` in
+	Linux)
+		res=`awk -F: -vUSER=${user} '$1==USER {print $4}' /etc/passwd`
+		;;
+	*)
+		sf_unsupported sf_user_gid
+		;;
+esac
+[ -z "$res" ] && return 1
+echo $res
+return 0
+}
+
+##----------------------------------------------------------------------------
 # Create a user
 #
 # To set the login shell, initialize the CREATE_USER_SHELL variable before

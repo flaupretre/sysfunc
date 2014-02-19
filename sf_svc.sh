@@ -21,6 +21,45 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
+# Check if a service is enabled on boot
+#
+# On Linux, check for current runlevel.
+# On Solaris, check for level 3.
+#
+# Args:
+# $1: Service name
+# Returns:  0 if enabled, 1 if diasabled, 2 if not installed
+# Displays: Nothing
+##----------------------------------------------------------------------------
+
+function sf_svc_is_enabled
+{
+typeset _svc _base _script _snum _knum
+_svc=$1
+
+sf_svc_is_installed $_svc || return 2
+
+case "`uname -s`" in
+	Linux)
+		chkconfig $_svc || return 1
+		;;
+	SunOS)
+		# We don't use states as defined on 'chkconfig' line in service
+		# script, as states do not correspond on Solaris.
+		_base=`sf_svc_base`
+		_script=`sf_svc_script $_svc`
+		grep '^# *chkconfig:' $_script | head -1 \
+			| sed 's/^.*: *[^ ][^ ]*  *//' | read _snum _knum
+		[ -f $_base/rc3.d/S$_snum$_svc ] || return 1
+		;;
+	*)
+		sf_unsupported sf_svc_is_enabled
+		;;
+esac
+return 0
+}
+
+##----------------------------------------------------------------------------
 # Enable service start/stop at system boot/shutdown
 #
 # Args:
@@ -200,6 +239,32 @@ if sf_svc_is_installed "$1" ] ; then
 else
 	sf_error "$1: Service is not installed"
 fi
+}
+
+##----------------------------------------------------------------------------
+# Check if a service is running
+#
+# Args:
+#	$1: Service name
+# Returns: 0 if service is running, 1 if stopped, 2 if not installed
+#-----------------------------------------------------------------------------
+
+function sf_svc_is_up
+{
+typeset _svc
+_svc=$1
+
+sf_svc_is_installed $_svc || return 2
+
+case "`uname -s`" in
+	Linux)
+		service $_svc status >/dev/null 2>&1 || return 1
+		;;
+	*)
+		sf_unsupported sf_svc_is_up
+		;;
+esac
+return 0
 }
 
 ##----------------------------------------------------------------------------

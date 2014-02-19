@@ -121,6 +121,27 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
+# Get the version of the available package, if any
+#
+# Args:
+#	$*: software name
+# Returns: 0 if an update is available, 1 if no update available, 2 if not installed
+# Displays: Available version if one exists, nothing if not
+#-----------------------------------------------------------------------------
+
+function sf_soft_available_version
+{
+typeset pkg avail tmp
+pkg=$1
+
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_available_version
+
+tmp=`yum check-update $pkg 2>/dev/null`
+[ $? = 0 ] && return 1
+echo "$tmp" | tail -1 | awk '{ print $2 }'
+}
+
+##----------------------------------------------------------------------------
 # Install a software if not already present
 #
 # Install or updates a software depending on its presence on the host
@@ -271,6 +292,29 @@ for _pkg ; do
 	sf_soft_remove "$_pkg"
 	sf_soft_install_upgrade "$_pkg"
 done
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# get version of an installed software
+#
+# Args:
+#	$*: software name
+# Returns: 0 if software is installed, 1 otherwise.
+# Displays: Software version (nothing if soft is not installed)
+#-----------------------------------------------------------------------------
+
+function sf_soft_version
+{
+typeset _pkg
+_pkg=$1
+
+[ -z "$sf_rpm" ] && sf_unsupported sf_soft_version
+
+sf_soft_is_installed "$_pkg" || return 1
+
+$sf_rpm -q --qf '%{VERSION}-%{RELEASE}\n' $_pkg 2>/dev/null
 
 return 0
 }

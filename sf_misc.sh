@@ -127,4 +127,45 @@ sf_cleanup
 exit $rc
 }
 
+##----------------------------------------------------------------------------
+# Check if a shell function is defined
+#
+# Args:
+#	$1: Function name
+# Returns: 0 if function is defined, 1 if not
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+function sf_func_is_defined
+{
+typeset -f "$1" >/dev/null 2>&1
+}
+
+##------------------------------------------------
+# Uncomment and cleanup input stream
+#
+# - changes tabs to spaces
+# - changes multiple blanks to one space
+# - removes leading and trailing blanks,
+# - removes comments (starting with '#'),
+# - removes blank lines
+#
+# Args:
+#	$1: Optional. File to read from. If not set, read from stdin
+#
+# Displays: the cleaned stream
+#------------------------------------------------
+
+function sf_txt_cleanup
+{
+typeset input
+
+input='-'
+[ $# -gt 0 ] && input=$1
+
+sed -e 's/	/ /g' -e 's/   */ /g' -e 's/#.*$//g' -e 's/^  *//g' \
+	-e 's/ * $//g' $input \
+	| grep -v '^$'
+}
+
 #=============================================================================
