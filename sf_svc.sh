@@ -247,6 +247,7 @@ fi
 # Args:
 #	$1: Service name
 # Returns: 0 if service is running, 1 if stopped, 2 if not installed
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_svc_is_up

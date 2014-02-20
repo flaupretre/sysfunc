@@ -157,6 +157,72 @@ Input: stdin, output: stdout.
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Output</td></tr>
 </table>
 
+# Disk management #
+## sf\_disk\_normalize\_device ##
+**Normalize a disk device name**
+
+After being normalized, device names can be compared.
+
+Input can be in the form:
+
+- /dev/&lt;vg>/&lt;lv>
+
+- /dev/mapper/...
+
+- /dev/&lt;partition or disk> (as /dev/sda1)
+
+- LABEL=xxx
+
+- UUID=xxx
+
+Output is in the form:
+
+- /dev/&lt;vg>/&lt;lv> if LVM logical volume
+
+- /dev/&lt;physical> if physical disk
+
+- Copy of input if input was not recognised
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Device name to normalize</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if device exists, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Normalized name if device exists, copy of input if not</td></tr>
+</table>
+## sf\_disk\_fs\_size ##
+**Get the size of a file system (from device name)**
+
+File system can be mounted or not.
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Device</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if dev exists and contains a FS, else !=0.</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>FS size in bytes. If the device does not exist or does not contain a FS, displays nothing.</td></tr>
+</table>
+## sf\_disk\_category ##
+**Get category of content for a given disk device**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Device path</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>'fs' if it is a filesystem 'swap' if it is a swap partition else, the type returned by disk_type()</td></tr>
+</table>
+## sf\_disk\_type ##
+**Returns type of content for a given disk device**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Device path</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>type returned by 'blkid' command</td></tr>
+</table>
+
 # File/dir management #
 ## sf\_delete ##
 **Recursively deletes a file or a directory**
@@ -350,7 +416,7 @@ Takes a pattern and a string as arguments. The first line matching the pattern i
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
 
-# Filesystem/Volume management #
+# Filesystem management #
 ## sf\_has\_dedicated\_fs ##
 **Checks if a directory is a file system mount point**
 
@@ -372,6 +438,17 @@ Takes a pattern and a string as arguments. The first line matching the pattern i
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>The mount directory of the filesystem containing the element</td></tr>
+</table>
+## sf\_get\_fs\_device ##
+**Gets the device of the filesystem containing a given path**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Path (must correspond to an existing element)</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>The normalized device of the filesystem containing the element</td></tr>
 </table>
 ## sf\_get\_fs\_size ##
 **Get the size of the filesystem containing a given path**
@@ -408,55 +485,6 @@ at system start Refuses existing directory as mount point (security)
 <tr><td width=20 align=center>$4</td><td>Optional. Mount point directory owner[:group]</td></tr>
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if no error, 1 on error</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
-</table>
-## sf\_lv\_exists ##
-**Checks if a given logical volume exists**
-
-
-
-<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
-<tr><td width=20 align=center>$2</td><td>LV name</td></tr>
-</table></td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
-</table>
-## sf\_vg\_exists ##
-**Checks if a given volume group exists**
-
-
-
-<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
-</table></td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
-</table>
-## sf\_create\_lv ##
-**Create a logical volume**
-
-
-
-<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Logical volume name</td></tr>
-<tr><td width=20 align=center>$2</td><td>Volume group name</td></tr>
-<tr><td width=20 align=center>$3</td><td>Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all' takes the whole free size in the VG.</td></tr>
-</table></td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
-<tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
-</table>
-## sf\_create\_vg ##
-**Create a volume group**
-
-
-
-<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
-<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>volume group name</td></tr>
-<tr><td width=20 align=center>$2</td><td>PE size (including optional unit, default=Mb)</td></tr>
-<tr><td width=20 align=center>$3</td><td>Device path, without the /dev prefix</td></tr>
-</table></td></tr>
-<tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
 ## sf\_fs\_default\_type ##
@@ -522,6 +550,81 @@ Combines sf\_create\_lv and sf\_create\_fs
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Network</td></tr>
 </table>
 
+# Kernel #
+## sf\_krn\_module\_is\_loaded ##
+**Check if a kernel module is loaded**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Module name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if module is loaded, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
+
+# Logical volume management #
+## sf\_lv\_exists ##
+**Checks if a given logical volume exists**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
+<tr><td width=20 align=center>$2</td><td>LV name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
+## sf\_vg\_exists ##
+**Checks if a given volume group exists**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>VG name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if it exists, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
+## sf\_create\_lv ##
+**Create a logical volume**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Logical volume name</td></tr>
+<tr><td width=20 align=center>$2</td><td>Volume group name</td></tr>
+<tr><td width=20 align=center>$3</td><td>Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all' takes the whole free size in the VG.</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
+</table>
+## sf\_create\_vg ##
+**Create a volume group**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>volume group name</td></tr>
+<tr><td width=20 align=center>$2</td><td>PE size (including optional unit, default=Mb)</td></tr>
+<tr><td width=20 align=center>$3</td><td>Device path, without the /dev prefix</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0: OK, !=0: Error</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
+</table>
+## sf\_lv\_to\_vg ##
+**Returns the VG containing a given LV**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>LV device path</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>The containing VG name, or nothing if device is not a valid LV.</td></tr>
+</table>
+
 # Utility functions #
 ## sf\_loaded ##
 **Checks if the library is already loaded**
@@ -578,6 +681,36 @@ This function discards every allocated resources (tmp files,...)
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Never returns. Exits from program.</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+## sf\_func\_is\_defined ##
+**Check if a shell function is defined**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Function name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if function is defined, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
+## sf\_txt\_cleanup ##
+**Uncomment and cleanup input stream**
+
+changes tabs to spaces,
+
+changes multiple blanks to one space,
+
+removes leading and trailing blanks,
+
+removes comments (starting with '#'),
+
+removes blank lines
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Optional. File to read from. If not set, read from stdin</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>the cleaned stream</td></tr>
 </table>
 
 # Message/Error handling #
@@ -995,6 +1128,17 @@ Note : yum returns 0 if no software are available for update
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if every argument software are installed and up to date (for yum)</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
+## sf\_soft\_available\_version ##
+**Get the version of the available package, if any**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if an update is available, 1 if no update available, 2 if not installed</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Available version if one exists, nothing if not</td></tr>
+</table>
 ## sf\_soft\_install ##
 **Install a software if not already present**
 
@@ -1054,6 +1198,17 @@ Return without error if the software is not installed
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Always 0</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Info msg</td></tr>
 </table>
+## sf\_soft\_version ##
+**get version of an installed software**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$*</td><td>software name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if software is installed, 1 otherwise.</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Software version (nothing if soft is not installed)</td></tr>
+</table>
 ## sf\_soft\_clean\_cache ##
 **Clean the software installation cache**
 
@@ -1066,6 +1221,17 @@ Return without error if the software is not installed
 </table>
 
 # Service management #
+## sf\_svc\_is\_enabled ##
+**Check if a service is enabled on boot**
+
+On Linux, check for current runlevel. On Solaris, check for level 3.
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if enabled, 1 if diasabled, 2 if not installed</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
+</table>
 ## sf\_svc\_enable ##
 **Enable service start/stop at system boot/shutdown**
 
@@ -1143,6 +1309,17 @@ Return without error if the software is not installed
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Return code from script execution</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>Output from service script</td></tr>
+</table>
+## sf\_svc\_is\_up ##
+**Check if a service is running**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>Service name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if service is running, 1 if stopped, 2 if not installed</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Nothing</td></tr>
 </table>
 ## sf\_svc\_base ##
 **Display the base directory of service scripts**
@@ -1284,6 +1461,28 @@ TODO: Unify with other supported OS
 </table></td></tr>
 <tr><td align=center width=50><b><i>Returns</i></b></td><td>Status from system command</td></tr>
 <tr><td align=center width=50><b><i>Displays</i></b></td><td>nothing</td></tr>
+</table>
+## sf\_user\_uid ##
+**Return UID of a given user**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if user exists, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>UID if user exists, nothing if not</td></tr>
+</table>
+## sf\_user\_gid ##
+**Return GID of a given user**
+
+
+
+<table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%>
+<tr><td align=center width=50><b><i>Args</i></b></td><td style="padding: 0;"><table border=1 cellpadding=5 style="border-collapse: collapse;" width=100%><tr><td width=20 align=center>$1</td><td>User name</td></tr>
+</table></td></tr>
+<tr><td align=center width=50><b><i>Returns</i></b></td><td>0 if user exists, 1 if not</td></tr>
+<tr><td align=center width=50><b><i>Displays</i></b></td><td>Primary GID if user exists, nothing if not</td></tr>
 </table>
 ## sf\_create\_user ##
 **Create a user**

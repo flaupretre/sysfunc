@@ -144,15 +144,15 @@ typeset -f "$1" >/dev/null 2>&1
 ##------------------------------------------------
 # Uncomment and cleanup input stream
 #
-# - changes tabs to spaces
-# - changes multiple blanks to one space
+# - changes tabs to spaces,
+# - changes multiple blanks to one space,
 # - removes leading and trailing blanks,
 # - removes comments (starting with '#'),
 # - removes blank lines
 #
 # Args:
 #	$1: Optional. File to read from. If not set, read from stdin
-#
+# Returns: Always 0
 # Displays: the cleaned stream
 #------------------------------------------------
 
@@ -166,6 +166,7 @@ input='-'
 sed -e 's/	/ /g' -e 's/   */ /g' -e 's/#.*$//g' -e 's/^  *//g' \
 	-e 's/ * $//g' $input \
 	| grep -v '^$'
+return 0
 }
 
 #=============================================================================

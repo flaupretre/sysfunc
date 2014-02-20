@@ -162,8 +162,10 @@ return $rc
 ##------------------------------------------------
 # Returns the VG containing a given LV
 #
-# $1: LV device path
-# Display: The containing VG name, or nothing if device is not a valid LV.
+# Args:
+#	$1: LV device path
+# Returns: Always 0
+# Displays: The containing VG name, or nothing if device is not a valid LV.
 #------------------------------------------------
 
 function sf_lv_to_vg

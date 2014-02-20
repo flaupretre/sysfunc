@@ -23,23 +23,24 @@
 ##------------------------------------------------
 # Normalize a disk device name
 #
-# After being normalized, device names can be compared
+#- After being normalized, device names can be compared.
 #
-# Input can be in the form:
-#	- /dev/<vg>/<lv>
-#	- /dev/mapper/...
-#	- /dev/<partition or disk> (as /dev/sda1)
-#	- LABEL=xxx
-#	- UUID=xxx
+#- Input can be in the form:
+#-	- /dev/<vg>/<lv>
+#-	- /dev/mapper/...
+#-	- /dev/<partition or disk> (as /dev/sda1)
+#-	- LABEL=xxx
+#-	- UUID=xxx
 #
-# Output is in the form:
-#	- /dev/<vg>/<lv> if LVM logical volume
-#	- /dev/<physical> if physical disk
-#	- Copy of input if input was not recognised
+#- Output is in the form:
+#-	- /dev/<vg>/<lv> if LVM logical volume
+#-	- /dev/<physical> if physical disk
+#-	- Copy of input if input was not recognised
 #
-# $1: Device name to normalize
+# Args:
+#	$1: Device name to normalize
 # Returns: 0 if device exists, 1 if not
-# Display: Normalized name if device exists, copy of input if not
+# Displays: Normalized name if device exists, copy of input if not
 #------------------------------------------------
 
 function sf_disk_normalize_device
@@ -74,7 +75,7 @@ echo $ndsk
 ##------------------------------------------------
 # Get the size of a file system (from device name)
 #
-# File system can be mounted or not
+# File system can be mounted or not.
 #
 # Args:
 #	$1: Device
@@ -111,8 +112,10 @@ return 0
 ##------------------------------------------------
 # Get category of content for a given disk device
 #
-# $1: Device path
-# Display:
+# Args:
+#	$1: Device path
+# Returns: Always 0
+# Displays:
 #	'fs' if it is a filesystem
 #	'swap' if it is a swap partition
 #	else, the type returned by disk_type()
@@ -138,8 +141,10 @@ echo $category
 ##------------------------------------------------
 # Returns type of content for a given disk device
 #
-# $1: Device path
-# Display: type returned by 'blkid' command
+# Args:
+#	$1: Device path
+# Returns: Always 0
+# Displays: type returned by 'blkid' command
 #------------------------------------------------
 #Note: 'blkid -o export' is not supported in RHEL4
 
@@ -148,6 +153,7 @@ function sf_disk_type
 [ "`uname -s`" = Linux ] || sf_unsupported sf_disk_type
 
 blkid "$1" 2>/dev/null | sed -e 's/.*TYPE="//g' -e 's/".*$//g'
+return 0
 }
 
 #=============================================================================
