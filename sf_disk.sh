@@ -156,4 +156,26 @@ blkid "$1" 2>/dev/null | sed -e 's/.*TYPE="//g' -e 's/".*$//g'
 return 0
 }
 
+##------------------------------------------------
+# Scan and discover new SCSI devices
+#
+# Calling program should wait between 5 and 10 seconds for new devices
+# to be discovered.
+#
+# Args: None
+# Returns: Always 0
+# Displays: Nothing
+#------------------------------------------------
+
+function sf_disk_rescan
+{
+typeset i
+
+[ "`uname -s`" = Linux ] || sf_unsupported sf_disk_rescan
+
+for i in /sys/class/scsi_host/host*/scan ; do
+	echo "- - -" >$i
+done
+}
+
 #=============================================================================
