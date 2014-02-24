@@ -45,12 +45,14 @@ file="$3"
 
 qpass=`echo "$pass" | sed 's!/!\\\\/!g'`
 
-ed $file <<EOF >/dev/null 2>&1
-	/^$user:/
-	s/^$user:[^:]*:/$user:$qpass:/
-	w
-	q
+if [ -z "$sf_noexec" ] ; then
+	ed $file <<EOF >/dev/null 2>&1
+		/^$user:/
+		s/^$user:[^:]*:/$user:$qpass:/
+		w
+		q
 EOF
+fi
 }
 
 ##----------------------------------------------------------------------------
@@ -71,20 +73,21 @@ typeset user pass qpass
 
 user="$1"
 pass="$2"
-
-pwdadm -f NOCHECK $user	# to create the account if needed
-
 qpass=`echo "$pass" | sed 's!/!\\\\/!g'`
 
-ed /etc/security/passwd <<-EOF >/dev/null 2>&1
-	/^$user:/
-	/password =/
-	s/=.*$/= $qpass/
-	/flags =/
-	s/=.*$/=/
-	w
-	q
-	EOF
+if [ -z "$sf_noexec" ]; then
+	pwdadm -f NOCHECK $user	# to create the account if needed
+
+	ed /etc/security/passwd <<-EOF >/dev/null 2>&1
+		/^$user:/
+		/password =/
+		s/=.*$/= $qpass/
+		/flags =/
+		s/=.*$/=/
+		w
+		q
+EOF
+fi
 }
 
 ##----------------------------------------------------------------------------
@@ -93,27 +96,33 @@ ed /etc/security/passwd <<-EOF >/dev/null 2>&1
 # Args:
 #	$1: Group name
 #	$2: Group Id
-# Returns: Always 0
+# Returns: Status from system command
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_create_group
 {
+typeset rc
+rc=0
 
 case `uname -s` in
 	AIX)
-		lsgroup $1 >/dev/null 2>&1
-		if [ $? != 0 ] ; then
+		if ! lsgroup $1 >/dev/null 2>&1 ; then
 			sf_msg1 "Creating $1 group"
-			[ -z "$sf_noexec" ] && mkgroup id=$2 $1
+			if [ -z "$sf_noexec" ] ; then
+				mkgroup id=$2 $1
+				rc=$?
+			fi
 		fi
 		;;
 
 	*)
-		grep "^$1:" /etc/group >/dev/null 2>&1
-		if [ $? != 0 ] ; then
+		if ! grep "^$1:" /etc/group >/dev/null 2>&1 ; then
 			sf_msg1 "Creating $1 group"
-			[ -z "$sf_noexec" ] && groupadd -g $2 $1
+			if [ -z "$sf_noexec" ] ; then
+				groupadd -g $2 $1
+				rc=$?
+			fi
 		fi
 		;;
 esac
@@ -131,20 +140,25 @@ return 0
 
 function sf_delete_group
 {
-
-typeset status
+typeset rc
+rc=0
 
 case `uname -s` in
 	Linux|SunOS)
-		groupdel "$1"
-		status=$?
+		if grep "^$1:" /etc/group >/dev/null 2>&1 ; then
+			sf_msg1 "Deleting $1 group"
+			if [ -z "$sf_noexec" ] ; then
+				groupdel "$1"
+				rc=$?
+			fi
+		fi
 		;;
 
 	*)
 		sf_unsupported sf_delete_group
 		;;
 esac
-return $status
+return $rc
 }
 
 ##----------------------------------------------------------------------------
@@ -185,20 +199,26 @@ return $status
 
 function sf_delete_user
 {
+typeset rc
+rc=0
 
-typeset status
+if sf_user_exists "$1" ; then
+	case `uname -s` in
+		Linux|SunOS)
+			sf_msg1 "Deleting $1 user"
+			if [ -z "$sf_noexec" ] ; then
+				userdel "$1"
+				rc=$?
+			fi
+			;;
 
-case `uname -s` in
-	Linux|SunOS)
-		userdel "$1"
-		status=$?
-		;;
+		*)
+			sf_unsupported sf_delete_user
+			;;
+	esac
+fi
 
-	*)
-		sf_unsupported sf_delete_user
-		;;
-esac
-return $status
+return $rc
 }
 
 ##----------------------------------------------------------------------------

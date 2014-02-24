@@ -92,8 +92,8 @@ return $rc
 
 function sf_create_lv
 {
-typeset lv vg size sz_opt
-
+typeset lv vg size sz_opt rc
+rc=0
 lv=$1
 vg=$2
 size=$3
@@ -112,8 +112,10 @@ sf_msg1 "Creating LV $lv on VG $vg"
 
 case "`uname -s`" in
 	Linux)
-		lvcreate $sz_opt -n $lv $vg
-		rc=$?
+		if [ -z "$sf_noexec" ] ; then
+			lvcreate $sz_opt -n $lv $vg
+			rc=$?
+		fi
 		;;
 	*)
 		sf_unsupported sf_create_lv
@@ -136,8 +138,8 @@ return $rc
 
 function sf_create_vg
 {
-typeset vg pesize device
-
+typeset vg pesize device rc
+rc=0
 vg=$1
 pesize=$2
 device=$3
@@ -148,8 +150,10 @@ sf_msg1 "Creating VG $vg"
 
 case "`uname -s`" in
 	Linux)
-		vgcreate -s $pesize $vg /dev/$device
-		rc=$?
+		if [ -z "$sf_noexec" ] ; then
+			vgcreate -s $pesize $vg /dev/$device
+			rc=$?
+		fi
 		;;
 	*)
 		sf_unsupported sf_create_vg

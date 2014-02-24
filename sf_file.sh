@@ -586,12 +586,16 @@ function sf_sort_file
 typeset file tmp rc
 file="$1"
 shift
+rc=0
 
-tmp=`sf_tmpfile`
-cp $file $tmp
-sort $* <$tmp >$file
-rc=$?
-rm -f $tmp
+if [ -z "$sf_noexec" ] ; then
+	tmp=`sf_tmpfile`
+	cp $file $tmp
+	sort $* <$tmp >$file
+	rc=$?
+	rm -f $tmp
+fi
+
 return $rc
 }
 
