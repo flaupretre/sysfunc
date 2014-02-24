@@ -66,27 +66,29 @@ echo "%SOFTWARE_VERSION%"
 
 function sf_exec_url
 {
-typeset wd tdir status
-
+typeset wd tdir status rc
+rc=0
 [ -n "$WGET" ] || WGET=wget
 
 wd=`pwd`
-tdir=`sf_get_tmp`
 
 for i ; do
-	sf_create_dir $tdir
+	tdir=`sf_tmp_dir`
 	cd $tdir
 
 	$WGET $i
 	sf_chmod +x *
-	./*
-	status=$?
+	if [ -z "$sf_noexec" ] ; then
+		./*
+		status=$?
+		[ "$rc" = 0 ] && rc=$status
+	fi
 
 	cd $wd
 	/bin/rm -rf $tdir
 done
 
-return $status
+return $rc
 }
 
 ##----------------------------------------------------------------------------

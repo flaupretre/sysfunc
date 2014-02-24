@@ -208,6 +208,8 @@ function sf_svc_is_installed
 ##----------------------------------------------------------------------------
 # Start a service
 #
+# 'noexec' does not disable starting/stopping services.
+#
 # Args:
 #	$1: Service name
 # Returns: Return code from script execution
@@ -225,6 +227,8 @@ fi
 
 ##----------------------------------------------------------------------------
 # Stop a service
+#
+# 'noexec' does not disable starting/stopping services.
 #
 # Args:
 #	$1: Service name

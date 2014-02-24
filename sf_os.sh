@@ -181,10 +181,10 @@ function sf_reboot
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -r now
+		[ -z "$sf_noexec" ] && shutdown -r now
 		;;
 	SunOS)
-		init 6
+		[ -z "$sf_noexec" ] && init 6
 		;;
 	*)
 		sf_unsupported reboot
@@ -205,10 +205,10 @@ function sf_shutdown
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -h now
+		[ -z "$sf_noexec" ] && shutdown -h now
 		;;
 	SunOS)
-		shutdown -y -i0 -g0
+		[ -z "$sf_noexec" ] && shutdown -y -i0 -g0
 		;;
 	*)
 		sf_unsupported shutdown
@@ -229,10 +229,10 @@ function sf_poweroff
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -h now
+		[ -z "$sf_noexec" ] && shutdown -h now
 		;;
 	SunOS)
-		shutdown -y -i5 -g0
+		[ -z "$sf_noexec" ] && shutdown -y -i5 -g0
 		;;
 	*)
 		sf_unsupported poweroff
