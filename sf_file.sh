@@ -117,31 +117,6 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Saves a file
-#
-# No action if the 'sf_nosave' environment variable is set to a non-empty string.
-#
-#-If the input arg is the path of an existing regular file, the file is copied
-# to '$path.orig'
-#
-#- TODO: improve save features (multiple numbered saved versions,...)
-#
-# Args:
-#	$1 : Path
-# Returns: Always 0
-# Displays: Info msg
-#-----------------------------------------------------------------------------
-
-function sf_save
-{
-[ "X$sf_nosave" = X ] || return
-if [ -f "$1" -a ! -f "$1.orig" ] ; then
-	sf_msg1 "Saving $1 to $1.orig"
-	[ -z "$sf_noexec" ] && cp -p "$1" "$1.orig"
-fi
-}
-
-##----------------------------------------------------------------------------
 # Renames a file to '<dir>/old.<filename>
 # 
 # Args:
@@ -455,103 +430,75 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Comment lines in a file
+# Comment one line in a file
 #
-# The lines containing the (grep) pattern given in argument will be commented
-# out by prefixing them with the comment string.
+# The first line containing the (grep) pattern given in argument will be commented
+# out by prefixing it with the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment prefix string. Default='#'
-#	$4: Number of lines to comment (''=all). Default: ''
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_comment_out
 {
-typeset file pattern com cnb tmp lnum line
-file="$1"
-pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+typeset com
 
-tmp=`sf_tmpfile`
-lnum=0
-while read line ; do
-	lnum=`expr $lnum + 1`
-	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "$pattern" >/dev/null
-		if [ $? = 0 ] ; then
-			sf_msg "$file: Commenting out line $lnum"
-			line="$com$line"
-			[ -n "$cnb" ] && cnb=`expr $cnb - 1`
-		fi
+if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
+
+grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
+if [ $? = 0 ] ; then
+	sf_save "$1"
+	sf_msg1 "$1: Commenting out '$2'"
+	if [ -z "$sf_noexec" ] ; then
+		ed $1 <<-EOF >/dev/null 2>&1
+			?^[^$com]*$2?
+			s?^?$com?
+			w
+			q
+		EOF
 	fi
-	echo "$line" >>$tmp
-done <$file
-
-if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
-	cp $tmp $file
 fi
-
-/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
-# Uncomment lines in a file
+# Uncomment one line in a file
 #
 # The first commented line containing the (grep) pattern given in argument
-# will be uncommented by removing the comment string.
+# will be uncommented by removing the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment prefix string. Default='#'
-#	$4: Number of lines to uncomment (''=all). Default: ''
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_uncomment
 {
-typeset file pattern com cnb tmp lnum line l2
-file="$1"
-pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+typeset com
 
-tmp=`sf_tmpfile`
-lnum=0
-while read line ; do
-	lnum=`expr $lnum + 1`
-	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "^[ 	]*$com" >/dev/null
-		if [ $? = 0 ] ; then
-			l2=`echo "$line" | sed "s,^[ 	]*$com,,"`
-			echo "$l2" | grep "$pattern" >/dev/null
-			if [ $? = 0 ] ; then
-				sf_msg "$file: Uncommenting line $lnum"
-				line="$l2"
-				[ -n "$cnb" ] && cnb=`expr $cnb - 1`
-			fi
-		fi
+if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
+
+grep "$2" "$1" | grep "^[ 	]*$com" >/dev/null 2>&1
+if [ $? = 0 ] ; then
+	sf_save "$1"
+	sf_msg1 "$1: Uncommenting '$2'"
+	if [ -z "$sf_noexec" ] ; then
+		ed $1 <<-EOF >/dev/null 2>&1
+			?^[ 	]*$com.*$2?
+			s?^[ 	]*$com??g
+			w
+			q
+		EOF
 	fi
-	echo "$line" >>$tmp
-done <$file
-
-if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
-	cp $tmp $file
 fi
-
-/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
