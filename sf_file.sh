@@ -39,7 +39,7 @@ for i
 	do
 	if ls -d "$i" >/dev/null 2>&1 ; then
 		sf_msg1 "Deleting $i"
-		[ -z "$sf_noexec" ] && \rm -rf $i
+		[ -z "$sf_noexec" ] && sf_save "$i" && \rm -rf "$i"
 	fi
 done
 }
@@ -49,8 +49,9 @@ done
 #
 # Args:
 #	$1 : Executable name
-#	$2 : Optional. List of directories to search. If not search, use PATH
-# Returns: Always 0
+#	$2 : Optional. List of directories to search (separated by ':' chars).
+#	     If not set, use PATH
+# Returns: 0 if executable was found, 1 if not
 # Displays: Absolute path if found, nothing if not found
 #-----------------------------------------------------------------------------
 
@@ -69,9 +70,10 @@ for dir in $dirs
 	f="$dir/$file"
 	if [ -f "$f" -a -x "$f" ] ; then
 		echo "$f"
-		break
+		return 0
 	fi
 done
+return 1
 }
 
 ##----------------------------------------------------------------------------
@@ -108,36 +110,12 @@ mode=$3
 if [ ! -d "$path" ] ; then
 	sf_msg1 "Creating directory: $path"
 	if [ -z "$sf_noexec" ] ; then
+		sf_save "$path"
 		mkdir -p "$path"
 		[ -d "$path" ] || sf_fatal "$path: Cannot create directory"
 		sf_chown $owner $path
 		sf_chmod $mode "$path"
 	fi
-fi
-}
-
-##----------------------------------------------------------------------------
-# Saves a file
-#
-# No action if the 'sf_nosave' environment variable is set to a non-empty string.
-#
-#-If the input arg is the path of an existing regular file, the file is copied
-# to '$path.orig'
-#
-#- TODO: improve save features (multiple numbered saved versions,...)
-#
-# Args:
-#	$1 : Path
-# Returns: Always 0
-# Displays: Info msg
-#-----------------------------------------------------------------------------
-
-function sf_save
-{
-[ "X$sf_nosave" = X ] || return
-if [ -f "$1" -a ! -f "$1.orig" ] ; then
-	sf_msg1 "Saving $1 to $1.orig"
-	[ -z "$sf_noexec" ] && cp -p "$1" "$1.orig"
 fi
 }
 
@@ -429,7 +407,6 @@ return $status
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
-#- Note: Don't use 'test -h' (not portable)
 
 function sf_check_link
 {
@@ -437,9 +414,8 @@ typeset link_target
 
 \ls -ld "$2" >/dev/null 2>&1
 if [ $? = 0 ] ; then
-	\ls -ld "$2" | grep -- '->' >/dev/null 2>&1
-	if [ $? = 0 ] ; then
-		link_target=`\ls -ld "$2" | sed 's/^.*->[ 	]*//'`
+	if sf_file_is_link "$2" ; then
+		link_target=`sf_file_readlink "$2"`
 		[ "$link_target" = "$1" ] && return
 	fi
 	sf_save "$2"
@@ -455,103 +431,75 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Comment lines in a file
+# Comment one line in a file
 #
-# The lines containing the (grep) pattern given in argument will be commented
-# out by prefixing them with the comment string.
+# The first line containing the (grep) pattern given in argument will be commented
+# out by prefixing it with the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment prefix string. Default='#'
-#	$4: Number of lines to comment (''=all). Default: ''
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_comment_out
 {
-typeset file pattern com cnb tmp lnum line
-file="$1"
-pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+typeset com
 
-tmp=`sf_tmpfile`
-lnum=0
-while read line ; do
-	lnum=`expr $lnum + 1`
-	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "$pattern" >/dev/null
-		if [ $? = 0 ] ; then
-			sf_msg "$file: Commenting out line $lnum"
-			line="$com$line"
-			[ -n "$cnb" ] && cnb=`expr $cnb - 1`
-		fi
+if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
+
+grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
+if [ $? = 0 ] ; then
+	sf_save "$1"
+	sf_msg1 "$1: Commenting out '$2'"
+	if [ -z "$sf_noexec" ] ; then
+		ed $1 <<-EOF >/dev/null 2>&1
+			?^[^$com]*$2?
+			s?^?$com?
+			w
+			q
+		EOF
 	fi
-	echo "$line" >>$tmp
-done <$file
-
-if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
-	cp $tmp $file
 fi
-
-/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
-# Uncomment lines in a file
+# Uncomment one line in a file
 #
 # The first commented line containing the (grep) pattern given in argument
-# will be uncommented by removing the comment string.
+# will be uncommented by removing the comment character.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment prefix string. Default='#'
-#	$4: Number of lines to uncomment (''=all). Default: ''
+#	$3: Optional. Comment char (one char string). Default='#'
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_uncomment
 {
-typeset file pattern com cnb tmp lnum line l2
-file="$1"
-pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+typeset com
 
-tmp=`sf_tmpfile`
-lnum=0
-while read line ; do
-	lnum=`expr $lnum + 1`
-	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "^[ 	]*$com" >/dev/null
-		if [ $? = 0 ] ; then
-			l2=`echo "$line" | sed "s,^[ 	]*$com,,"`
-			echo "$l2" | grep "$pattern" >/dev/null
-			if [ $? = 0 ] ; then
-				sf_msg "$file: Uncommenting line $lnum"
-				line="$l2"
-				[ -n "$cnb" ] && cnb=`expr $cnb - 1`
-			fi
-		fi
+if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
+
+grep "$2" "$1" | grep "^[ 	]*$com" >/dev/null 2>&1
+if [ $? = 0 ] ; then
+	sf_save "$1"
+	sf_msg1 "$1: Uncommenting '$2'"
+	if [ -z "$sf_noexec" ] ; then
+		ed $1 <<-EOF >/dev/null 2>&1
+			?^[ 	]*$com.*$2?
+			s?^[ 	]*$com??g
+			w
+			q
+		EOF
 	fi
-	echo "$line" >>$tmp
-done <$file
-
-if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
-	cp $tmp $file
 fi
-
-/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
@@ -618,11 +566,281 @@ rc=0
 
 if [ -z "$sf_noexec" ] ; then
 	tmp=`sf_tmpfile`
-	cp $file $tmp
-	sort $* <$tmp >$file
+	cp "$file" $tmp
+	sf_save "$file"
+	sort $* <$tmp >"$file"
 	rc=$?
 	rm -f $tmp
 fi
+
+return $rc
+}
+
+#------------------------------------------------
+# Get the type of a file
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: Nothing if file does not exist, or
+#	R: Regular file,
+#	L: Symbolic link,
+#	D: Directory,
+#	C: Character device
+#	B: Block device
+#	P: Named pipe (fifo)
+#------------------------------------------------
+
+function sf_file_type
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+[ -b "$source" ] && echo B && return
+[ -c "$source" ] && echo C && return
+sf_file_is_link "$source" && echo L && return
+[ -d "$source" ] && echo D && return
+[ -p "$source" ] && echo P && return
+[ -f "$source" ] && echo R && return
+}
+
+#------------------------------------------------
+# Portable way to check if a file is a symbolic link
+#
+# Note: Don't use 'test -h' (not portable)
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists and is a symbolic link, 1 if not
+#------------------------------------------------
+
+function sf_file_is_link
+{
+typeset source
+source="$1"
+
+\ls -ld "$source" | grep -- '->' >/dev/null 2>&1 
+}
+
+#------------------------------------------------
+# Return mode of a file in octal
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: File mode (nothing if file does not exist)
+#------------------------------------------------
+
+function sf_file_mode
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_mode
+
+stat -c "%a" "$source"
+return 0
+}
+
+#------------------------------------------------
+# Return owner of a file (numeric)
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: File owner in numeric form (nothing if file does not exist)
+#------------------------------------------------
+
+function sf_file_owner
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_owner
+
+stat -c "%u" "$source"
+return 0
+}
+
+#------------------------------------------------
+# Return group of a file (numeric)
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: File group in numeric form (nothing if file does not exist)
+#------------------------------------------------
+
+function sf_file_group
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_group
+
+stat -c "%g" "$source"
+return 0
+}
+
+#------------------------------------------------
+# Return last modification time of a file (Unix format)
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: File last modification time in Unix format (Seconds since Epoch),
+#           nothing if file does not exist.
+#------------------------------------------------
+
+function sf_file_mtime
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_mtime
+
+stat -c "%Y" "$source"
+return 0
+}
+
+#------------------------------------------------
+# Return size of a file (in bytes)
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: File size (in bytes), nothing if file does not exist.
+#------------------------------------------------
+
+function sf_file_size
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_size
+
+stat -c "%s" "$source"
+return 0
+}
+
+#------------------------------------------------
+# Compute the checksum of a file
+#
+# Computed checksum depends on the OS and software available. It is prefixed
+# with a string giving the format, followed by a ':' and the chacksum in
+# readable form.
+#
+#- Possible format strings, in preference order: SHA1, MD5, CKS, SUM.
+#
+#- Generate a fatal error if none of these mechanisms is found.
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: Checksum, nothing if file does not exist.
+#------------------------------------------------
+
+function sf_file_checksum
+{
+typeset source
+source="$1"
+
+[ -e "$source" ] || return 1
+
+sf_find_executable sha1sum >/dev/null \
+	&& echo SHA1:`sha1sum "$source" | awk '{ print $1 }'` && return
+
+sf_find_executable openssl >/dev/null \
+	&& echo SHA1:`openssl dgst -sha1 -hex "$source" | awk '{ print $NF }'` && return
+
+sf_find_executable md5sum >/dev/null \
+	&& echo MD5:`md5sum "$source" | awk '{ print $1 }'` && return
+
+sf_find_executable cksum >/dev/null \
+	&& echo CKS:`cksum "$source" | awk '{ print $1 }'` && return
+
+sf_find_executable sum >/dev/null \
+	&& echo SUM:`sum "$source" | awk '{ print $1 }'` && return
+
+sf_fatal "Cannot find a way to compute a file checksum"
+}
+
+#------------------------------------------------
+# Get the link target of a symbolic link
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists and is a symbolic link, 1 if not
+# Displays: Link target if file exists and is a symbolic link, nothing otherwise
+#------------------------------------------------
+
+function sf_file_readlink
+{
+typeset source
+source="$1"
+
+sf_file_is_link "$source" || return 1
+
+sf_find_executable readlink >/dev/null && readlink "$source" && return
+
+# Old way, when readlink is not available
+
+ls -ld "$source" | sed 's/^.*->[ 	]*//'
+}
+
+#------------------------------------------------
+# Canonicalize a file path
+#
+# The input path must correspond to an existing item (file or dir, any type)
+# Every directories leading to the source item must be readable by the current
+# user.
+#
+#- This function preserves the current directory.
+#
+# Args:
+#	$1: Path
+# Returns: 0 if canonical path could be determined, 1 if not
+# Displays: Canonical path, nothing if path does not exist or access denied
+#------------------------------------------------
+
+function sf_file_realpath
+{
+typeset source dir base swd rc
+source="$1"
+rc=0
+
+[ -e "$source" ] || return 1
+
+swd="`pwd`"
+if [ -d "$source" ] ; then
+	cd "$source" || return 1
+	/bin/pwd 2>/dev/null || rc=1
+else
+	base="`basename \"$source\"`"
+	dir="`dirname \"$source\"`"
+	cd "$dir"  || return 1
+	dir="`/bin/pwd 2>/dev/null`" || rc=1
+	[ "X$dir" = X/ ] && dir=''
+	[ $rc = 0 ] && echo "$dir/$base"
+fi
+cd "$swd"
 
 return $rc
 }
