@@ -51,8 +51,13 @@ dsk="$1"
 
 case "$dsk" in
 	/dev/mapper/*)
-		#Note: 'lvs -o path' is not supported in RHEL4
-		ndsk=`lvs --noheadings -o 'vg_name,name' $dsk 2>/dev/null | awk '{ printf "/dev/%s/%s\n",$1,$2 }'`
+		#Note 1: 'lvs -o path' is not supported in RHEL4
+		set -- `lvs --noheadings -o 'vg_name,name' $dsk 2>/dev/null`
+		#Note 2: 'lvs' on a '/dev/mapper/' path is not supported on some
+		#        RHEL 4 versions (at least 4.5)
+		# On those systems, we just split the string on the first '-'.
+		[ -z "$1" ] && set -- `echo $dsk | sed -e 's,^/dev/mapper/,,' -e 's/-/ /'`
+		ndsk="/dev/$1/$2"
 		;;
 	UUID=*|LABEL=*)
 		if [ `sf_os_version` = 4 ] ; then
