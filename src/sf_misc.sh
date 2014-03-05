@@ -17,15 +17,17 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Utility functions
+# Section: Miscellaneous
 #=============================================================================
 
 ##----------------------------------------------------------------------------
 # Checks if the library is already loaded
 #
-#- Of course, if it can run, the library is loaded. So, it always returns 0.
-#- Allows to support the 'official' way to load sysfunc :
-#	sf_loaded 2>/dev/null || . sysfunc.sh
+# Of course, if it can run, the library is loaded. So, it always returns 0.
+#
+# Allows to support the 'official' way to load sysfunc :
+#
+#	`sf_loaded 2>/dev/null || . sysfunc.sh`
 #
 # Args: none
 # Returns: Always 0
@@ -53,10 +55,11 @@ echo "%SOFTWARE_VERSION%"
 ##----------------------------------------------------------------------------
 # Retrieves executable data through an URL and executes it.
 #
-#- Supports any URL accepted by wget.
-#- By default, the 'wget' command is used. If the $WGET environment variable
-#  is set, it is used instead (use, for instance, to
-#  specify a proxy or an alternate configuration file).
+# Supports any URL accepted by wget.
+#
+# By default, the 'wget' command is used. If the $WGET environment variable
+# is set, it is used instead (use, for instance, to specify a proxy or an
+# alternate configuration file).
 #
 # Args:
 #	$1 : Url

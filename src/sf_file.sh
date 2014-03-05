@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: File/dir management
+# Section: File manipulation
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ return 1
 # program aborts with a fatal error. If you want to avoid
 # this (if you want to create the directory, even if something else is
 # already existing in this path), call sf_delete first.
-#- If the path given as arg contains a symbolic link pointing to an existing
+# If the path given as arg contains a symbolic link pointing to an existing
 # directory, it is left as-is.
 #
 # Args:
@@ -148,8 +148,8 @@ fi
 # Copy a file or the content of function's standard input to a target file
 #
 # The copy takes place only if the source and target files are different.
-#- If the target file is already existing, it is saved before being overwritten.
-#- If the target path directory does not exist, it is created.
+# If the target file is already existing, it is saved before being overwritten.
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Source path. Special value: '-' means that data to copy is read from
@@ -210,33 +210,36 @@ fi
 # data block and allow the function to be called several times on the same
 # target file with different data blocks. The block identifier is the
 # base name of the source path.
-#- If the given block is not present in the target file, it is appended or
+#
+# If the given block is not present in the target file, it is appended or
 # prepended, depending on the flag argument. If the block is already
 # present in the file (was inserted by a previous run of this function),
 # its content is compared with the new data, and replaced if different.
-# In this case, it is replaced at the exact place where the previous block
+# In this case, it is replaced at the exact location where the previous block
 # lied.
-#- If the target file exists, it is saved before being overwritten.
-#- If the target path directory does not exist, it is created.
+#
+# If the target file exists, it is saved before being overwritten.
+#
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: If this arg starts with the '-' char, the data is to be read from
-#		stdin and the string after the '-' is the block identifier.
-#-		If it does not start with '-', it is the path to the source file
+#		stdin and the string after the '-' is the block identifier.  
+#		If it does not start with '-', it is the path to the source file
 #		(containing the data to insert).
 #	$2: Target path
 #	$3: Optional. Target file mode.
-#-		Default=644
+#
+# 	Default=644
 #	$4: Optional. Flag. Set to 'prepend' to add data at the beginning of
-#		the file.
-#-		Default mode: Append.
-#-		Used only if data block is not already present in the file.
-#-		Can be set to '' (empty string) to mean 'default mode'.
-#	$5: Optional. Comment character.
-#-		This argument, if set, must contain only one character.
+#		the file. Default mode: Append.  
+#	 	Used only if data block is not already present in the file.  
+#		Can be set to '' (empty string) to mean 'default mode'.
+#	$5: Optional. Comment character.  
+#	 	This argument, if set, must contain only one character.  
 #		This character will be used as first char when building
-#		the 'identifier' lines surrounding the data block.
-#-		Default: '#'.
+#		the 'identifier' lines surrounding the data block.  
+#	 	Default: '#'.
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -399,7 +402,8 @@ return $status
 # Creates or modifies a symbolic link
 #
 # The target is saved before being modified.
-#- If the target path directory does not exist, it is created.
+#
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Link target
@@ -775,9 +779,11 @@ return 0
 # with a string giving the format, followed by a ':' and the chacksum in
 # readable form.
 #
-#- Possible format strings, in preference order: SHA1, MD5, CKS, SUM.
 #
-#- Generate a fatal error if none of these mechanisms is found.
+# Possible format strings, in preference order: SHA1, MD5, CKS, SUM.
+#
+#
+# Generate a fatal error if none of these mechanisms is found.
 #
 # Args:
 #	$1: Path
@@ -840,7 +846,8 @@ ls -ld "$source" | sed 's/^.*->[ 	]*//'
 # Every directories leading to the source item must be readable by the current
 # user.
 #
-#- This function preserves the current directory.
+#
+# This function preserves the current directory.
 #
 # Args:
 #	$1: Path

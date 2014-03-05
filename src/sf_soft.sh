@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Software management
+# Section: Software packages
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -46,7 +46,8 @@ return $rc
 # List installed software
 #
 # Returns a sorted list of installed software
-#- Linux output: (name-version-release.arch)
+#
+# Linux output: (name-version-release.arch)
 #
 # Args: none
 # Returns: Always 0
@@ -88,7 +89,8 @@ return 0
 # Check if a newer version of a software is available
 #
 #  Note : if the software is not installed, it is not considered as updateable
-#- Note : yum returns 0 if no software are available for update
+#
+# Note : yum returns 0 if no software are available for update
 #
 # Args:
 #	$*: software name(s)
@@ -145,7 +147,8 @@ echo "$tmp" | tail -1 | awk '{ print $2 }'
 # Install a software if not already present
 #
 # Install or updates a software depending on its presence on the host
-#- If the software is installed but not up to date, no action.
+#
+# If the software is installed but not up to date, no action.
 #
 # Args:
 #	$*: software name(s)
@@ -180,7 +183,8 @@ return 0
 # Install or upgrade a software
 #
 # Install or updates a software depending on its presence on the host
-#- If the software is up to date, no action.
+#
+# If the software is up to date, no action.
 #
 # Args:
 #	$*: software name(s)

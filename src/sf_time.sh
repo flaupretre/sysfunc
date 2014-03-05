@@ -16,21 +16,37 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
+
 #=============================================================================
-# Section: Vmware-specific functions
+# Section: Time and date
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Check if we are on a VMware host
+# Display normalized time string for current time (UTC)
+#
+# Format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
 #
 # Args: None
-# Returns: 0 if VMware, 1 if not
-# Displays: Nothing
-##----------------------------------------------------------------------------
+# Returns: 0
+# Displays: Time string
+#-----------------------------------------------------------------------------
 
-function sf_vm_host_is_vmware
+function sf_tm_now
 {
-grep VMware /proc/scsi/scsi >/dev/null 2>&1
+date -u '+%d-%b-%Y %H:%M:%S (%s)'
+}
+
+##----------------------------------------------------------------------------
+# Display Unix current time (Seconds since Epoch)
+#
+# Args: None
+# Returns: 0
+# Displays: Time string
+#-----------------------------------------------------------------------------
+
+function sf_tm_timestamp
+{
+date -u '+%s'
 }
 
 #=============================================================================
