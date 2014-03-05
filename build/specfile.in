@@ -18,7 +18,7 @@
 
 Name: sysfunc
 Version: %SOFTWARE_VERSION%
-Release: 1
+Release: 1%{?dist}
 Summary: System utility shell functions
 License: GNU LESSER GENERAL PUBLIC LICENSE, Version 3
 Group: System Environment/Configuration

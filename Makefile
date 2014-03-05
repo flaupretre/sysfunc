@@ -57,7 +57,8 @@ $(TGZ_FILE): clean
 	/bin/rm -rf /tmp/$(TGZ_PREFIX)
 
 rpm: tgz specfile
-	rpmbuild -bb --define="_sourcedir `pwd`" specfile
+	chmod +x build/dist.sh
+	rpmbuild -bb --define="_sourcedir `pwd`" --define="dist `build/dist.sh`" specfile
 	
 clean:
 	/bin/rm -rf sysfunc.sh.ppc specfile $(TGZ_FILE)
