@@ -18,17 +18,22 @@
 
 #=============================================================================
 # Section: File backup
+#----------------------------------------------------------------------------
+# This feature is still under development: so far, only regular files and symbolic
+# links are supported. Other file types are ignored and not saved.
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Ensure save system is operational. This function must be called before any
-# action upon the save db.
+# Ensure save system is operational.
+#
+# This function must be called before any action upon the save db.
 #
 # If initialization fails, the program is aborted
 #
 # Args: None
 # Returns: Always 0
-##----------------------------------------------------------------------------
+# Displays: Nothing
+#----------------------------------------------------------------------------
 
 function _sf_sav_init
 {
@@ -60,7 +65,8 @@ fi
 #
 # Args: None
 # Returns: Always 0
-##----------------------------------------------------------------------------
+# Displays: Nothing
+#----------------------------------------------------------------------------
 
 function sf_sav_zap
 {
@@ -70,12 +76,10 @@ function sf_sav_zap
 ##----------------------------------------------------------------------------
 # Saves a file
 #
-# No action if the 'sf_nosave' environment variable is set to a non-empty string.
+# No action if the *$sf_nosave* environment variable is set to a non-empty string.
 #
-#- If the input arg is the path of an existing regular file, the file is saved
-#
-# First version: Support regular files and symbolic links only. Ignore other
-# file types.
+# If the input arg is the path of an existing regular file or symbolic link,
+# the file is saved.
 #
 # Args:
 #	$1 : Path. Beware! Arg can contain any char (including blanks)

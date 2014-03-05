@@ -17,15 +17,17 @@
 #=============================================================================
 
 #=============================================================================
-# Section: User/group management
+# Section: Users and groups
 #=============================================================================
 
 ##----------------------------------------------------------------------------
 # Change a user's password
 #
-#- Works on HP-UX, Solaris, and Linux.
-#- Replaces an encrypted passwd in /etc/passwd or /etc/shadow.
-#- TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
+# Works on HP-UX, Solaris, and Linux.
+#
+# Replaces an encrypted passwd in /etc/passwd or /etc/shadow.
+#
+# TODO: Unify with AIX and autodetect the file to use (passwd/shadow)
 #
 # Args:
 #	$1: Username
@@ -280,7 +282,8 @@ return 0
 #
 # To set the login shell, initialize the CREATE_USER_SHELL variable before
 # calling the function.
-#- For accounts with no access allowed (blocked accounts), $7, $8, and $9 are
+#
+# For accounts with no access allowed (blocked accounts), $7, $8, and $9 are
 # not set.
 #
 # Args:

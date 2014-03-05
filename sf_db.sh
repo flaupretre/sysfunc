@@ -288,9 +288,11 @@ return 0
 # Replaces patterns in the form '{{%<variable name>%}}' by their value.
 #
 # Allows nested substitutions (ex: {{%interface{{%hcfg:icount%}}/network%}}).
-#- Patterns which do not correspond to an existing variable are replaced by an
-#  empty string.
-#- Input: stdin, output: stdout.
+#
+# Patterns which do not correspond to an existing variable are replaced with an
+# empty string.
+#
+# Input: stdin, output: stdout.
 #
 # Args:
 #	$1: 
