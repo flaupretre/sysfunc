@@ -46,4 +46,3 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}
 /usr/bin/sysfunc
 /usr/bin/sysfunc.sh
-/usr/share/doc/sysfunc
