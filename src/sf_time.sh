@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -16,31 +16,37 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
+
 #=============================================================================
-# Section: Kernel
+# Section: Time and date
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Check if a kernel module is loaded
+# Display normalized time string for current time (UTC)
 #
-# Args:
-#	$1: Module name
-# Returns: 0 if module is loaded, 1 if not
-# Displays: Nothing
+# Format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
+#
+# Args: None
+# Returns: 0
+# Displays: Time string
 #-----------------------------------------------------------------------------
 
-function sf_krn_module_is_loaded
+function sf_tm_now
 {
-case "`uname -s`" in
-	Linux)
-		lsmod | awk "(\$1==\"$1\") { exit 1; }" && return 1
-		;;
-	*)
-		sf_unsupported sf_krn_module_is_loaded
-		;;
-esac
+date -u '+%d-%b-%Y %H:%M:%S (%s)'
+}
 
-return 0
+##----------------------------------------------------------------------------
+# Display Unix current time (Seconds since Epoch)
+#
+# Args: None
+# Returns: 0
+# Displays: Time string
+#-----------------------------------------------------------------------------
+
+function sf_tm_timestamp
+{
+date -u '+%s'
 }
 
 #=============================================================================

@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -18,28 +18,31 @@
 
 #=============================================================================
 # Section: Disk management
+#-----------------------------------------------------------------------------
+# This section contains functions to manipulate disks and block devices.
 #=============================================================================
 
 ##------------------------------------------------
 # Normalize a disk device name
 #
-# After being normalized, device names can be compared
+#- After being normalized, device names can be compared.
 #
-# Input can be in the form:
-#	- /dev/<vg>/<lv>
-#	- /dev/mapper/...
-#	- /dev/<partition or disk> (as /dev/sda1)
-#	- LABEL=xxx
-#	- UUID=xxx
+#- Input can be in the form:
+#-	- /dev/<vg>/<lv>
+#-	- /dev/mapper/...
+#-	- /dev/<partition or disk> (as /dev/sda1)
+#-	- LABEL=xxx
+#-	- UUID=xxx
 #
-# Output is in the form:
-#	- /dev/<vg>/<lv> if LVM logical volume
-#	- /dev/<physical> if physical disk
-#	- Copy of input if input was not recognised
+#- Output is in the form:
+#-	- /dev/<vg>/<lv> if LVM logical volume
+#-	- /dev/<physical> if physical disk
+#-	- Copy of input if input was not recognised
 #
-# $1: Device name to normalize
+# Args:
+#	$1: Device name to normalize
 # Returns: 0 if device exists, 1 if not
-# Display: Normalized name if device exists, copy of input if not
+# Displays: Normalized name if device exists, copy of input if not
 #------------------------------------------------
 
 function sf_disk_normalize_device
@@ -50,8 +53,13 @@ dsk="$1"
 
 case "$dsk" in
 	/dev/mapper/*)
-		#Note: 'lvs -o path' is not supported in RHEL4
-		ndsk=`lvs --noheadings -o 'vg_name,name' $dsk 2>/dev/null | awk '{ printf "/dev/%s/%s\n",$1,$2 }'`
+		#Note 1: 'lvs -o path' is not supported in RHEL4
+		set -- `lvs --noheadings -o 'vg_name,name' $dsk 2>/dev/null`
+		#Note 2: 'lvs' on a '/dev/mapper/' path is not supported on some
+		#        RHEL 4 versions (at least 4.5)
+		# On those systems, we just split the string on the first '-'.
+		[ -z "$1" ] && set -- `echo $dsk | sed -e 's,^/dev/mapper/,,' -e 's/-/ /'`
+		ndsk="/dev/$1/$2"
 		;;
 	UUID=*|LABEL=*)
 		if [ `sf_os_version` = 4 ] ; then
@@ -74,7 +82,7 @@ echo $ndsk
 ##------------------------------------------------
 # Get the size of a file system (from device name)
 #
-# File system can be mounted or not
+# File system can be mounted or not.
 #
 # Args:
 #	$1: Device
@@ -111,8 +119,10 @@ return 0
 ##------------------------------------------------
 # Get category of content for a given disk device
 #
-# $1: Device path
-# Display:
+# Args:
+#	$1: Device path
+# Returns: Always 0
+# Displays:
 #	'fs' if it is a filesystem
 #	'swap' if it is a swap partition
 #	else, the type returned by disk_type()
@@ -138,8 +148,10 @@ echo $category
 ##------------------------------------------------
 # Returns type of content for a given disk device
 #
-# $1: Device path
-# Display: type returned by 'blkid' command
+# Args:
+#	$1: Device path
+# Returns: Always 0
+# Displays: type returned by 'blkid' command
 #------------------------------------------------
 #Note: 'blkid -o export' is not supported in RHEL4
 
@@ -148,6 +160,29 @@ function sf_disk_type
 [ "`uname -s`" = Linux ] || sf_unsupported sf_disk_type
 
 blkid "$1" 2>/dev/null | sed -e 's/.*TYPE="//g' -e 's/".*$//g'
+return 0
+}
+
+##------------------------------------------------
+# Scan and discover new SCSI devices
+#
+# Calling program should wait between 5 and 10 seconds for new devices
+# to be discovered.
+#
+# Args: None
+# Returns: Always 0
+# Displays: Nothing
+#------------------------------------------------
+
+function sf_disk_rescan
+{
+typeset i
+
+[ "`uname -s`" = Linux ] || sf_unsupported sf_disk_rescan
+
+for i in /sys/class/scsi_host/host*/scan ; do
+	echo "- - -" >$i
+done
 }
 
 #=============================================================================

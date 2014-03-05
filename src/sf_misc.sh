@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -17,15 +17,17 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Utility functions
+# Section: Miscellaneous
 #=============================================================================
 
 ##----------------------------------------------------------------------------
 # Checks if the library is already loaded
 #
-#- Of course, if it can run, the library is loaded. So, it always returns 0.
-#- Allows to support the 'official' way to load sysfunc :
-#	sf_loaded 2>/dev/null || . sysfunc.sh
+# Of course, if it can run, the library is loaded. So, it always returns 0.
+#
+# Allows to support the 'official' way to load sysfunc :
+#
+#     sf_loaded 2>/dev/null || . sysfunc.sh
 #
 # Args: none
 # Returns: Always 0
@@ -53,10 +55,11 @@ echo "%SOFTWARE_VERSION%"
 ##----------------------------------------------------------------------------
 # Retrieves executable data through an URL and executes it.
 #
-#- Supports any URL accepted by wget.
-#- By default, the 'wget' command is used. If the $WGET environment variable
-#  is set, it is used instead (use, for instance, to
-#  specify a proxy or an alternate configuration file).
+# Supports any URL accepted by wget.
+#
+# By default, the 'wget' command is used. If the $WGET environment variable
+# is set, it is used instead (use, for instance, to specify a proxy or an
+# alternate configuration file).
 #
 # Args:
 #	$1 : Url
@@ -66,27 +69,29 @@ echo "%SOFTWARE_VERSION%"
 
 function sf_exec_url
 {
-typeset wd tdir status
-
+typeset wd tdir status rc
+rc=0
 [ -n "$WGET" ] || WGET=wget
 
 wd=`pwd`
-tdir=`sf_get_tmp`
 
 for i ; do
-	sf_create_dir $tdir
+	tdir=`sf_tmp_dir`
 	cd $tdir
 
 	$WGET $i
 	sf_chmod +x *
-	./*
-	status=$?
+	if [ -z "$sf_noexec" ] ; then
+		./*
+		status=$?
+		[ "$rc" = 0 ] && rc=$status
+	fi
 
 	cd $wd
 	/bin/rm -rf $tdir
 done
 
-return $status
+return $rc
 }
 
 ##----------------------------------------------------------------------------
@@ -144,15 +149,15 @@ typeset -f "$1" >/dev/null 2>&1
 ##------------------------------------------------
 # Uncomment and cleanup input stream
 #
-# - changes tabs to spaces
-# - changes multiple blanks to one space
+# - changes tabs to spaces,
+# - changes multiple blanks to one space,
 # - removes leading and trailing blanks,
 # - removes comments (starting with '#'),
 # - removes blank lines
 #
 # Args:
 #	$1: Optional. File to read from. If not set, read from stdin
-#
+# Returns: Always 0
 # Displays: the cleaned stream
 #------------------------------------------------
 
@@ -166,6 +171,7 @@ input='-'
 sed -e 's/	/ /g' -e 's/   */ /g' -e 's/#.*$//g' -e 's/^  *//g' \
 	-e 's/ * $//g' $input \
 	| grep -v '^$'
+return 0
 }
 
 #=============================================================================

@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-
 #=============================================================================
-# Section: Time/Date manipulation
+# Section: Vmware-specific
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Display normalized time string for current time (UTC)
-#
-# Format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
+# Check if we are on a VMware host
 #
 # Args: None
-# Returns: 0
-# Displays: Time string
-#-----------------------------------------------------------------------------
+# Returns: 0 if VMware, 1 if not
+# Displays: Nothing
+##----------------------------------------------------------------------------
 
-function sf_tm_now
+function sf_vm_host_is_vmware
 {
-date -u '+%d-%b-%Y %H:%M:%S (%s)'
+grep VMware /proc/scsi/scsi >/dev/null 2>&1
 }
 
 #=============================================================================

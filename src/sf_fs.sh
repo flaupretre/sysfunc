@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Filesystem management
+# Section: Filesystems
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -134,6 +134,7 @@ echo `expr $sz / 1024`
 function sf_set_fs_space
 {
 typeset fs size newsize rc
+rc=0
 
 fs=`sf_get_fs_mnt $1`
 size=`sf_get_fs_size $1`
@@ -148,8 +149,10 @@ if [ "$newsize" -gt "$size" ] ; then
 	sf_msg1 "Extending $fs filesystem to $newsize Mb"
 	case "`uname -s`" in
 		AIX)
-			chfs -a size=${newsize}M $fs
-			rc=$?
+			if [ -z "$sf_noexec" ] ; then
+				chfs -a size=${newsize}M $fs
+				rc=$?
+			fi
 			;;
 		*)
 			sf_unsupported sf_set_fs_space
@@ -192,7 +195,7 @@ if [ -d $mnt ] ; then # Securite
 	sf_error "$mnt: Cannot create FS on an existing directory"
 	return 1
 else
-	mkdir -p $mnt
+	[ -z "$sf_noexec" ] && mkdir -p $mnt
 fi
 
 [ $? = 0 ] || return 1
@@ -202,20 +205,20 @@ case "`uname -s`" in
 		opts=''
 		# When supported, set filesystem label
 		echo $type | grep '^ext' >/dev/null && opts="-L `basename $dev`"
-		mkfs -t $type $opts $dev
-		[ $? = 0 ] || return 1
-		echo "$dev $mnt $type defaults 1 2" >>/etc/fstab
+		if [ -z "$sf_noexec" ] ; then
+			mkfs -t $type $opts $dev || return 1
+			echo "$dev $mnt $type defaults 1 2" >>/etc/fstab
+		fi
 		;;
 	*)
 		sf_unsupported sf_create_fs
 		;;
 esac
 
-mount $dev $mnt
-[ $? = 0 ] || return 1
-
-sf_chown $owner $mnt
-[ $? = 0 ] || return 1
+if [ -z "$sf_noexec" ] ; then
+	mount $dev $mnt || return 1
+	sf_chown $owner $mnt || return 1
+fi
 
 return 0
 }

@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ export BASE_DIR SOFTWARE_VERSION INSTALL_DIR
 cd $BASE_DIR
 
 (
+cd src
 for i in sf_*.sh ; do
 	echo "#>>==== Entering $i"
 	cat $i
@@ -40,5 +41,6 @@ for i in sf_*.sh ; do
 	echo "#<<==== Exiting $i"
 done
 cat sysfunc.sh
+cd ..
 ) | sed -e "s,%INSTALL_DIR%,$INSTALL_DIR,g" \
 	-e "s,%SOFTWARE_VERSION%,$SOFTWARE_VERSION,g" >sysfunc.sh.ppc

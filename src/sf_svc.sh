@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Service management
+# Section: Services
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -208,6 +208,8 @@ function sf_svc_is_installed
 ##----------------------------------------------------------------------------
 # Start a service
 #
+# 'noexec' does not disable starting/stopping services.
+#
 # Args:
 #	$1: Service name
 # Returns: Return code from script execution
@@ -225,6 +227,8 @@ fi
 
 ##----------------------------------------------------------------------------
 # Stop a service
+#
+# 'noexec' does not disable starting/stopping services.
 #
 # Args:
 #	$1: Service name
@@ -247,6 +251,7 @@ fi
 # Args:
 #	$1: Service name
 # Returns: 0 if service is running, 1 if stopped, 2 if not installed
+# Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_svc_is_up

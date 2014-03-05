@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: OS management
+# Section: OS
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -29,11 +29,13 @@
 # used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use
 # it in every script where I need a single string to identify the system
 # environment the script is currently running on.
-#- If the current system is not recognized, the program aborts.
-#- By convention, environments recognized by this function support
+#
+# If the current system is not recognized, the program aborts.
+#
+# By convention, environments recognized by this function support
 # the rest of the library.
 #
-#- Contributors welcome ! Feel free to enhance this function with additional
+# *Contributors welcome !* Feel free to enhance this function with additional
 # recognized systems, especially with other Linux distros, and send me your
 # patches.
 #
@@ -181,10 +183,10 @@ function sf_reboot
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -r now
+		[ -z "$sf_noexec" ] && shutdown -r now
 		;;
 	SunOS)
-		init 6
+		[ -z "$sf_noexec" ] && init 6
 		;;
 	*)
 		sf_unsupported reboot
@@ -205,10 +207,10 @@ function sf_shutdown
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -h now
+		[ -z "$sf_noexec" ] && shutdown -h now
 		;;
 	SunOS)
-		shutdown -y -i0 -g0
+		[ -z "$sf_noexec" ] && shutdown -y -i0 -g0
 		;;
 	*)
 		sf_unsupported shutdown
@@ -229,10 +231,10 @@ function sf_poweroff
 {
 case "`uname -s`" in
 	Linux)
-		shutdown -h now
+		[ -z "$sf_noexec" ] && shutdown -h now
 		;;
 	SunOS)
-		shutdown -y -i5 -g0
+		[ -z "$sf_noexec" ] && shutdown -y -i5 -g0
 		;;
 	*)
 		sf_unsupported poweroff

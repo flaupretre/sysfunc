@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 # $INSTALL_ROOT variable can be set by the calling environment and is optional.
 # If not set, everything will be installed relative to '/'.
-
 
 function make_dir
 {
@@ -52,8 +51,5 @@ make_dir $INSTALL_ROOT/usr/bin
 ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc
 /bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc.sh
 ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc.sh
-
-make_dir $INSTALL_ROOT/usr/share/doc/sysfunc
-cp -rp COPYING doc/Function-reference.* $INSTALL_ROOT/usr/share/doc/sysfunc
 
 ###############################################################################

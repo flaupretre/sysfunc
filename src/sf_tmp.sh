@@ -1,5 +1,5 @@
 #
-# Copyright 2010 - Francois Laupretre <francois@tekwire.net>
+# Copyright 2009-2014 - Francois Laupretre <francois@tekwire.net>
 #
 #=============================================================================
 # This program is free software: you can redistribute it and/or modify
@@ -16,85 +16,91 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-
 #=============================================================================
-# Section: IP address manipulation (V 4 only)
+# Section: Temporary file management
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Checks if the input string is a valid IP address
+# Deletes all temporary files
 #
-# Args:
-#		$1: IP address to check
-# Returns: 0 if address is valid, !=0 if not
-# Displays: Nothing
+# This function is automatically called by sf_cleanup()
+#
+# Args: none
+# Returns: Always 0
+# Displays: nothing
 #-----------------------------------------------------------------------------
 
-function sf_ip4_is_valid_ip
+function _sf_tmp_cleanup
 {
-typeset ip a bip
-
-ip="$1"
-bip="`echo $ip | sed 's,\., ,g'`"
-if [ -n "$BASH" ] ; then
-	eval 'a=($bip)' # eval needed to avoid syntax error in ksh
-else
-	set -A a $bip
+if [ -f "$_sf_tmpfile_list" ] ; then
+	\rm -rf `cat $_sf_tmpfile_list` $_sf_tmpfile_list
 fi
-[ ${#a[*]} = 4 ] || return 1
-[ -n "`echo $ip | sed 's,[\.0-9],,g'`" ] && return 1
-[ "${a[0]}" -eq 0 ] && return 1
-return 0
 }
 
 ##----------------------------------------------------------------------------
-# Checks if the input string is a valid IP address and aborts if not
+# Returns an unused temporary path
 #
-# Args:
-#		$1: IP address to check
-# Returns: only if address is valid
-# Displays: Nothing if OK. Error if not
+# The returned path can then be used to create a directory or a file.
+#
+# ** This function is deprecated. Please use sf_tmpfile or sf_tmpdir instead.
+#
+# Args: none
+# Returns: Always 0
+# Displays: An unused temporary path
 #-----------------------------------------------------------------------------
 
-function sf_ip4_validate_ip
+function sf_get_tmp
 {
-sf_ip4_is_valid_ip "$1" || sf_fatal "$1: Invalid IP address"
-}
+typeset n f
 
-##----------------------------------------------------------------------------
-# Compute network from IP and netmask
-#
-# Args:
-#		$1: IP
-#		$2: Netmask
-# Returns: 0
-# Displays: Network
-#-----------------------------------------------------------------------------
-
-function sf_ip4_network
-{
-typeset ip aip bip mask amask bmask
-
-ip="$1"
-sf_ip4_validate_ip "$ip"
-mask="$2"
-sf_ip4_validate_ip "$mask"
-
-bip="`echo $ip | sed 's,\., ,g'`"
-bmask="`echo $mask | sed 's,\., ,g'`"
-if [ -n "$BASH" ] ; then
-	eval 'aip=($bip)'	# eval needed to avoid syntax error in ksh
-	eval 'amask=($bmask)'
-else
-	set -A aip $bip
-	set -A amask $bmask
-fi
-
-for n in 0 1 2 3
+n=0
+while true
 	do
-	net[$n]=$((${aip[$n]} & ${amask[$n]}))
+	f="$_sf_tmpfile_prefix$n"
+	[ -e $f ] || break
+	n=`expr $n + 1`
 done
-echo ${net[*]} | sed 's, ,.,g'
+
+echo $f
+echo $f >>$_sf_tmpfile_list
+}
+
+##----------------------------------------------------------------------------
+# Creates an empty temporary file and returns its path
+#
+# Args: none
+# Returns: Always 0
+# Displays: Temporary file path
+#-----------------------------------------------------------------------------
+
+function sf_tmpfile
+{
+typeset f
+
+f=`sf_get_tmp`
+touch $f
+echo $f
+}
+
+##----------------------------------------------------------------------------
+# Creates an empty temporary dir and returns its path
+#
+# Args: none
+# Returns: Always 0
+# Displays: Temporary dir path
+#-----------------------------------------------------------------------------
+
+function sf_tmpdir
+{
+typeset f
+
+f=`sf_get_tmp`
+mkdir $f
+echo $f
 }
 
 #=============================================================================
+# Note: Each process must have its own list and prefix
+
+_sf_tmpfile_prefix="/tmp/._sf.$$.tmp."
+_sf_tmpfile_list="/tmp/._sf.$$.tmplist"
