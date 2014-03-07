@@ -21,6 +21,19 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
+# Display help
+#
+# Args:
+# Returns: No return
+# Displays: Help message
+#-----------------------------------------------------------------------------
+
+function sf_help
+{
+_sf_usage
+}
+
+##----------------------------------------------------------------------------
 # Checks if the library is already loaded
 #
 # Of course, if it can run, the library is loaded. So, it always returns 0.
