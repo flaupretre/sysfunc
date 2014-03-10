@@ -111,7 +111,7 @@ case "$type" in
 					# If same content
 					break
 				else
-					n=`$n + 1`
+					n=`expr $n + 1`
 					target="$tbase.$n"
 				fi
 			else
