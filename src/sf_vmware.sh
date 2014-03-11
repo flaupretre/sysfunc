@@ -16,40 +16,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-PROJECT=sysfunc
+#=============================================================================
+# Section: Vmware-specific
+#=============================================================================
 
-PPC_DIR=../../../ppc/public
+##----------------------------------------------------------------------------
+# Check if we are on a VMware host
+#
+# Args: None
+# Returns: 0 if VMware, 1 if not
+# Displays: Nothing
+##----------------------------------------------------------------------------
 
-TARGETS = Function-reference.htm Function-reference.md
+function sf_vm_host_is_vmware
+{
+grep VMware /proc/scsi/scsi >/dev/null 2>&1
+}
 
-#-----------------
-
-.PHONY: clean install
-
-all: $(TARGETS)
-
-clean:
-	/bin/rm -rf $(TARGETS) doc.tmp
-
-save: clean
-	tar cf - . | gzip --best >../save/$(PROJECT)_doc_`date '+%d%b%y_%Hh'`.tgz
-
-#----------------
-# Ignores functions starting with '_', sort functions
-
-Function-reference.htm:
-	cat ../sf_*.sh >doc.tmp
-	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" html -e '_' -s
-	/bin/rm -f doc.tmp
-
-Function-reference.md:
-	cat ../sf_*.sh >doc.tmp
-	$(PPC_DIR)/mk_sh_doc.sh doc.tmp "$@" md -e '_' -s
-	/bin/rm -f doc.tmp
-
-#----------------
-# 'install' generates the markdown function ref and copies it to the wiki tree
-# Commit/push of the wiki repository must be done then.
-
-install: Function-reference.md
-	cp Function-reference.md ../../wiki/Function-reference.md
+#=============================================================================

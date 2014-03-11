@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: OS management
+# Section: OS
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -29,11 +29,13 @@
 # used by RedHat. I personnally call it 'OS ID' for 'OS IDentifier' and use
 # it in every script where I need a single string to identify the system
 # environment the script is currently running on.
-#- If the current system is not recognized, the program aborts.
-#- By convention, environments recognized by this function support
+#
+# If the current system is not recognized, the program aborts.
+#
+# By convention, environments recognized by this function support
 # the rest of the library.
 #
-#- Contributors welcome ! Feel free to enhance this function with additional
+# *Contributors welcome !* Feel free to enhance this function with additional
 # recognized systems, especially with other Linux distros, and send me your
 # patches.
 #

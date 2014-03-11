@@ -16,18 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-##----------------------------------------------------------------------------
-# Display help
-#
-# Args:
-# Returns: No return
-# Displays: Help message
 #-----------------------------------------------------------------------------
-
-function sf_help
-{
-_sf_usage
-}
+# All the functions must have a name starting with '_' (no publicly
+# accessible function here).
+#-----------------------------------------------------------------------------
 
 ##----------------------------------------------------------------------------
 # Display error message, usage, and exit

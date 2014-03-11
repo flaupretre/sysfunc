@@ -206,7 +206,8 @@ __msg $answer
 # Works at least for questions in english, french, and german :
 # Accepts 'Y', 'O', and 'J' for 'yes' (upper or lowercase), and
 # anything different is considered as 'no'
-#- If the $sf_forceyes environment variable is set, the user is not asked
+#
+# If the $sf_forceyes environment variable is set, the user is not asked
 # and the 'yes' code is returned.
 #
 # Args:

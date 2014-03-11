@@ -17,7 +17,7 @@
 #=============================================================================
 
 #=============================================================================
-# Section: File/dir management
+# Section: File manipulation
 #=============================================================================
 
 ##----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ return 1
 # program aborts with a fatal error. If you want to avoid
 # this (if you want to create the directory, even if something else is
 # already existing in this path), call sf_delete first.
-#- If the path given as arg contains a symbolic link pointing to an existing
+# If the path given as arg contains a symbolic link pointing to an existing
 # directory, it is left as-is.
 #
 # Args:
@@ -148,8 +148,8 @@ fi
 # Copy a file or the content of function's standard input to a target file
 #
 # The copy takes place only if the source and target files are different.
-#- If the target file is already existing, it is saved before being overwritten.
-#- If the target path directory does not exist, it is created.
+# If the target file is already existing, it is saved before being overwritten.
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Source path. Special value: '-' means that data to copy is read from
@@ -210,33 +210,36 @@ fi
 # data block and allow the function to be called several times on the same
 # target file with different data blocks. The block identifier is the
 # base name of the source path.
-#- If the given block is not present in the target file, it is appended or
+#
+# If the given block is not present in the target file, it is appended or
 # prepended, depending on the flag argument. If the block is already
 # present in the file (was inserted by a previous run of this function),
 # its content is compared with the new data, and replaced if different.
-# In this case, it is replaced at the exact place where the previous block
+# In this case, it is replaced at the exact location where the previous block
 # lied.
-#- If the target file exists, it is saved before being overwritten.
-#- If the target path directory does not exist, it is created.
+#
+# If the target file exists, it is saved before being overwritten.
+#
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: If this arg starts with the '-' char, the data is to be read from
-#		stdin and the string after the '-' is the block identifier.
-#-		If it does not start with '-', it is the path to the source file
+#		stdin and the string after the '-' is the block identifier.  
+#		If it does not start with '-', it is the path to the source file
 #		(containing the data to insert).
 #	$2: Target path
 #	$3: Optional. Target file mode.
-#-		Default=644
+#
+# 	Default=644
 #	$4: Optional. Flag. Set to 'prepend' to add data at the beginning of
-#		the file.
-#-		Default mode: Append.
-#-		Used only if data block is not already present in the file.
-#-		Can be set to '' (empty string) to mean 'default mode'.
-#	$5: Optional. Comment character.
-#-		This argument, if set, must contain only one character.
+#		the file. Default mode: Append.  
+#	 	Used only if data block is not already present in the file.  
+#		Can be set to '' (empty string) to mean 'default mode'.
+#	$5: Optional. Comment character.  
+#	 	This argument, if set, must contain only one character.  
 #		This character will be used as first char when building
-#		the 'identifier' lines surrounding the data block.
-#-		Default: '#'.
+#		the 'identifier' lines surrounding the data block.  
+#	 	Default: '#'.
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -399,7 +402,8 @@ return $status
 # Creates or modifies a symbolic link
 #
 # The target is saved before being modified.
-#- If the target path directory does not exist, it is created.
+#
+# If the target path directory does not exist, it is created.
 #
 # Args:
 #	$1: Link target
@@ -431,75 +435,103 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Comment one line in a file
+# Comment lines in a file
 #
-# The first line containing the (grep) pattern given in argument will be commented
-# out by prefixing it with the comment character.
+# The lines containing the (grep) pattern given in argument will be commented
+# out by prefixing them with the comment string.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment char (one char string). Default='#'
+#	$3: Optional. Comment prefix string. Default='#'
+#	$4: Number of lines to comment (''=all). Default: ''
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_comment_out
 {
-typeset com
+typeset file pattern com cnb tmp lnum line
+file="$1"
+pattern="$2"
+com="$3"
+[ "X$com" = X ] && com='#'
+cnb=$4
 
-if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
-
-grep -v "^[ 	]*$com" "$1" | grep "$2" >/dev/null 2>&1
-if [ $? = 0 ] ; then
-	sf_save "$1"
-	sf_msg1 "$1: Commenting out '$2'"
-	if [ -z "$sf_noexec" ] ; then
-		ed $1 <<-EOF >/dev/null 2>&1
-			?^[^$com]*$2?
-			s?^?$com?
-			w
-			q
-		EOF
+tmp=`sf_tmpfile`
+lnum=0
+while read line ; do
+	lnum=`expr $lnum + 1`
+	if [ "$cnb" != 0 ] ; then
+		echo "$line" | grep "$pattern" >/dev/null
+		if [ $? = 0 ] ; then
+			sf_msg "$file: Commenting out line $lnum"
+			line="$com$line"
+			[ -n "$cnb" ] && cnb=`expr $cnb - 1`
+		fi
 	fi
+	echo "$line" >>$tmp
+done <$file
+
+if ! diff $file $tmp >/dev/null 2>&1 ; then
+	sf_save $file || return
+	cp $tmp $file
 fi
+
+/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
-# Uncomment one line in a file
+# Uncomment lines in a file
 #
-# The first commented line containing the (grep) pattern given in argument
-# will be uncommented by removing the comment character.
+# The commented lines containing the (grep) pattern given in argument
+# will be uncommented by removing the comment string.
 # If the pattern is not contained in the file, the file is left unchanged.
 #
 # Args:
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
-#	$3: Optional. Comment char (one char string). Default='#'
+#	$3: Optional. Comment prefix string. Default='#'
+#	$4: Number of lines to uncomment (''=all). Default: ''
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_uncomment
 {
-typeset com
+typeset file pattern com cnb tmp lnum line l2
+file="$1"
+pattern="$2"
+com="$3"
+[ "X$com" = X ] && com='#'
+cnb=$4
 
-if [ -z "$3" ] ; then com='#' ; else com="$3"; fi
-
-grep "$2" "$1" | grep "^[ 	]*$com" >/dev/null 2>&1
-if [ $? = 0 ] ; then
-	sf_save "$1"
-	sf_msg1 "$1: Uncommenting '$2'"
-	if [ -z "$sf_noexec" ] ; then
-		ed $1 <<-EOF >/dev/null 2>&1
-			?^[ 	]*$com.*$2?
-			s?^[ 	]*$com??g
-			w
-			q
-		EOF
+tmp=`sf_tmpfile`
+lnum=0
+while read line ; do
+	lnum=`expr $lnum + 1`
+	if [ "$cnb" != 0 ] ; then
+		echo "$line" | grep "^[ 	]*$com" >/dev/null
+		if [ $? = 0 ] ; then
+			l2=`echo "$line" | sed "s,^[ 	]*$com,,"`
+			echo "$l2" | grep "$pattern" >/dev/null
+			if [ $? = 0 ] ; then
+				sf_msg "$file: Uncommenting line $lnum"
+				line="$l2"
+				[ -n "$cnb" ] && cnb=`expr $cnb - 1`
+			fi
+		fi
 	fi
+	echo "$line" >>$tmp
+done <$file
+
+if ! diff $file $tmp >/dev/null 2>&1 ; then
+	sf_save $file || return
+	cp $tmp $file
 fi
+
+/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
@@ -747,9 +779,11 @@ return 0
 # with a string giving the format, followed by a ':' and the chacksum in
 # readable form.
 #
-#- Possible format strings, in preference order: SHA1, MD5, CKS, SUM.
 #
-#- Generate a fatal error if none of these mechanisms is found.
+# Possible format strings, in preference order: SHA1, MD5, CKS, SUM.
+#
+#
+# Generate a fatal error if none of these mechanisms is found.
 #
 # Args:
 #	$1: Path
@@ -812,7 +846,8 @@ ls -ld "$source" | sed 's/^.*->[ 	]*//'
 # Every directories leading to the source item must be readable by the current
 # user.
 #
-#- This function preserves the current directory.
+#
+# This function preserves the current directory.
 #
 # Args:
 #	$1: Path
