@@ -39,7 +39,8 @@ for i
 	do
 	if ls -d "$i" >/dev/null 2>&1 ; then
 		sf_msg1 "Deleting $i"
-		[ -z "$sf_noexec" ] && sf_save "$i" && \rm -rf "$i"
+		sf_save "$i"
+		[ -z "$sf_noexec" ] && \rm -rf "$i"
 	fi
 done
 }
@@ -109,8 +110,8 @@ mode=$3
 
 if [ ! -d "$path" ] ; then
 	sf_msg1 "Creating directory: $path"
+	sf_save "$path"
 	if [ -z "$sf_noexec" ] ; then
-		sf_save "$path"
 		mkdir -p "$path"
 		[ -d "$path" ] || sf_fatal "$path: Cannot create directory"
 		sf_chown $owner $path
@@ -187,11 +188,11 @@ if [ -f "$target" ] ; then
 		[ -n "$tmpsource" ] && \rm $source
 		return
 	fi
-	sf_save $target
 fi
 
 sf_msg1 "Updating file $target"
 
+sf_save $target
 if [ -z "$sf_noexec" ] ; then
 	\rm -rf "$target"
 	sf_create_dir `dirname $target`
@@ -304,7 +305,6 @@ if [ -f "$target" ] ; then
 			action='Appending'
 		fi
 	fi
-	sf_save $target
 else
 	action='Creating from'
 	>$tmp_start
@@ -313,6 +313,7 @@ fi
 
 sf_msg1 "$target: $action data block"
 
+sf_save $target
 if [ -z "$sf_noexec" ] ; then
 	\rm -f "$target"
 	sf_create_dir `dirname $target`
@@ -422,11 +423,11 @@ if [ $? = 0 ] ; then
 		link_target=`sf_file_readlink "$2"`
 		[ "$link_target" = "$1" ] && return
 	fi
-	sf_save "$2"
 fi
 
 sf_msg1 "$2: Updating symbolic link"
 
+sf_save "$2"
 if [ -z "$sf_noexec" ] ; then
 	\rm -rf "$2"
 	sf_create_dir `dirname $2`
@@ -630,12 +631,12 @@ source="$1"
 
 [ -e "$source" ] || return 1
 
-[ -b "$source" ] && echo B && return
-[ -c "$source" ] && echo C && return
-sf_file_is_link "$source" && echo L && return
-[ -d "$source" ] && echo D && return
-[ -p "$source" ] && echo P && return
-[ -f "$source" ] && echo R && return
+[ -b "$source" ] && echo B && return 0
+[ -c "$source" ] && echo C && return 0
+sf_file_is_link "$source" && echo L && return 0
+[ -d "$source" ] && echo D && return 0
+[ -p "$source" ] && echo P && return 0
+[ -f "$source" ] && echo R && return 0
 }
 
 #------------------------------------------------
