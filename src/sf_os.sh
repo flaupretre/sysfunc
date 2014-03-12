@@ -35,7 +35,7 @@
 # By convention, environments recognized by this function support
 # the rest of the library.
 #
-# *Contributors welcome !* Feel free to enhance this function with additional
+# **Contributors welcome !** Feel free to enhance this function with additional
 # recognized systems, especially with other Linux distros, and send me your
 # patches.
 #

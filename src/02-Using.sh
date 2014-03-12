@@ -38,7 +38,7 @@
 #     sysfunc <command> [args]
 # 
 # where <command> is the name of a sysfunc function to call, without the
-# *sf_* prefix.
+# __sf_ __ prefix.
 # 
 # **Example :**
 # 
@@ -58,9 +58,10 @@
 # 
 # # Checking whether the library is loaded #
 # 
-# You may check whether the library was previously loaded with the *sf_loaded*
-# command. Don't forget redirecting *stderr* or an error message will be
-# displayed when the library is not loaded.
+# The **sf_loaded** function checks if the library is loaded. When using this
+# function, you must redirect stderr to /dev/null to avoid displaying an error
+# when the library is not loaded (when the library is not loaded, the
+# __sf_loaded__ function is not present).
 # 
 # The syntax to use is:
 # 

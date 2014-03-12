@@ -76,7 +76,7 @@ function sf_sav_zap
 ##----------------------------------------------------------------------------
 # Saves a file
 #
-# No action if the *$sf_nosave* environment variable is set to a non-empty string.
+# No action if the **$sf_nosave** environment variable is set to a non-empty string.
 #
 # If the input arg is the path of an existing regular file or symbolic link,
 # the file is saved.
