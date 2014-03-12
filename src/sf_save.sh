@@ -197,14 +197,14 @@ _sf_save_base=/var/sysfunc.save
 _sf_save_index=$_sf_save_base/index.dat
 _sf_save_tree=$_sf_save_base/tree
 
-if [ -n "$sf_save_inherit" ] ; then
+if [ -n "$sf_save_inherit" -a -f "$_sf_saved_list" ] ; then
 	_sf_save_inherited=y
 else
 	_sf_save_inherited=''
 	_sf_saved_list=/tmp/._sf_saved.$$
 fi
 
-sf_save_excluded_paths="^/tmp/ ^/var/tmp/"
+sf_save_excluded_paths=${sf_save_excluded_paths-^/tmp/ ^/var/tmp/}
 
 export _sf_save_base _sf_save_index _sf_save_tree _sf_save_inherited \
 	_sf_saved_list sf_save_excluded_paths
