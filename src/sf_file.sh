@@ -476,7 +476,7 @@ while read line ; do
 done <$file
 
 if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
+	sf_save $file
 	cp $tmp $file
 fi
 
@@ -528,7 +528,7 @@ while read line ; do
 done <$file
 
 if ! diff $file $tmp >/dev/null 2>&1 ; then
-	sf_save $file || return
+	sf_save $file
 	cp $tmp $file
 fi
 
