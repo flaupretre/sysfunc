@@ -38,7 +38,7 @@
 #     sysfunc <command> [args]
 # 
 # where <command> is the name of a sysfunc function to call, without the
-# __sf_ __ prefix.
+# 'sf_' prefix.
 # 
 # **Example :**
 # 
