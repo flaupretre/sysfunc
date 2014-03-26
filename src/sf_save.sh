@@ -70,16 +70,19 @@ fi
 
 function sf_sav_zap
 {
-/bin/rm -rf $_sf_save_base
+[ -z "$sf_noexec" ] && /bin/rm -rf $_sf_save_base
 }
 
 ##----------------------------------------------------------------------------
 # Saves a file
 #
-# No action if the *$sf_nosave* environment variable is set to a non-empty string.
+# No action if the **$sf_nosave** environment variable is set to a non-empty string.
 #
 # If the input arg is the path of an existing regular file or symbolic link,
 # the file is saved.
+#
+# If the file cannot be saved (copy or dir creation failure), a fatal error
+# is raised and the program is aborted.
 #
 # Args:
 #	$1 : Path. Beware! Arg can contain any char (including blanks)
@@ -90,14 +93,36 @@ function sf_sav_zap
 function sf_save
 {
 typeset type source tbase target n mode owner group mtime size sum line tpath
+typeset tmp1 tmp2 status pattern dir
+
 source="$1"
 
 _sf_sav_init
 
-[ "X$sf_nosave" = X ] || return
+[ "X$sf_nosave" = X ] || return 0
 
-type=`sf_file_type "$source"` || return
+type=`sf_file_type "$source"` || return 0
 source="`sf_file_realpath \"$source\"`" # Convert $source to absolute path
+
+#-- Check if path is excluded
+
+if [ -n "$sf_save_excluded_paths" ] ; then
+	for pattern in $sf_save_excluded_paths ; do
+		echo "$source" | grep "$pattern" >/dev/null && return 0
+	done
+fi
+
+#-- Check if this file was already saved during this session
+
+tmp1=`sf_tmpfile`
+tmp2=`sf_tmpfile`
+[ -f "$_sf_saved_list" ] && sort <$_sf_saved_list >$tmp1
+echo $source >$tmp2
+status="`comm -12 $tmp1 $tmp2 2>&1`"
+\rm -rf $tmp1 $tmp2
+[ "X$status" = X ] || return 0
+echo $source >>$_sf_saved_list
+
 case "$type" in
 	R)	# Regular file
 		sf_msg1 "$source: Saving regular file"
@@ -115,10 +140,14 @@ case "$type" in
 					target="$tbase.$n"
 				fi
 			else
-				mkdir -p "`dirname \"$tpath\"`" >/dev/null 2>&1
-				cp "$source" "$tpath"
-				chown root "$tpath"
-				chmod 600 "$tpath"
+				dir="`dirname \"$tpath\"`"
+				if [ -z "$sf_noexec" ] ; then
+					[ -d "$dir" ] || mkdir -p "$dir"
+					[ -d "$dir" ] || sf_fatal "$source:  Cannot save file (directory creation failed)"
+					cp "$source" "$tpath" || sf_fatal "$source: Cannot save file (copy failed)"
+					chown root "$tpath"
+					chmod 600 "$tpath"
+				fi
 				break
 			fi
 		done
@@ -137,12 +166,29 @@ case "$type" in
 		line="$target"
 		;;
 
-	*)	return ;; # Ignore other types
+	*)	return 0;; # Ignore other types
 esac
 
 #-- Record in index file
 
-echo "$type|$source|`sf_tm_timestamp`|$line" >>$_sf_save_index
+[ -z "$sf_noexec" ] && echo "$type|$source|`sf_tm_timestamp`|$line" >>$_sf_save_index
+
+return 0
+}
+
+##----------------------------------------------------------------------------
+# Save system cleanup
+#
+# Called by sf_cleanup()
+#
+# Args: None
+# Returns: Always 0
+# Displays: Nothing
+#-----------------------------------------------------------------------------
+
+function _sf_save_cleanup
+{
+[ -n "$_sf_saved_list" -a -z "$_sf_save_inherited" ] && \rm -rf $_sf_saved_list
 }
 
 #-----------------------------------------------------------------------------
@@ -151,6 +197,16 @@ _sf_save_base=/var/sysfunc.save
 _sf_save_index=$_sf_save_base/index.dat
 _sf_save_tree=$_sf_save_base/tree
 
-export _sf_save_base _sf_save_index _sf_save_tree
+if [ -n "$sf_save_inherit" -a -f "$_sf_saved_list" ] ; then
+	_sf_save_inherited=y
+else
+	_sf_save_inherited=''
+	_sf_saved_list=/tmp/._sf_saved.$$
+fi
+
+sf_save_excluded_paths=${sf_save_excluded_paths-^/tmp/ ^/var/tmp/}
+
+export _sf_save_base _sf_save_index _sf_save_tree _sf_save_inherited \
+	_sf_saved_list sf_save_excluded_paths
 
 #=============================================================================

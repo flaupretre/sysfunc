@@ -30,7 +30,7 @@
 # #Installing from the source tar file
 # 
 # Sysfunc is a shell library, so it does not require to be compiled before installation. The only tool you
-# need to install the software from the source tar file is the *make* utility.
+# need to install the software from the source tar file is the __make__ utility.
 # 
 # Here are the steps to follow :
 # 

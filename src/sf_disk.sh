@@ -25,19 +25,21 @@
 ##------------------------------------------------
 # Normalize a disk device name
 #
-#- After being normalized, device names can be compared.
+# After being normalized, device names can be compared.
 #
-#- Input can be in the form:
-#-	- /dev/<vg>/<lv>
-#-	- /dev/mapper/...
-#-	- /dev/<partition or disk> (as /dev/sda1)
-#-	- LABEL=xxx
-#-	- UUID=xxx
+# Input can be in the form:
 #
-#- Output is in the form:
-#-	- /dev/<vg>/<lv> if LVM logical volume
-#-	- /dev/<physical> if physical disk
-#-	- Copy of input if input was not recognised
+#	- /dev/<vg>/<lv>
+#	- /dev/mapper/...
+#	- /dev/<partition or disk> (as /dev/sda1)
+#	- LABEL=xxx
+#	- UUID=xxx
+#
+# Output is in the form:
+#
+#	- /dev/<vg>/<lv> if LVM logical volume
+#	- /dev/<physical> if physical disk
+#	- Copy of input if input was not recognised
 #
 # Args:
 #	$1: Device name to normalize

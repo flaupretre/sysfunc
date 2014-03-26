@@ -121,6 +121,7 @@ function sf_cleanup
 {
 _sf_tmp_cleanup
 _sf_error_cleanup
+_sf_save_cleanup
 }
 
 ##----------------------------------------------------------------------------

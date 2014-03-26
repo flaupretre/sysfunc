@@ -21,25 +21,20 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Check if software exist (installed or available for installation)
+# Check if software exists (installed or available for installation)
 #
 # Args:
-#	$*: A list of software names to check
-# Returns: The number of software from the input list which DON'T exist
+#	$1: Software name
+# Returns: 0 if software exists, 1 if not
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_soft_exists
 {
-typeset soft rc
-rc=0
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_exists
 
-for soft in $*
-	do
-	$sf_yum list $1 >/dev/null 2>&1 || rc=`expr $rc + 1`
-done
-
-return $rc
+$sf_yum list $1 >/dev/null 2>&1 || return 1
+return 0
 }
 
 ##----------------------------------------------------------------------------
@@ -64,94 +59,86 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Check if software is installed
+# Check if a software is installed
 #
 # Args:
-#	$*: software name(s)
-# Returns: 0 if every argument software are installed. 1 if at least one of them
-# is not.
+#	$1: Software name
+# Returns: 0 if software is installed, 1 if not.
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_soft_is_installed
 {
-typeset _pkg
-
 [ -z "$sf_rpm" ] && sf_unsupported sf_soft_is_installed
 
-for _pkg ; do
-	$sf_rpm -q "$_pkg" >/dev/null 2>&1 || return 1
-done
+$sf_rpm -q "$1" >/dev/null 2>&1 || return 1
 return 0
 }
 
 ##----------------------------------------------------------------------------
 # Check if a newer version of a software is available
 #
-#  Note : if the software is not installed, it is not considered as updateable
-#
-# Note : yum returns 0 if no software are available for update
+# Note : if the software is not installed, it is not considered as upgradeable
 #
 # Args:
-#	$*: software name(s)
-# Returns: 0 if at least one of the given software(s) can be updated.
+#	$1: Software name
+# Returns: 0 if the software is upgradeable, !=0 if not.
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_soft_is_upgradeable
 {
-[ -z "$sf_yum" ] && sf_unsupported sf_soft_is_upgradeable
-
-$sf_yum check-update $* >/dev/null 2>&1 || return 0
-return 1
+sf_soft_available_version "$1" >/dev/null 2>&1
 }
 
 ##----------------------------------------------------------------------------
 # Check if a software is installed and the latest version
 #
 # Args:
-#	$*: software name(s)
-# Returns: 0 if every argument software are installed and up to date (for yum)
+#	$1: Software name
+# Returns: 0 if software is up-to-date, 1 if not installed, 2 if upgradeable.
 # Displays: Nothing
 #-----------------------------------------------------------------------------
 
 function sf_soft_is_up_to_date
 {
-sf_soft_is_installed $* || return 1
-sf_soft_is_upgradeable $* && return 1
+sf_soft_is_installed $1 || return 1
+sf_soft_is_upgradeable $1 && return 2
 return 0
 }
 
 ##----------------------------------------------------------------------------
-# Get the version of the available package, if any
+# Get the available version of an upgradeable package
 #
 # Args:
-#	$*: software name
-# Returns: 0 if an update is available, 1 if no update available, 2 if not installed
+#	$1: Software name
+# Returns: 0 if an update is available, 1 if not installed, 2 if up-to-date
 # Displays: Available version if one exists, nothing if not
 #-----------------------------------------------------------------------------
 
 function sf_soft_available_version
 {
-typeset pkg avail tmp
-pkg=$1
+typeset buf
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_available_version
 
-tmp=`yum check-update $pkg 2>/dev/null`
-[ $? = 0 ] && return 1
-echo "$tmp" | tail -1 | awk '{ print $2 }'
+sf_soft_is_installed $1 || return 1
+buf="`$sf_yum list available $1 2>/dev/null`"
+
+# We need to check for an 'Available Packages' string because output can contain
+# messages issued when reloading metadata.
+
+echo "$buf" | grep '^Available Packages$' >/dev/null || return 2
+echo "$buf" | tail -1 | awk '{ print $2 }'
 }
 
 ##----------------------------------------------------------------------------
-# Install a software if not already present
+# Install software(s) if not already present on the host
 #
-# Install or updates a software depending on its presence on the host
-#
-# If the software is installed but not up to date, no action.
+# If a software is installed but not up to date, it is not upgraded.
 #
 # Args:
-#	$*: software name(s)
+#	$*: Software name(s)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -180,14 +167,16 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# Install or upgrade a software
+# Install or upgrade software(s)
 #
-# Install or updates a software depending on its presence on the host
+# For each of the software names supplied as arguments :
 #
-# If the software is up to date, no action.
+#	- if the software is not installed, install it,
+#	- if the software is installed and upgradeable, upgrade it,
+#	- if the software is up-to-date, do nothing.
 #
 # Args:
-#	$*: software name(s)
+#	$*: Software name(s)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -226,12 +215,12 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# Uninstall a software (including dependencies)
+# Uninstall software(s) (including dependencies)
 #
-# Return without error if the software is not installed
+# Nothing is done for softwares which are not present on the host.
 #
 # Args:
-#	$*: software name(s)
+#	$*: Software name(s)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -253,12 +242,12 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# Uninstall a software (ignoring dependencies)
+# Uninstall software(s) (ignoring and bypassing dependencies)
 #
-# Return without error if the software is not installed
+# Nothing is done for softwares which are not present on the host.
 #
 # Args:
-#	$*: software name(s)
+#	$*: Software name(s)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -280,10 +269,10 @@ return 0
 }
 
 ##----------------------------------------------------------------------------
-# Reinstall a software, even at same version
+# Reinstall software(s), even at same version
 #
 # Args:
-#	$*: software name(s)
+#	$*: Software name(s)
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
@@ -304,7 +293,7 @@ return 0
 # get version of an installed software
 #
 # Args:
-#	$*: software name
+#	$1: Software name
 # Returns: 0 if software is installed, 1 otherwise.
 # Displays: Software version (nothing if soft is not installed)
 #-----------------------------------------------------------------------------
