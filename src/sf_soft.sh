@@ -325,4 +325,32 @@ function sf_soft_clean_cache
 [ -d /var/cache/yum ] && \rm -rf /var/cache/yum/*
 }
 
+##----------------------------------------------------------------------------
+# List defined software repository names
+#
+# Args: None
+# Returns: Always 0
+# Displays: List of software repositories, one per line
+#-----------------------------------------------------------------------------
+# Note: we prefer parsing the yum config instead of using the 'repolist' cmd
+# because: 1. 'repolist' does not exist in yum v2 (RHEL 4), and 2. repolist
+# refreshes the cache, which fails if the repo is not reachable. The '-C' option
+# can disable the cache refresh but will cause the cmd to fail if the cache is
+# empty.
+# So, in short, this is the only way I found to list enabled repositories when
+# the cache is empty (after a clean).
+#-----------------------------------------------------------------------------
+
+function sf_soft_repo_list
+{
+[ -z "$sf_yum" ] && sf_unsupported sf_soft_repo_list
+
+cat /etc/yum.conf /etc/yum.repos.d/* 2>/dev/null \
+	| sf_txt_cleanup \
+	| awk '
+		BEGIN	{ repo=""; }
+		/^enabled=1/	{ print repo; }
+		/^\[/			{ repo=substr($1,2,length($1)-2); }'
+}
+
 #=============================================================================
