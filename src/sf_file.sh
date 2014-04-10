@@ -616,7 +616,7 @@ return $rc
 # Args:
 #	$1: Path
 # Returns: 0 if file exists, 1 if not
-# Displays: Nothing if file does not exist, or
+# Displays: - Nothing if file does not exist,
 #	- R: Regular file,
 #	- L: Symbolic link,
 #	- D: Directory,
