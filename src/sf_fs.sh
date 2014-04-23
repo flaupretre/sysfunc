@@ -172,7 +172,7 @@ return $rc
 # Args:
 #	$1: Mount point
 #	$2: device path
-#	$3: FS type
+#	$3: Optional. FS type (if empty, default FS type for this OS)
 #	$4: Optional. Mount point directory owner[:group]
 # Returns: 0 if no error, 1 on error
 # Displays: Info msg
@@ -186,6 +186,7 @@ mnt=$1
 dev=$2
 type=$3
 owner=$4
+[ -z "$type" ] && type=`sf_fs_default_type`
 [ -z "$owner" ] && owner=root
 
 sf_has_dedicated_fs $mnt && return 0
@@ -236,7 +237,11 @@ function sf_fs_default_type
 typeset type
 
 case `uname -s` in
-	Linux) type=ext3;;
+	Linux)
+		for type in ext4 ext3 ext2 ; do
+			[ -x /sbin/mkfs.$type ] && break
+		done
+		;;
 	*) sf_unsupported "sf_fs_default_type";;
 esac
 
@@ -252,8 +257,9 @@ echo $type
 #	$1: Mount point (directory)
 #	$2: Logical volume name
 #	$3: Volume group name
-#	$4: File system type
-#	$5: Size in Mbytes
+#	$4: File system type (optional. if empty, defaults to default FS type for this OS)
+#	$5: Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all'
+#		takes the whole free size in the VG. 
 #	$6: Optional. Directory owner[:group]
 # Returns: 0: OK, !=0: Error
 # Displays: Info msg
