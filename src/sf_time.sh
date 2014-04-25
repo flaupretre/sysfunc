@@ -22,18 +22,31 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Display normalized time string for current time (UTC)
+# Display normalized time string for current time (local or UTC)
 #
-# Format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
+# Local time is the default. If the SF_TM_UTC environment variable is set to a
+# non empty value, UTC time is displayed.
 #
-# Args: None
-# Returns: 0
+# Default format: DD-Mmm-YYYY HH:MM:SS (<Unix time>)
+#
+# Args:
+#	$1: Optional. Date format (without the leading '+'). See date(1) man page
+#		for more details on macros supported in format string.
+# Returns: date command return code (!=0 if syntax error in format)
 # Displays: Time string
 #-----------------------------------------------------------------------------
 
 function sf_tm_now
 {
-date -u '+%d-%b-%Y %H:%M:%S (%s)'
+typeset opt format
+
+opt=''
+[ "X$SF_TM_UTC" = X ] || opt='-u'
+
+format='%d-%b-%Y %H:%M:%S (%s)'
+[ "X$1" = X ] || format="$1"
+
+date $opt "+$format"
 }
 
 ##----------------------------------------------------------------------------
@@ -46,7 +59,24 @@ date -u '+%d-%b-%Y %H:%M:%S (%s)'
 
 function sf_tm_timestamp
 {
-date -u '+%s'
+sf_tm_now '%s'
+}
+
+##----------------------------------------------------------------------------
+# Display current date as 'DD-Mmm-YYYY'
+#
+# Local time is the default. If the SF_TM_UTC environment variable is set to a
+# non empty value, UTC time is displayed. This will change date if time is near
+# midnight and local/utc times correspond to different dates.
+#
+# Args: None
+# Returns: 0
+# Displays: Time string
+#-----------------------------------------------------------------------------
+
+function sf_tm_date
+{
+sf_tm_now '%d-%b-%Y'
 }
 
 #=============================================================================

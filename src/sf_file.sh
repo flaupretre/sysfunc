@@ -576,18 +576,19 @@ if [ -n "$fline" ] ; then
 		q
 	EOF
 else
-	sf_msg1 "$1: Appending '$2' line"
+	sf_msg1 "$1: Appending '$3' line"
 	[ -z "$sf_noexec" ] && echo "$line" >>$file
 fi
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Sort a file in-place
 #
 # Args:
 #	$1: Path
 #	$2-*: Optional. Sort options
 # Returns: Sort return code
+# Displays: Info msg
 #------------------------------------------------
 
 function sf_sort_file
@@ -609,19 +610,19 @@ fi
 return $rc
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Get the type of a file
 #
 # Args:
 #	$1: Path
 # Returns: 0 if file exists, 1 if not
-# Displays: Nothing if file does not exist, or
-#	R: Regular file,
-#	L: Symbolic link,
-#	D: Directory,
-#	C: Character device
-#	B: Block device
-#	P: Named pipe (fifo)
+# Displays: - Nothing if file does not exist,
+#	- R: Regular file,
+#	- L: Symbolic link,
+#	- D: Directory,
+#	- C: Character device
+#	- B: Block device
+#	- P: Named pipe (fifo)
 #------------------------------------------------
 
 function sf_file_type
@@ -639,7 +640,7 @@ sf_file_is_link "$source" && echo L && return 0
 [ -f "$source" ] && echo R && return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Portable way to check if a file is a symbolic link
 #
 # Note: Don't use 'test -h' (not portable)
@@ -647,6 +648,7 @@ sf_file_is_link "$source" && echo L && return 0
 # Args:
 #	$1: Path
 # Returns: 0 if file exists and is a symbolic link, 1 if not
+# Displays: Nothing
 #------------------------------------------------
 
 function sf_file_is_link
@@ -657,7 +659,7 @@ source="$1"
 \ls -ld "$source" | grep -- '->' >/dev/null 2>&1 
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Return mode of a file in octal
 #
 # Args:
@@ -680,7 +682,7 @@ stat -c "%a" "$source"
 return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Return owner of a file (numeric)
 #
 # Args:
@@ -703,7 +705,7 @@ stat -c "%u" "$source"
 return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Return group of a file (numeric)
 #
 # Args:
@@ -726,7 +728,7 @@ stat -c "%g" "$source"
 return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Return last modification time of a file (Unix format)
 #
 # Args:
@@ -750,7 +752,7 @@ stat -c "%Y" "$source"
 return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Return size of a file (in bytes)
 #
 # Args:
@@ -773,7 +775,7 @@ stat -c "%s" "$source"
 return 0
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Compute the checksum of a file
 #
 # Computed checksum depends on the OS and software available. It is prefixed
@@ -817,7 +819,7 @@ sf_find_executable sum >/dev/null \
 sf_fatal "Cannot find a way to compute a file checksum"
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Get the link target of a symbolic link
 #
 # Args:
@@ -840,7 +842,7 @@ sf_find_executable readlink >/dev/null && readlink "$source" && return
 ls -ld "$source" | sed 's/^.*->[ 	]*//'
 }
 
-#------------------------------------------------
+##------------------------------------------------
 # Canonicalize a file path
 #
 # The input path must correspond to an existing item (file or dir, any type)

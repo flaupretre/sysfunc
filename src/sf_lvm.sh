@@ -174,7 +174,22 @@ return $rc
 
 function sf_lv_to_vg
 {
-lvs --noheadings -o vg_name "$1" 2>/dev/null | sed 's/^ //g'
+lvs --noheadings -o vg_name "$1" 2>/dev/null | sed 's/^  *//g'
+}
+
+##------------------------------------------------
+# Returns the available size in a VG (in Mb)
+#
+# Args:
+#	$1: VG name
+# Returns: Always 0
+# Displays: The available size in Mbytes. Nothing if VG does not exist.
+#------------------------------------------------
+
+function sf_lvm_vg_free
+{
+vgs --noheading --nosuffix -o vg_free --units m "$1" 2>/dev/null \
+	| sed -e 's/^  *//g' -e 's/\..*$//'
 }
 
 #=============================================================================

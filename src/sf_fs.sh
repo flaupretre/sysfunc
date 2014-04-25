@@ -23,6 +23,8 @@
 ##----------------------------------------------------------------------------
 # Checks if a directory is a file system mount point
 #
+# ### This function is deprecated. Please use [flink:fs_is_mount_point].
+#
 # Args:
 #	$1: Directory to check
 # Returns: 0 if true, !=0 if false
@@ -31,9 +33,42 @@
 
 function sf_has_dedicated_fs
 {
+sf_fs_is_dedicated $*
+}
+
+##----------------------------------------------------------------------------
+# Checks if a directory is a file system mount point
+#
+# A filesystem must be mounted on the directory for it to be
+# recognized as a mount point.
+#
+# Args:
+#	$1: Directory to check
+# Returns: 0 if true, !=0 if false
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+function sf_fs_is_mount_point
+{
 [ -d "$1" ] || return 1
 
-[ "`sf_get_fs_mnt $1`" = "$1" ]
+[ "`sf_fs_mount_point $1`" = "$1" ]
+}
+
+##----------------------------------------------------------------------------
+# Gets the mount point of the filesystem containing a given path
+#
+# ### This function is deprecated. Please use [flink:fs_mount_point].
+#
+# Args:
+#	$1: Path (must correspond to an existing element)
+# Returns: Always 0
+# Displays: The mount directory of the filesystem containing the element
+#-----------------------------------------------------------------------------
+
+function sf_get_fs_mnt
+{
+sf_fs_get_mnt $*
 }
 
 ##----------------------------------------------------------------------------
@@ -45,7 +80,7 @@ function sf_has_dedicated_fs
 # Displays: The mount directory of the filesystem containing the element
 #-----------------------------------------------------------------------------
 
-function sf_get_fs_mnt
+function sf_fs_mount_point
 {
 case "`uname -s`" in
 	Linux)
@@ -58,9 +93,25 @@ case "`uname -s`" in
 		df -k "$1" | tail -1 | awk '{ print $7 }'
 		;;
 	*)
-		sf_unsupported sf_get_fs_mnt
+		sf_unsupported sf_fs_mount_point
 		;;
 esac
+}
+
+##----------------------------------------------------------------------------
+# Gets the device of the filesystem containing a given path
+#
+# ### This function is deprecated. Please use [flink:fs_device].
+#
+# Args:
+#	$1: Path (must correspond to an existing element)
+# Returns: Always 0
+# Displays: The normalized device of the filesystem containing the element
+#-----------------------------------------------------------------------------
+
+function sf_get_fs_device
+{
+sf_fs_get_device $*
 }
 
 ##----------------------------------------------------------------------------
@@ -72,7 +123,7 @@ esac
 # Displays: The normalized device of the filesystem containing the element
 #-----------------------------------------------------------------------------
 
-function sf_get_fs_device
+function sf_fs_device
 {
 typeset disk
 
@@ -83,7 +134,7 @@ case "`uname -s`" in
 		disk=`df -kP "$1" | tail -1 | awk '{ print $1 }'`
 		;;
 	*)
-		sf_unsupported sf_get_fs_mnt
+		sf_unsupported sf_fs_device
 		;;
 esac
 
@@ -93,6 +144,8 @@ sf_disk_normalize_device $disk
 ##----------------------------------------------------------------------------
 # Get the size of the filesystem containing a given path
 #
+# ### This function is deprecated. Please use [flink:fs_size].
+#
 # Args:
 #	$1: Path (must correspond to an existing element)
 # Returns: Always 0
@@ -100,6 +153,24 @@ sf_disk_normalize_device $disk
 #-----------------------------------------------------------------------------
 
 function sf_get_fs_size
+{
+sf_fs_size $*
+}
+
+##----------------------------------------------------------------------------
+# Get the size of the filesystem containing a given path
+#
+# Note: This function is to be used for a mounted filesystem. In order to get
+#       the size of a file system contained in a given device (mounted or not),
+#       use [flink:disk_fs_size].
+#
+# Args:
+#	$1: Path (must correspond to an existing element)
+# Returns: Always 0
+# Displays: FS size in Mbytes
+#-----------------------------------------------------------------------------
+
+function sf_fs_size
 {
 # $1=directory
 
@@ -114,11 +185,28 @@ case "`uname -s`" in
 		sz=`df -k "$1" | tail -1 | awk '{ print $2 }'`
 		;;
 	*)
-		sf_unsupported sf_get_fs_mnt
+		sf_unsupported sf_fs_size
 		;;
 esac
 
 echo `expr $sz / 1024`
+}
+
+##----------------------------------------------------------------------------
+# Extend a file system to a given size
+#
+# ### This function is deprecated. Please use [flink:fs_extend].
+#
+# Args:
+#	$1: A path contained in the file system to extend
+#	$2: The new size in Mbytes, or the size to add if prefixed with a '+'
+# Returns: Always 0
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+function sf_set_fs_space
+{
+sf_fs_extend $*
 }
 
 ##----------------------------------------------------------------------------
@@ -131,13 +219,13 @@ echo `expr $sz / 1024`
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
-function sf_set_fs_space
+function sf_fs_extend
 {
 typeset fs size newsize rc
 rc=0
 
-fs=`sf_get_fs_mnt $1`
-size=`sf_get_fs_size $1`
+fs=`sf_fs_mount_point $1`
+size=`sf_fs_size $1`
 newsize=$2
 echo "$newsize" | grep '^+' >/dev/null 2>&1
 if [ $? = 0 ] ; then
@@ -155,7 +243,7 @@ if [ "$newsize" -gt "$size" ] ; then
 			fi
 			;;
 		*)
-			sf_unsupported sf_set_fs_space
+			sf_unsupported sf_fs_extend
 			;;
 	esac
 fi
@@ -164,15 +252,16 @@ return $rc
 }
 
 ##----------------------------------------------------------------------------
-# Create a file system, mount it, and set system configuration to mount it
-# at system start
+# Create a file system, mount it, and register it (mount at boot)
+#
+# ### This function is deprecated. Please use [flink:fs_create].
 #
 # Refuses existing directory as mount point (security)
 #
 # Args:
 #	$1: Mount point
 #	$2: device path
-#	$3: FS type
+#	$3: Optional. FS type (if empty, default FS type for this OS)
 #	$4: Optional. Mount point directory owner[:group]
 # Returns: 0 if no error, 1 on error
 # Displays: Info msg
@@ -180,16 +269,36 @@ return $rc
 
 function sf_create_fs
 {
-typeset mnt dev type owner opts
+sf_fs_create $*
+}
+
+##----------------------------------------------------------------------------
+# Create a file system, mount it, and register it (mount at boot)
+#
+# Refuses existing directory as mount point (security)
+#
+# Args:
+#	$1: Mount point
+#	$2: device path
+#	$3: Optional. FS type (if empty, default FS type for this OS)
+#	$4: Optional. Mount point directory owner[:group]
+# Returns: 0 if no error, 1 on error
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+function sf_fs_create
+{
+typeset mnt dev type owner opts tmp
 
 mnt=$1
 dev=$2
 type=$3
 owner=$4
+[ -z "$type" ] && type=`sf_fs_default_type`
 [ -z "$owner" ] && owner=root
 
-sf_has_dedicated_fs $mnt && return 0
-sf_msg1 "$mnt: Creating file system"
+sf_fs_is_dedicated $mnt && return 0
+sf_msg1 "$mnt: Creating file system..."
 
 if [ -d $mnt ] ; then # Securite
 	sf_error "$mnt: Cannot create FS on an existing directory"
@@ -206,12 +315,22 @@ case "`uname -s`" in
 		# When supported, set filesystem label
 		echo $type | grep '^ext' >/dev/null && opts="-L `basename $dev`"
 		if [ -z "$sf_noexec" ] ; then
-			mkfs -t $type $opts $dev || return 1
-			echo "$dev $mnt $type defaults 1 2" >>/etc/fstab
+			tmp=`sf_tmpfile`
+			mkfs -t $type $opts $dev >$tmp 2>&1
+			if [ $? != 0 ] ; then
+				echo "mkfs failed  with this log :"
+				cat $tmp
+				/bin/rm -f $tmp
+				return 1
+			else
+				sf_msg1 "$mnt: File system created"
+				/bin/rm -f $tmp
+			fi
+			sf_check_line /etc/fstab "^$dev " "$dev $mnt $type defaults 1 2"
 		fi
 		;;
 	*)
-		sf_unsupported sf_create_fs
+		sf_unsupported sf_fs_create
 		;;
 esac
 
@@ -236,8 +355,13 @@ function sf_fs_default_type
 typeset type
 
 case `uname -s` in
-	Linux) type=ext3;;
-	*) sf_unsupported "sf_fs_default_type";;
+	Linux)
+		for type in ext4 ext3 ext2 ; do
+			[ -x /sbin/mkfs.$type ] && break
+		done
+		;;
+	*) sf_unsupported sf_fs_default_type
+		;;
 esac
 
 echo $type
@@ -246,14 +370,18 @@ echo $type
 ##----------------------------------------------------------------------------
 # Create a logical volume and a filesystem on it
 #
+# ### This function is deprecated. Please use [flink:fs_create_lv_fs]
+# ### Warning: Note that superseding function has argument 4 and 5 swapped (size and FS type).
+#
 # Combines sf_create_lv and sf_create_fs
 #
 # Args:
 #	$1: Mount point (directory)
 #	$2: Logical volume name
 #	$3: Volume group name
-#	$4: File system type
-#	$5: Size in Mbytes
+#	$4: File system type (optional. if empty, defaults to default FS type for this OS)
+#	$5: Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all'
+#		takes the whole free size in the VG. 
 #	$6: Optional. Directory owner[:group]
 # Returns: 0: OK, !=0: Error
 # Displays: Info msg
@@ -261,17 +389,39 @@ echo $type
 
 function sf_create_lv_fs
 {
+sf_fs_create_lv_fs "$1" "$2" "$3" "$5" "$4" "$6"
+}
+
+##----------------------------------------------------------------------------
+# Create a logical volume and a filesystem on it
+#
+# Combines sf_create_lv and sf_fs_create
+#
+# Args:
+#	$1: Mount point (directory)
+#	$2: Logical volume name
+#	$3: Volume group name
+#	$4: Size (Default: megabytes, optional suffixes: [kmgt]. Special value: 'all'
+#		takes the whole free size in the VG. 
+#	$5: Optional. File system type. Defaults to default FS type for this environment
+#	$6: Optional. Directory owner[:group]
+# Returns: 0: OK, !=0: Error
+# Displays: Info msg
+#-----------------------------------------------------------------------------
+
+function sf_fs_create_lv_fs
+{
 typeset mnt lv vg type size owner
 
 mnt=$1
 lv=$2
 vg=$3
-type=$4
-size=$5
+size=$4
+type=$5
 owner=$6
 
 sf_create_lv $lv $vg $size || return 1
-sf_create_fs $mnt /dev/$vg/$lv $type $owner || return 1
+sf_fs_create $mnt /dev/$vg/$lv $type $owner || return 1
 return 0
 }
 
