@@ -576,7 +576,7 @@ if [ -n "$fline" ] ; then
 		q
 	EOF
 else
-	sf_msg1 "$1: Appending '$2' line"
+	sf_msg1 "$1: Appending '$3' line"
 	[ -z "$sf_noexec" ] && echo "$line" >>$file
 fi
 }
