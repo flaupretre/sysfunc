@@ -33,7 +33,7 @@
 
 function sf_has_dedicated_fs
 {
-sf_fs_is_dedicated $*
+sf_fs_is_mount_point $*
 }
 
 ##----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ function sf_fs_is_mount_point
 
 function sf_get_fs_mnt
 {
-sf_fs_get_mnt $*
+sf_fs_mount_point $*
 }
 
 ##----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ esac
 
 function sf_get_fs_device
 {
-sf_fs_get_device $*
+sf_fs_device $*
 }
 
 ##----------------------------------------------------------------------------
