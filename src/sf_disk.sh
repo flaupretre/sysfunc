@@ -183,11 +183,21 @@ function sf_disk_rescan
 {
 typeset i
 
-[ "`uname -s`" = Linux ] || sf_unsupported sf_disk_rescan
-
-for i in /sys/class/scsi_host/host*/scan ; do
-	echo "- - -" >$i
-done
+case "`uname -s`" in
+	Linux)
+		# Use two mechanisms because 1st one does not see disk resizes on a
+		# VM in RHEL 6.
+		for i in /sys/class/scsi_host/host*/scan ; do
+			echo "- - -" >$i
+		done
+		for i in  /sys/class/scsi_device/*/device/rescan ; do
+			echo 1 >$i
+		done
+		;;
+	*)
+		sf_unsupported sf_disk_rescan
+		;;
+esac
 }
 
 #=============================================================================
