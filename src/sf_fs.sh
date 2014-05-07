@@ -297,7 +297,7 @@ owner=$4
 [ -z "$type" ] && type=`sf_fs_default_type`
 [ -z "$owner" ] && owner=root
 
-sf_fs_is_dedicated $mnt && return 0
+sf_fs_is_mount_point $mnt && return 0
 sf_msg1 "$mnt: Creating file system..."
 
 if [ -d $mnt ] ; then # Securite
