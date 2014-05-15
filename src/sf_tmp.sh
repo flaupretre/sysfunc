@@ -21,9 +21,9 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Deletes all temporary files
+# Deletes every temporary files
 #
-# This function is automatically called by sf_cleanup()
+# This function is automatically called by [function:cleanup]
 #
 # Args: none
 # Returns: Always 0
@@ -40,9 +40,9 @@ fi
 ##----------------------------------------------------------------------------
 # Returns an unused temporary path
 #
-# The returned path can then be used to create a directory or a file.
+# ### This function is deprecated. Please use [function:tmpfile] or [function:tmpdir] instead
 #
-# ** This function is deprecated. Please use sf_tmpfile or sf_tmpdir instead.
+# The returned path can then be used to create a directory or a file.
 #
 # Args: none
 # Returns: Always 0

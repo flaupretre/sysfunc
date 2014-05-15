@@ -23,7 +23,7 @@
 ##----------------------------------------------------------------------------
 # Checks if a directory is a file system mount point
 #
-# ### This function is deprecated. Please use [flink:fs_is_mount_point].
+# ### This function is deprecated. Please use [function:fs_is_mount_point].
 #
 # Args:
 #	$1: Directory to check
@@ -58,7 +58,7 @@ function sf_fs_is_mount_point
 ##----------------------------------------------------------------------------
 # Gets the mount point of the filesystem containing a given path
 #
-# ### This function is deprecated. Please use [flink:fs_mount_point].
+# ### This function is deprecated. Please use [function:fs_mount_point].
 #
 # Args:
 #	$1: Path (must correspond to an existing element)
@@ -101,7 +101,7 @@ esac
 ##----------------------------------------------------------------------------
 # Gets the device of the filesystem containing a given path
 #
-# ### This function is deprecated. Please use [flink:fs_device].
+# ### This function is deprecated. Please use [function:fs_device].
 #
 # Args:
 #	$1: Path (must correspond to an existing element)
@@ -144,7 +144,7 @@ sf_disk_normalize_device $disk
 ##----------------------------------------------------------------------------
 # Get the size of the filesystem containing a given path
 #
-# ### This function is deprecated. Please use [flink:fs_size].
+# ### This function is deprecated. Please use [function:fs_size].
 #
 # Args:
 #	$1: Path (must correspond to an existing element)
@@ -162,7 +162,7 @@ sf_fs_size $*
 #
 # Note: This function is to be used for a mounted filesystem. In order to get
 #       the size of a file system contained in a given device (mounted or not),
-#       use [flink:disk_fs_size].
+#       use [function:disk_fs_size].
 #
 # Args:
 #	$1: Path (must correspond to an existing element)
@@ -195,7 +195,7 @@ echo `expr $sz / 1024`
 ##----------------------------------------------------------------------------
 # Extend a file system to a given size
 #
-# ### This function is deprecated. Please use [flink:fs_extend].
+# ### This function is deprecated. Please use [function:fs_extend].
 #
 # Args:
 #	$1: A path contained in the file system to extend
@@ -254,7 +254,7 @@ return $rc
 ##----------------------------------------------------------------------------
 # Create a file system, mount it, and register it (mount at boot)
 #
-# ### This function is deprecated. Please use [flink:fs_create].
+# ### This function is deprecated. Please use [function:fs_create].
 #
 # Refuses existing directory as mount point (security)
 #
@@ -370,10 +370,10 @@ echo $type
 ##----------------------------------------------------------------------------
 # Create a logical volume and a filesystem on it
 #
-# ### This function is deprecated. Please use [flink:fs_create_lv_fs]
+# ### This function is deprecated. Please use [function:fs_create_lv_fs]
 # ### Warning: Note that superseding function has argument 4 and 5 swapped (size and FS type).
 #
-# Combines sf_create_lv and sf_create_fs
+# Combines [function:create_lv] and [function:fs_create]
 #
 # Args:
 #	$1: Mount point (directory)
@@ -395,7 +395,7 @@ sf_fs_create_lv_fs "$1" "$2" "$3" "$5" "$4" "$6"
 ##----------------------------------------------------------------------------
 # Create a logical volume and a filesystem on it
 #
-# Combines sf_create_lv and sf_fs_create
+# Combines [function:create_lv] and [function:fs_create]
 #
 # Args:
 #	$1: Mount point (directory)

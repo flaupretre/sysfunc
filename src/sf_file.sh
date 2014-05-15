@@ -84,7 +84,7 @@ return 1
 # file (any type except directory or symbolic link to a directory), the
 # program aborts with a fatal error. If you want to avoid
 # this (if you want to create the directory, even if something else is
-# already existing in this path), call sf_delete first.
+# already existing in this path), call [function:delete] first.
 # If the path given as arg contains a symbolic link pointing to an existing
 # directory, it is left as-is.
 #
@@ -122,7 +122,9 @@ fi
 
 ##----------------------------------------------------------------------------
 # Renames a file to '<dir>/old.<filename>
-# 
+#
+# ### This function is deprecated. Please use [function:save] instead.
+#
 # Args:
 #	$1 : Path
 # Returns: Always 0
@@ -331,7 +333,7 @@ fi
 }
 
 ##----------------------------------------------------------------------------
-# Checks if a file contains a block inserted by sf_check_block
+# Checks if a file contains a block inserted by [function:check_block]
 #
 #
 # Args:

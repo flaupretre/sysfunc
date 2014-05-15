@@ -179,7 +179,7 @@ sf_db_unset "$1"
 }
 
 ##----------------------------------------------------------------------------
-# Set a variable with the "sf_now" timestamp value
+# Set a variable with the value returned by [function:tm_now]
 #
 # Args:
 #	$1: Variable name
