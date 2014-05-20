@@ -31,7 +31,7 @@
 
 function sf_db_clear
 {
-\rm -rf "$SF_DB_PATH" "$SF_DB_TMP_PATH"
+\rm -rf "$SF_DB_PATH"
 }
 
 ##----------------------------------------------------------------------------
@@ -77,21 +77,6 @@ sf_db_normalize "$1" | sed -e 's,\.,\.,g'
 }
 
 ##----------------------------------------------------------------------------
-# Replace the DB file with the temp DB file
-#
-# Args:
-#	$1: Variable name
-# Returns: 0
-# Displays: Key string
-#----------------------------------------------------------------------------
-
-function _sf_db_tmp_replace
-{
-\rm -rf "$SF_DB_PATH"
-\mv "$SF_DB_TMP_PATH" "$SF_DB_PATH"
-}
-
-##----------------------------------------------------------------------------
 # Unset a variable
 #
 # No error if variable was not present in DB
@@ -104,17 +89,19 @@ function _sf_db_tmp_replace
 
 function sf_db_unset
 {
-typeset key name
+typeset key name tmp
 
 _sf_db_exists || return 0
 
+tmp=`sf_tmpfile`
 for name
 	do
 	[ -z "$name" ] && break
 	key=`sf_db_key "$name"`
-	grep -v "^$key " $SF_DB_PATH >$SF_DB_TMP_PATH
-	_sf_db_tmp_replace
+	grep -v "^$key " $SF_DB_PATH >$tmp
+	cat $tmp >$SF_DB_PATH
 done
+/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
@@ -302,37 +289,36 @@ return 0
 
 function sf_db_expand
 {
-typeset name value esc_val _tmp1 _tmp2
+typeset name value esc_val _tmp1 _tmp2 _tmp
 
-_tmp1=/tmp/.sf_db_expand.tmp1.$$
-_tmp2=/tmp/.sf_db_expand.tmp2.$$
+_tmp1=`sf_tmpfile`
+_tmp2=`sf_tmpfile`
+_tmp=`sf_tmpfile`
 
 sf_db_dump | while read name value
 	do
 	esc_val=`echo "$value" | sed -e 's!,!\,!g'`
 	echo "s,{{%$name%}},$esc_val,g"
-done >$SF_DB_TMP_PATH
+done >$_tmp
 
-\rm -rf $_tmp1 $_tmp2
 cat >$_tmp1
 
 while true
 	do
-	sed -f $SF_DB_TMP_PATH <$_tmp1 >$_tmp2
+	sed -f $_tmp <$_tmp1 >$_tmp2
 	diff $_tmp1 $_tmp2 >/dev/null && break
 	cp $_tmp2 $_tmp1
 done
 
 sed 's,{{%[^%]*%}},,g' <$_tmp2 # Suppress unresolved patterns
 
-\rm -rf $_tmp1 $_tmp2 $SF_DB_TMP_PATH
+\rm -rf $_tmp1 $_tmp2 $_tmp
 }
 
 #=============================================================================
 
 [ "X$SF_DB_PATH" = X ] && SF_DB_PATH=/etc/sysfunc.db
-[ "X$SF_DB_TMP_PATH" = X ] && SF_DB_TMP_PATH=/etc/sysfunc.db.tmp
 
-export SF_DB_PATH SF_DB_TMP_PATH
+export SF_DB_PATH
 
 #=============================================================================
