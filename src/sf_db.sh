@@ -182,6 +182,9 @@ sf_db_set "$1" "`sf_tm_now`"
 ##----------------------------------------------------------------------------
 # Check if a variable is set
 #
+# If global variable SF_DB_PATH contains '<stdin>', DB content is read from
+# standard input.
+# 
 # Args:
 #	$1: Variable name
 # Returns: 0 if variable is set, <> 0 if not
@@ -192,10 +195,8 @@ function sf_db_isset
 {
 typeset key
 
-_sf_db_exists || return 1
-
 key=`sf_db_key "$1"`
-grep "^$key " $SF_DB_PATH >/dev/null
+_sf_get_clean_db | grep "^$key " >/dev/null
 }
 
 ##----------------------------------------------------------------------------
@@ -203,6 +204,9 @@ grep "^$key " $SF_DB_PATH >/dev/null
 #
 # If variable is not set, return an empty string (no error)
 #
+# If global variable SF_DB_PATH contains '<stdin>', DB content is read from
+# standard input.
+# 
 # Args:
 #	$1: Variable name
 # Returns: 0
@@ -211,14 +215,42 @@ grep "^$key " $SF_DB_PATH >/dev/null
 
 function sf_db_get
 {
-typeset key name
+typeset key
 
-name="$1"
 key=`sf_db_key "$1"`
 
 # 'head -1' by security (should never be used)
 
-grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
+_sf_get_clean_db | grep "^$key " | sed 's,^[^ ][^ ]* ,,' | head -1
+}
+
+##----------------------------------------------------------------------------
+# Provides a database whose comments and empty lines are removed
+#
+# Exists because sf_db can be used to read from a handcrafted DB file
+# (by overriding $SF_DB_PATH) or from standard input. Such content can contain
+# comments and empty lines.
+#
+# Standard input is read when $SF_DB_PATH contains '<stdin>'.
+#
+# Args: None
+# Returns: 0
+# Displays: Input with comments and empty lines removed
+#-----------------------------------------------------------------------------
+
+function _sf_get_clean_db
+{
+typeset dbpath
+
+if [ "X$SF_DB_PATH" = 'X<stdin>' ] ; then
+	dbpath=''
+else
+	dbpath="$SF_DB_PATH"
+	_sf_db_exists || return
+fi
+
+sed -e 's/		*/ /g' -e 's/   */ /g' -e 's/^  *//g' -e 's/^#.*$//g' \
+	$dbpath | grep -v '^$'
 }
 
 ##----------------------------------------------------------------------------
@@ -233,8 +265,7 @@ grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
 
 function sf_db_dump
 {
-_sf_db_exists && sort <$SF_DB_PATH
-return 0
+_sf_get_clean_db | sort
 }
 
 ##----------------------------------------------------------------------------
