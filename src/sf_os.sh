@@ -68,9 +68,9 @@ echo $res
 }
 
 ##----------------------------------------------------------------------------
-# Alias of sf_os_id() (obsolete - for compatibility only)
+# Alias of [function:os_id]
 #
-# Other info: see sf_os_id()
+# ### This function is deprecated. Please use [function:os_id]
 #
 # Args: None
 # Returns: Always 0

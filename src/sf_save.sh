@@ -179,7 +179,7 @@ return 0
 ##----------------------------------------------------------------------------
 # Save system cleanup
 #
-# Called by sf_cleanup()
+# Called by [function:cleanup]
 #
 # Args: None
 # Returns: Always 0

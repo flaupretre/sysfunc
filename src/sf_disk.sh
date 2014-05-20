@@ -87,7 +87,7 @@ echo $ndsk
 # File system can be mounted or not.
 #
 # Note: In order to get the size of a mounted filesystem containing a given
-#       path, use [flink:fs_size].
+#       path, use [function:fs_size].
 #
 # Args:
 #	$1: Device

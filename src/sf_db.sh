@@ -31,7 +31,7 @@
 
 function sf_db_clear
 {
-\rm -rf "$SF_DB_PATH" "$SF_DB_TMP_PATH"
+\rm -rf "$SF_DB_PATH"
 }
 
 ##----------------------------------------------------------------------------
@@ -77,21 +77,6 @@ sf_db_normalize "$1" | sed -e 's,\.,\.,g'
 }
 
 ##----------------------------------------------------------------------------
-# Replace the DB file with the temp DB file
-#
-# Args:
-#	$1: Variable name
-# Returns: 0
-# Displays: Key string
-#----------------------------------------------------------------------------
-
-function _sf_db_tmp_replace
-{
-\rm -rf "$SF_DB_PATH"
-\mv "$SF_DB_TMP_PATH" "$SF_DB_PATH"
-}
-
-##----------------------------------------------------------------------------
 # Unset a variable
 #
 # No error if variable was not present in DB
@@ -104,17 +89,19 @@ function _sf_db_tmp_replace
 
 function sf_db_unset
 {
-typeset key name
+typeset key name tmp
 
 _sf_db_exists || return 0
 
+tmp=`sf_tmpfile`
 for name
 	do
 	[ -z "$name" ] && break
 	key=`sf_db_key "$name"`
-	grep -v "^$key " $SF_DB_PATH >$SF_DB_TMP_PATH
-	_sf_db_tmp_replace
+	grep -v "^$key " $SF_DB_PATH >$tmp
+	cat $tmp >$SF_DB_PATH
 done
+/bin/rm -f $tmp
 }
 
 ##----------------------------------------------------------------------------
@@ -179,7 +166,7 @@ sf_db_unset "$1"
 }
 
 ##----------------------------------------------------------------------------
-# Set a variable with the "sf_now" timestamp value
+# Set a variable with the value returned by [function:tm_now]
 #
 # Args:
 #	$1: Variable name
@@ -195,6 +182,9 @@ sf_db_set "$1" "`sf_tm_now`"
 ##----------------------------------------------------------------------------
 # Check if a variable is set
 #
+# If global variable SF_DB_PATH contains '<stdin>', DB content is read from
+# standard input.
+# 
 # Args:
 #	$1: Variable name
 # Returns: 0 if variable is set, <> 0 if not
@@ -205,10 +195,8 @@ function sf_db_isset
 {
 typeset key
 
-_sf_db_exists || return 1
-
 key=`sf_db_key "$1"`
-grep "^$key " $SF_DB_PATH >/dev/null
+_sf_get_clean_db | grep "^$key " >/dev/null
 }
 
 ##----------------------------------------------------------------------------
@@ -216,6 +204,9 @@ grep "^$key " $SF_DB_PATH >/dev/null
 #
 # If variable is not set, return an empty string (no error)
 #
+# If global variable SF_DB_PATH contains '<stdin>', DB content is read from
+# standard input.
+# 
 # Args:
 #	$1: Variable name
 # Returns: 0
@@ -224,14 +215,42 @@ grep "^$key " $SF_DB_PATH >/dev/null
 
 function sf_db_get
 {
-typeset key name
+typeset key
 
-name="$1"
 key=`sf_db_key "$1"`
 
 # 'head -1' by security (should never be used)
 
-grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
+_sf_get_clean_db | grep "^$key " | sed 's,^[^ ][^ ]* ,,' | head -1
+}
+
+##----------------------------------------------------------------------------
+# Provides a database whose comments and empty lines are removed
+#
+# Exists because sf_db can be used to read from a handcrafted DB file
+# (by overriding $SF_DB_PATH) or from standard input. Such content can contain
+# comments and empty lines.
+#
+# Standard input is read when $SF_DB_PATH contains '<stdin>'.
+#
+# Args: None
+# Returns: 0
+# Displays: Input with comments and empty lines removed
+#-----------------------------------------------------------------------------
+
+function _sf_get_clean_db
+{
+typeset dbpath
+
+if [ "X$SF_DB_PATH" = 'X<stdin>' ] ; then
+	dbpath=''
+else
+	dbpath="$SF_DB_PATH"
+	_sf_db_exists || return
+fi
+
+sed -e 's/		*/ /g' -e 's/   */ /g' -e 's/^  *//g' -e 's/^#.*$//g' \
+	$dbpath | grep -v '^$'
 }
 
 ##----------------------------------------------------------------------------
@@ -246,8 +265,7 @@ grep "^$key " $SF_DB_PATH 2>/dev/null | sed 's,^[^ ][^ ]* ,,' | head -1
 
 function sf_db_dump
 {
-_sf_db_exists && sort <$SF_DB_PATH
-return 0
+_sf_get_clean_db | sort
 }
 
 ##----------------------------------------------------------------------------
@@ -302,37 +320,36 @@ return 0
 
 function sf_db_expand
 {
-typeset name value esc_val _tmp1 _tmp2
+typeset name value esc_val _tmp1 _tmp2 _tmp
 
-_tmp1=/tmp/.sf_db_expand.tmp1.$$
-_tmp2=/tmp/.sf_db_expand.tmp2.$$
+_tmp1=`sf_tmpfile`
+_tmp2=`sf_tmpfile`
+_tmp=`sf_tmpfile`
 
 sf_db_dump | while read name value
 	do
 	esc_val=`echo "$value" | sed -e 's!,!\,!g'`
 	echo "s,{{%$name%}},$esc_val,g"
-done >$SF_DB_TMP_PATH
+done >$_tmp
 
-\rm -rf $_tmp1 $_tmp2
 cat >$_tmp1
 
 while true
 	do
-	sed -f $SF_DB_TMP_PATH <$_tmp1 >$_tmp2
+	sed -f $_tmp <$_tmp1 >$_tmp2
 	diff $_tmp1 $_tmp2 >/dev/null && break
 	cp $_tmp2 $_tmp1
 done
 
 sed 's,{{%[^%]*%}},,g' <$_tmp2 # Suppress unresolved patterns
 
-\rm -rf $_tmp1 $_tmp2 $SF_DB_TMP_PATH
+\rm -rf $_tmp1 $_tmp2 $_tmp
 }
 
 #=============================================================================
 
 [ "X$SF_DB_PATH" = X ] && SF_DB_PATH=/etc/sysfunc.db
-[ "X$SF_DB_TMP_PATH" = X ] && SF_DB_TMP_PATH=/etc/sysfunc.db.tmp
 
-export SF_DB_PATH SF_DB_TMP_PATH
+export SF_DB_PATH
 
 #=============================================================================

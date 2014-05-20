@@ -27,7 +27,8 @@
 # 
 # assuming that /usr/bin is in your path.
 # 
-# Once the library is loaded, every sysfunc commands are available.
+# Once the library is loaded, every sysfunc commands are available, prefixed
+# with the 'sf_' string.
 # 
 # # Calling a single function #
 # 
@@ -58,10 +59,10 @@
 # 
 # # Checking whether the library is loaded #
 # 
-# The **sf_loaded** function checks if the library is loaded. When using this
+# The [function:loaded] function checks if the library is loaded. When using this
 # function, you must redirect stderr to /dev/null to avoid displaying an error
 # when the library is not loaded (when the library is not loaded, the
-# __sf_loaded__ function is not present).
+# [function:loaded] function won't be found).
 # 
 # The syntax to use is:
 # 
