@@ -212,6 +212,50 @@ sf_cfg_list | while read var ; do
 done
 }
 
+##----------------------------------------------------------------------------
+# Display parameter information
+#
+# Args: Optional. List of parameters. If empty, display every defined parameters
+#
+# Returns: 0
+# Displays: Parameters and related information
+#-----------------------------------------------------------------------------
+
+function sf_cfg_info
+{
+typeset tmp var
+#tmp=`sf_tmpfile`
+tmp=/tmp/az
+
+[ -n "$1" ] || set -- `sf_cfg_list`
+for var ; do
+	>$tmp
+	#set -x
+	cat $SF_CFG_DEF_DIR/* 2>/dev/null | awk "
+		BEGIN	{ c=0; reset=0; }
+		/^#/	{
+				if (reset==1) {
+					delete a;
+					c=0;
+					reset=0;
+					}
+				a[c++]=\$0;
+				next;
+				}
+				{
+				if (\$1==\"$var\") {
+					print \"*\",\$1;
+					for (i=0;i<c;i++) {	print \"   \",gensub(/^# +/,\"\",1,a[i]); }
+					print \"    Default value: `sf_cfg_get_default $var`\";
+					print \"\";
+					exit;
+					}
+				else { reset=1;	}
+				}"
+done
+rm -f $tmp
+}
+
 #=============================================================================
 
 [ "X$SF_CFG_DEF_DIR" = X ] && SF_CFG_DEF_DIR=/etc/sysfunc/cfg/defaults
