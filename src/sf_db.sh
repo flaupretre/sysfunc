@@ -258,6 +258,8 @@ sed -e 's/		*/ /g' -e 's/   */ /g' -e 's/^  *//g' -e 's/^#.*$//g' \
 #
 # Output format (each line) : <name><space><value><EOL>
 #
+# The output is sorted alphabetically.
+#
 # Args: None
 # Returns: 0
 # Displays: DB content

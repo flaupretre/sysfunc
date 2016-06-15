@@ -18,6 +18,6 @@
 
 INSTALL_DIR = /opt/sysfunc
 
-SOFTWARE_VERSION = 1.27.0
+SOFTWARE_VERSION = 1.28.0
 
 #============================================================================

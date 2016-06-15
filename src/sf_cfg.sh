@@ -52,18 +52,18 @@ _sf_cfg_def_exec sf_db_isset "$1"
 }
 
 ##----------------------------------------------------------------------------
-# Check if a parameter is not set (default value)
+# Check if a parameter is explicitely set (not default)
 #
 # Args:
 #	$1: Parameter
-# Returns: 0 if parameter is not set (default value), 1 if set
+# Returns: 0 if parameter is set (not default value), 1 if not set
 # Displays: nothing
 #-----------------------------------------------------------------------------
 
-function sf_cfg_is_default
+function sf_cfg_isset
 {
-sf_db_isset "$1" && return 1
-return 0
+sf_cfg_check "$1"
+sf_db_isset "$1"
 }
 
 ##----------------------------------------------------------------------------
@@ -124,10 +124,10 @@ typeset var
 var=$1
 sf_cfg_check "$var"
 
-if sf_cfg_is_default "$var" ; then
-	sf_cfg_get_default "$var"
-else
+if sf_db_isset "$var" ; then
 	sf_db_get "$var"
+else
+	sf_cfg_get_default "$var"
 fi
 }
 
@@ -165,11 +165,11 @@ sf_db_unset "$1"
 }
 
 ##----------------------------------------------------------------------------
-# Display a list of parameters along with default and actual values
+# Display the parameters along with their default and actual values
 #
 # Args: None
-# Returns: Only if parameter is valid
-# Displays: Nothing
+# Returns: 0
+# Displays: Parameters
 #-----------------------------------------------------------------------------
 
 function sf_cfg_display
@@ -184,12 +184,77 @@ echo "-----------------------  --------------------  --------------------"
 sf_cfg_list | while read var ; do
 	value="`sf_cfg_get $var`"
 	prefix=''
-	sf_cfg_is_default "$var" || prefix="$enhanced"
+	sf_db_isset "$var" && prefix="$enhanced"
 	printf "%-23s  $prefix%-20s$normal  %-20s\n" $var "$value" \
 		"`sf_cfg_get_default $var`"
 done
 }
 
+##----------------------------------------------------------------------------
+# Display parameters with actual value in raw format
+#
+# Format of each line : <parameter><space><value>
+#
+# The output of this function does not allow to say if a value is the default
+# one or not.
+#
+# Args: None
+# Returns: 0
+# Displays: List of '<parameter><space><value>' lines
+#-----------------------------------------------------------------------------
+
+function sf_cfg_dump
+{
+typeset var value
+
+sf_cfg_list | while read var ; do
+	echo "$var `sf_cfg_get $var`"
+done
+}
+
+##----------------------------------------------------------------------------
+# Display parameter information
+#
+# Args:
+#	$*: Optional. List of parameters. If empty, display every defined parameters
+# Returns: 0
+# Displays: Parameters and related information
+#-----------------------------------------------------------------------------
+
+function sf_cfg_info
+{
+typeset tmp var
+#tmp=`sf_tmpfile`
+tmp=/tmp/az
+
+[ -n "$1" ] || set -- `sf_cfg_list`
+for var ; do
+	>$tmp
+	#set -x
+	cat $SF_CFG_DEF_DIR/* 2>/dev/null | awk "
+		BEGIN	{ c=0; reset=0; }
+		/^#/	{
+				if (reset==1) {
+					delete a;
+					c=0;
+					reset=0;
+					}
+				a[c++]=\$0;
+				next;
+				}
+				{
+				if (\$1==\"$var\") {
+					print \"*\",\$1;
+					for (i=0;i<c;i++) {	print \"   \",gensub(/^# +/,\"\",1,a[i]); }
+					print \"    Default value: `sf_cfg_get_default $var`\";
+					print \"\";
+					exit;
+					}
+				else { reset=1;	}
+				}"
+done
+rm -f $tmp
+}
 
 #=============================================================================
 
