@@ -215,8 +215,8 @@ done
 ##----------------------------------------------------------------------------
 # Display parameter information
 #
-# Args: Optional. List of parameters. If empty, display every defined parameters
-#
+# Args:
+#	$*: Optional. List of parameters. If empty, display every defined parameters
 # Returns: 0
 # Displays: Parameters and related information
 #-----------------------------------------------------------------------------
