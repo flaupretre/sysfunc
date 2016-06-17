@@ -164,6 +164,48 @@ return $rc
 }
 
 ##----------------------------------------------------------------------------
+# Return an unused group ID
+#
+# Args: None
+# Returns: Always 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+function sf_unused_group_id
+{
+typeset i
+
+i=1001
+while true ; do
+	grep ":$i:" /etc/group >/dev/null || break
+	i=`expr $i + 1`
+done
+
+echo $i
+}
+
+##----------------------------------------------------------------------------
+# Return an unused user ID
+#
+# Args: None
+# Returns: Always 0
+# Displays: nothing
+#-----------------------------------------------------------------------------
+
+function sf_unused_user_id
+{
+typeset i
+
+i=1001
+while true ; do
+	grep ":$i:" /etc/passwd >/dev/null || break
+	i=`expr $i + 1`
+done
+
+echo $i
+}
+
+##----------------------------------------------------------------------------
 # Checks if a given user exists on the system
 #
 # Args:
