@@ -17,20 +17,53 @@
 #=============================================================================
 
 #=============================================================================
-# Section: Vmware-specific
+# Section: Performance tuning
 #=============================================================================
 
 ##----------------------------------------------------------------------------
-# Check if we are on a VMware host
+# Get active tuning profile
 #
 # Args: None
-# Returns: 0 if VMware, 1 if not
+# Returns: 0 if an active profile is set, !=0 if not
+# Displays: Name of active profile
+##----------------------------------------------------------------------------
+
+function sf_tune_active_profile
+{
+[ -x /usr/sbin/tuned-adm ] || return 1
+
+/usr/sbin/tuned-adm active | sed 's/^.*: //g'
+}
+
+##----------------------------------------------------------------------------
+# Activate a tuning profile
+#
+# Args:
+#	$1: Profile name
+# Returns: Return code from tuned-adm
 # Displays: Nothing
 ##----------------------------------------------------------------------------
 
-function sf_vm_host_is_vmware
+function sf_tune_set_profile
 {
-grep VMware /proc/scsi/scsi >/dev/null 2>&1
+[ -x /usr/sbin/tuned-adm ] || return 1
+
+/usr/sbin/tuned-adm profile $1
+}
+
+##----------------------------------------------------------------------------
+# Activate a tuning profile
+#
+# Args: None
+# Returns: 0 if tuned-adm is present, !=0 if not
+# Displays: List of defined profiles, 1 per line
+##----------------------------------------------------------------------------
+
+function sf_tune_profile_list
+{
+[ -x /usr/sbin/tuned-adm ] || return 1
+
+/usr/sbin/tuned-adm list | grep '^-' | sed 's/^- //'
 }
 
 #=============================================================================

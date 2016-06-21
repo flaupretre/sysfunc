@@ -139,13 +139,13 @@ echo "$buf" | tail -1 | awk '{ print $2 }'
 #
 # Args:
 #	$*: Software name(s)
-# Returns: Always 0
+# Returns: Return code from yum command
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_soft_install
 {
-typeset _pkg _to_install
+typeset _pkg _to_install ret
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_install
 
@@ -160,10 +160,13 @@ done
 
 if [ -n "$_to_install" ] ; then
 	sf_msg1 "Installing $_to_install ..."
-	[ -z "$sf_noexec" ] && $sf_yum install $_to_install
+	if [ -z "$sf_noexec" ] ; then
+		$sf_yum install $_to_install
+		ret=$?
+	fi
 fi
 
-return 0
+return $ret
 }
 
 ##----------------------------------------------------------------------------
@@ -177,13 +180,13 @@ return 0
 #
 # Args:
 #	$*: Software name(s)
-# Returns: Always 0
+# Returns: 0 if OK. !=0 if not
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_soft_install_upgrade
 {
-typeset _pkg _to_install _to_update
+typeset _pkg _to_install _to_update ret
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_install_upgrade
 
@@ -203,15 +206,21 @@ done
 
 if [ -n "$_to_update" ] ; then
 	sf_msg1 "Upgrading $_to_update ..."
-	[ -z "$sf_noexec" ] && $sf_yum upgrade $_to_update
+	if [ -z "$sf_noexec" ] ; then
+		$sf_yum upgrade $_to_update
+		ret=$?
+	fi
 fi
 
 if [ -n "$_to_install" ] ; then
 	sf_msg1 "Installing $_to_install ..."
-	[ -z "$sf_noexec" ] && $sf_yum install $_to_install
+	if [ -z "$sf_noexec" ] ; then
+		$sf_yum install $_to_install
+		ret=`expr $ret + $?`
+	fi
 fi
 
-return 0
+return $ret
 }
 
 ##----------------------------------------------------------------------------
@@ -221,24 +230,27 @@ return 0
 #
 # Args:
 #	$*: Software name(s)
-# Returns: Always 0
+# Returns: Return code from yum command
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_soft_uninstall
 {
-typeset _pkg
+typeset _pkg ret
 
 [ -z "$sf_yum" ] && sf_unsupported sf_soft_uninstall
 
 for _pkg ; do
 	if sf_soft_is_installed "$_pkg" ; then
 		sf_msg1 "Uninstalling $_pkg ..."
-		[ -z "$sf_noexec" ] && $sf_yum remove "$_pkg"
+		if [ -z "$sf_noexec" ] ; then
+			$sf_yum remove "$_pkg"
+			ret=$?
+		fi
 	fi
 done
 
-return 0
+return $ret
 }
 
 ##----------------------------------------------------------------------------

@@ -95,16 +95,20 @@ fi
 ##----------------------------------------------------------------------------
 # Create a user group
 #
+# If the group does already exist, nothing is done, even if existing members
+# differ from the supplied list.
+#
 # Args:
 #	$1: Group name
 #	$2: Group Id
+#	$3: Optional. Group members, separated by commas
 # Returns: Status from system command
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_create_group
 {
-typeset rc
+typeset rc i
 rc=0
 
 case `uname -s` in
@@ -112,7 +116,9 @@ case `uname -s` in
 		if ! lsgroup $1 >/dev/null 2>&1 ; then
 			sf_msg1 "Creating $1 group"
 			if [ -z "$sf_noexec" ] ; then
-				mkgroup id=$2 $1
+				opt=""
+				[ -n "$3" ] && opt="users=$3"
+				mkgroup id=$2 $1 $opt
 				rc=$?
 			fi
 		fi
@@ -125,10 +131,19 @@ case `uname -s` in
 				groupadd -g $2 $1
 				rc=$?
 			fi
+			if [ -n "$3" ] ; then
+				for i in `echo $3 | sed 's/,/ /g'` ; do
+					sf_msg1 "Adding user $i to group $1"
+					if [ -z "$sf_noexec" ] ; then
+						usermod -a -G $1 $i
+						rc=`expr $rc + $?`
+					fi
+				done
+			fi
 		fi
 		;;
 esac
-return 0
+return $rc
 }
 
 ##----------------------------------------------------------------------------
