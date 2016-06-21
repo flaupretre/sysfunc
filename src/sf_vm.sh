@@ -16,8 +16,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-INSTALL_DIR = /opt/sysfunc
+#=============================================================================
+# Section: Virtual machine
+#=============================================================================
 
-SOFTWARE_VERSION = 1.30.0
+##----------------------------------------------------------------------------
+# Check if we are on a VMware host
+#
+# Args: None
+# Returns: 0 if VMware, 1 if not
+# Displays: Nothing
+##----------------------------------------------------------------------------
 
-#============================================================================
+function sf_vm_host_is_vmware
+{
+if [ -x /usr/sbin/virt-what ] ; then
+	/usr/sbin/virt-what | grep vmware >/dev/null
+	return $?
+else
+	grep VMware /proc/scsi/scsi >/dev/null 2>&1
+	return $?
+fi
+}
+
+#=============================================================================

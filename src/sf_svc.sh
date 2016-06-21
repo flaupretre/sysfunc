@@ -21,6 +21,19 @@
 #=============================================================================
 
 ##----------------------------------------------------------------------------
+# Check if the system is running systemd
+#
+# Args: None
+# Returns:  0 if running systemd, 1 if not
+# Displays: Nothing
+##----------------------------------------------------------------------------
+
+function sf_svc_running_systemd
+{
+test -x /usr/bin/systemctl
+}
+
+##----------------------------------------------------------------------------
 # Check if a service is enabled on boot
 #
 # On Linux, check for current runlevel.
@@ -41,7 +54,11 @@ sf_svc_is_installed $_svc || return 2
 
 case "`uname -s`" in
 	Linux)
-		chkconfig $_svc || return 1
+		if sf_svc_running_systemd ; then
+			systemctl --quiet is-enabled $_svc || return 1
+		else
+			chkconfig $_svc || return 1
+		fi
 		;;
 	SunOS)
 		# We don't use states as defined on 'chkconfig' line in service
@@ -82,13 +99,16 @@ for _svc in $*
 
 	case "`uname -s`" in
 		Linux)
-			chkconfig $_svc
-			if [ $? != 0 ] ; then
+			if ! sf_svc_is_enabled $_svc ; then
 				sf_msg1 "Enabling service $_svc"
 				if [ -z "$sf_noexec" ] ; then
-					/sbin/chkconfig --add $_svc
-					/sbin/chkconfig $_svc reset
-					/sbin/chkconfig $_svc on
+					if sf_svc_running_systemd ; then
+						systemctl enable $_svc
+					else
+						/sbin/chkconfig --add $_svc
+						/sbin/chkconfig $_svc reset
+						/sbin/chkconfig $_svc on
+					fi
 				fi
 			fi
 			;;
@@ -137,11 +157,14 @@ for _svc in $*
 
 	case "`uname -s`" in
 		Linux)
-			chkconfig $_svc
-			if [ $? = 0 ] ; then
-				sf_msg1 "$_svc: Disabling service"
+			if sf_svc_is_enabled $_svc ; then
+				sf_msg1 "Disabling service $_svc"
 				if [ -z "$sf_noexec" ] ; then
-					/sbin/chkconfig --del $_svc
+					if sf_svc_running_systemd ; then
+						systemctl enable $_svc
+					else
+						/sbin/chkconfig --del $_svc
+					fi
 				fi
 			fi
 			;;
@@ -172,6 +195,8 @@ done
 
 function sf_svc_install
 {
+sf_svc_running_systemd && return 0
+
 sf_check_copy "$1" `sf_svc_script $2` 755
 }
 
@@ -188,11 +213,12 @@ function sf_svc_uninstall
 {
 sf_svc_stop $1
 sf_svc_disable $1
+sf_svc_running_systemd && return 0
 sf_delete `sf_svc_script $1`
 }
 
 ##----------------------------------------------------------------------------
-# Check if a service script is installed
+# Check if a service is installed
 #
 # Args:
 #	$1: Service name
@@ -202,7 +228,15 @@ sf_delete `sf_svc_script $1`
 
 function sf_svc_is_installed
 {
-[ -x "`sf_svc_script $1`" ]
+if sf_svc_running_systemd ; then
+	systemctl  list-unit-files $_svc 2>&1 | grep '^1 unit ' >/dev/null
+	[ $? = 0 ] && return 0
+	systemctl  list-unit-files $_svc.service 2>&1 | grep '^1 unit ' >/dev/null
+	[ $? = 0 ] && return 0
+else
+	[ -x "`sf_svc_script $1`" ]
+	return $?
+fi
 }
 
 ##----------------------------------------------------------------------------
@@ -218,8 +252,12 @@ function sf_svc_is_installed
 
 function sf_svc_start
 {
-if sf_svc_is_installed "$1" ] ; then
-	`sf_svc_script $1` start
+if sf_svc_is_installed "$1" ; then
+	if sf_svc_running_systemd ; then
+		systemctl start $_svc
+	else
+		`sf_svc_script $1` start
+	fi
 else
 	sf_error "$1: Service is not installed"
 fi
@@ -238,8 +276,12 @@ fi
 
 function sf_svc_stop
 {
-if sf_svc_is_installed "$1" ] ; then
-	`sf_svc_script $1` stop
+if sf_svc_is_installed "$1" ; then
+	if sf_svc_running_systemd ; then
+		systemctl stop $_svc
+	else
+		`sf_svc_script $1` stop
+	fi
 else
 	sf_error "$1: Service is not installed"
 fi
@@ -260,6 +302,12 @@ typeset _svc
 _svc=$1
 
 sf_svc_is_installed $_svc || return 2
+
+if sf_svc_running_systemd ; then
+	systemctl --quiet is-active $_svc
+	[ $? = 0 ] && return 0
+	return 1
+fi
 
 case "`uname -s`" in
 	Linux)
