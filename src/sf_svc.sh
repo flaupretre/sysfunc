@@ -41,7 +41,7 @@ test -x /usr/bin/systemctl
 #
 # Args:
 # $1: Service name
-# Returns:  0 if enabled, 1 if diasabled, 2 if not installed
+# Returns:  0 if enabled, 1 if disabled, 2 if not installed
 # Displays: Nothing
 ##----------------------------------------------------------------------------
 
@@ -229,10 +229,8 @@ sf_delete `sf_svc_script $1`
 function sf_svc_is_installed
 {
 if sf_svc_running_systemd ; then
-	systemctl  list-unit-files $_svc 2>&1 | grep '^1 unit ' >/dev/null
-	[ $? = 0 ] && return 0
-	systemctl  list-unit-files $_svc.service 2>&1 | grep '^1 unit ' >/dev/null
-	[ $? = 0 ] && return 0
+	systemctl status $1 2>&1 | grep 'Loaded: not-found' >/dev/null && return 1
+	return 0
 else
 	[ -x "`sf_svc_script $1`" ]
 	return $?
@@ -254,7 +252,7 @@ function sf_svc_start
 {
 if sf_svc_is_installed "$1" ; then
 	if sf_svc_running_systemd ; then
-		systemctl start $_svc
+		systemctl start $1
 	else
 		`sf_svc_script $1` start
 	fi
@@ -278,7 +276,7 @@ function sf_svc_stop
 {
 if sf_svc_is_installed "$1" ; then
 	if sf_svc_running_systemd ; then
-		systemctl stop $_svc
+		systemctl stop $1
 	else
 		`sf_svc_script $1` stop
 	fi
