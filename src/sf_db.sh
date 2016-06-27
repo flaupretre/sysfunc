@@ -350,8 +350,9 @@ sed 's,{{%[^%]*%}},,g' <$_tmp2 # Suppress unresolved patterns
 
 #=============================================================================
 
-[ "X$SF_DB_PATH" = X ] && SF_DB_PATH=/etc/sysfunc.db
+[ "X$SF_DB_DEF_PATH" = X ] && SF_DB_DEF_PATH=/etc/sysfunc.db
+[ "X$SF_DB_PATH" = X ] && SF_DB_PATH="$SF_DB_DEF_PATH"
 
-export SF_DB_PATH
+export SF_DB_DEF_PATH SF_DB_PATH
 
 #=============================================================================
