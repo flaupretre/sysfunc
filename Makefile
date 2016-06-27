@@ -59,8 +59,10 @@ $(TGZ_FILE): clean
 rpm: tgz specfile
 	chmod +x build/dist.sh
 	rpmbuild -bb --define="_sourcedir `pwd`" --define="dist `build/dist.sh`" specfile
+	cp $(HOME)/rpmbuild/RPMS/noarch/$(SOFTWARE_NAME)-$(SOFTWARE_VERSION)-*.noarch.rpm .
 	
 clean:
-	/bin/rm -rf sysfunc.sh.ppc specfile $(TGZ_FILE)
+	/bin/rm -rf sysfunc.sh.ppc specfile $(TGZ_FILE) \
+		$(SOFTWARE_NAME)-$(SOFTWARE_VERSION)-*.noarch.rpm
 
 #============================================================================
