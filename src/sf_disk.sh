@@ -104,8 +104,8 @@ fisize=''
 
 [ "`sf_disk_category $dev`" = fs ] || return 1
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		bcount=`dumpe2fs $dev 2>/dev/null | grep "^Block count:" | sed 's/^.* //'`
 		bsize=`dumpe2fs $dev 2>/dev/null | grep "^Block size:" | sed 's/^.* //'`
 		fsize=`expr $bcount \* $bsize`	# FS size
@@ -138,7 +138,7 @@ function sf_disk_category
 typeset disk category
 disk=$1
 
-[ "`uname -s`" = Linux ] || sf_unsupported sf_disk_category
+[ "`sf_os_family`" = linux ] || sf_unsupported sf_disk_category
 
 if dumpe2fs $disk >/dev/null 2>&1 ; then
 	category='fs'
@@ -162,7 +162,7 @@ echo $category
 
 function sf_disk_type
 {
-[ "`uname -s`" = Linux ] || sf_unsupported sf_disk_type
+[ "`sf_os_family`" = linux ] || sf_unsupported sf_disk_type
 
 blkid "$1" 2>/dev/null | sed -e 's/.*TYPE="//g' -e 's/".*$//g'
 return 0
@@ -183,8 +183,8 @@ function sf_disk_rescan
 {
 typeset i
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		# Use two mechanisms because 1st one does not see disk resizes on a
 		# VM in RHEL 6.
 		for i in /sys/class/scsi_host/host*/scan ; do

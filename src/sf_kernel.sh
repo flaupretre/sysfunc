@@ -31,8 +31,8 @@
 
 function sf_krn_module_is_loaded
 {
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		lsmod | awk "(\$1==\"$1\") { exit 1; }" && return 1
 		;;
 	*)

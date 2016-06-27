@@ -108,8 +108,8 @@ function sf_dns_name_to_addr
 
 function sf_primary_ip_address
 {
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		ifconfig eth0 | grep 'inet addr:' \
 			| sed 's/^.*inet addr:\([^ ]*\) .*$/\1/'
 		;;

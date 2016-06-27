@@ -37,8 +37,8 @@ typeset vg lv rc
 vg=$1
 lv=$2
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		lvs $vg/$lv >/dev/null 2>&1
 		rc=$?
 		;;
@@ -65,8 +65,8 @@ typeset vg rc
 
 vg=$1
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		vgs $vg >/dev/null 2>&1
 		rc=$?
 		;;
@@ -110,8 +110,8 @@ sz_opt="--size $size"
 
 sf_msg1 "Creating LV $lv on VG $vg"
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		if [ -z "$sf_noexec" ] ; then
 			lvcreate $sz_opt -n $lv $vg
 			rc=$?
@@ -148,8 +148,8 @@ sf_vg_exists $vg && return 0
 
 sf_msg1 "Creating VG $vg"
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		if [ -z "$sf_noexec" ] ; then
 			vgcreate -s $pesize $vg /dev/$device
 			rc=$?

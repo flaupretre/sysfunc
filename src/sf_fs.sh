@@ -82,14 +82,14 @@ sf_fs_mount_point $*
 
 function sf_fs_mount_point
 {
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		df -kP "$1" | tail -1 | awk '{ print $6 }'
 		;;
-	SunOS)
+	sunos)
 		/usr/bin/df -k "$1" | tail -1 | awk '{ print $6 }'
 		;;
-	AIX)
+	aix)
 		df -k "$1" | tail -1 | awk '{ print $7 }'
 		;;
 	*)
@@ -129,8 +129,8 @@ typeset disk
 
 [ -e "$1" ] || return
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		disk=`df -kP "$1" | tail -1 | awk '{ print $1 }'`
 		;;
 	*)
@@ -174,14 +174,14 @@ function sf_fs_size
 {
 # $1=directory
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		sz=`df -kP "$1" | tail -1 | awk '{ print $2 }'`
 		;;
-	SunOS)
+	sunos)
 		sz=`/usr/bin/df -k "$1" | tail -1 | awk '{ print $2 }'`
 		;;
-	AIX)
+	aix)
 		sz=`df -k "$1" | tail -1 | awk '{ print $2 }'`
 		;;
 	*)
@@ -235,8 +235,8 @@ fi
 
 if [ "$newsize" -gt "$size" ] ; then
 	sf_msg1 "Extending $fs filesystem to $newsize Mb"
-	case "`uname -s`" in
-		AIX)
+	case "`sf_os_family`" in
+		aix)
 			if [ -z "$sf_noexec" ] ; then
 				chfs -a size=${newsize}M $fs
 				rc=$?
@@ -309,8 +309,8 @@ fi
 
 [ $? = 0 ] || return 1
 
-case "`uname -s`" in
-	Linux)
+case "`sf_os_family`" in
+	linux)
 		opts=''
 		# When supported, set filesystem label
 		echo $type | grep '^ext' >/dev/null && opts="-L `basename $dev`"
@@ -354,8 +354,8 @@ function sf_fs_default_type
 {
 typeset type
 
-case `uname -s` in
-	Linux)
+case `sf_os_family` in
+	linux)
 		for type in ext4 ext3 ext2 ; do
 			[ -x /sbin/mkfs.$type ] && break
 		done
