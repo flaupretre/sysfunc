@@ -8,7 +8,7 @@
 
 . sysfunc
 
-if [ `uname -s` = Linux -a -f /etc/redhat-release ] ; then
+if [ -f /etc/redhat-release ] ; then
 	echo ".el`sed 's/^.* release \(.\).*$/\1/' </etc/redhat-release`"
 fi
 
