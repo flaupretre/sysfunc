@@ -108,10 +108,17 @@ function sf_dns_name_to_addr
 
 function sf_primary_ip_address
 {
-case "`uname -s`" in
-	Linux)
-		ifconfig eth0 | grep 'inet addr:' \
-			| sed 's/^.*inet addr:\([^ ]*\) .*$/\1/'
+typeset ifname
+
+case "`sf_os_family`" in
+	linux)
+		ifname=`ls -1 /sys/class/net | grep -v '^lo$' | head -1`
+		[ -z "$ifname" ] && return
+		if [ /usr/sbin/ip ] ; then
+			ip -4 addr show dev $ifname | grep inet | sed 's,^.*inet \([^/]*\)/.*$,\1,'
+		else
+			ifconfig $ifname | grep 'inet addr:' | sed 's/^.*inet addr:\([^ ]*\) .*$/\1/'
+		fi
 		;;
 	*)
 		sf_unsupported primary_ip_address

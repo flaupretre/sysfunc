@@ -56,9 +56,9 @@ distrib=`sf_os_distrib`
 
 res="${distrib}_${version}"
 
-if [ "$distrib" = RHEL ] ; then		# Special case for RHEL
-	[ `uname -i` = x86_64 ] && res="${res}_64"
-	if [ "$version" -lt 5 ] ; then
+if [ -f /etc/redhat-release ] ; then		# Special case for RHEL/CentOS
+	[ `sf_os_arch` = x86_64 ] && res="${res}_64"
+	if [ "$version" -lt 5 ] ; then # AS/ES
 		sub=`sed 's/^.* Linux \(.S\).*$/\1/' </etc/redhat-release`
 		res="${res}_$sub"
 	fi
@@ -96,14 +96,18 @@ typeset res
 
 res=''
 case "`sf_os_family`" in
-	HP-UX)
-		res=HPUX ;;
-	Linux)
-		[ -f /etc/redhat-release ] && res=RHEL ;;
-	SunOS)
-		res=SOLARIS ;;
-	AIX)
-		res=AIX ;;
+	hp-ux)
+		res=hpux ;;
+	linux)
+		res=linux
+		[ -f /etc/redhat-release ] && res=rhel
+		[ -f /etc/centos-release ] && res=centos
+		[ -f /etc/SuSE-release ] && res=suse
+		;;
+	sunos)
+		res=solaris ;;
+	aix)
+		res=aix ;;
 esac
 
 [ -z "$res" ] && sf_unsupported sf_os_distrib
@@ -112,16 +116,40 @@ echo $res
 }
 
 ##----------------------------------------------------------------------------
-# Display the current OS family (Linux, SunOS,...)
+# Display the mixed case name of the current distrib
 #
 # Args: None
 # Returns: 0
-# Displays: OS distrib
+# Displays: OS distrib in mixed case
+#-----------------------------------------------------------------------------
+
+function sf_os_distrib_mixed
+{
+typeset distrib
+
+distrib=`sf_os_distrib`
+case "$distrib" in
+	aix)    echo AIX;;
+	hpux)   echo HPUX;;
+	sunos)  echo SunOS;;
+	rhel)   echo RHEL;;
+	centos) echo CentOS;;
+	suse)   echo SuSE;;
+	*) echo $distrib
+esac
+}
+
+##----------------------------------------------------------------------------
+# Display the current OS family in lowercase (linux, sunos,...)
+#
+# Args: None
+# Returns: 0
+# Displays: OS family
 #-----------------------------------------------------------------------------
 
 function sf_os_family
 {
-uname -s
+uname -s | tr [:upper:] [:lower:]
 }
 
 ##----------------------------------------------------------------------------
@@ -138,17 +166,19 @@ typeset frel res
 
 res=''
 case "`sf_os_family`" in
-	HP-UX)
+	hp-ux)
 		res="`uname -r | sed 's/^B\.//'`"
 		;;
-	Linux)
+	linux)
 		frel=/etc/redhat-release
 		[ -f $frel ] && res=`sed 's/^.* release \(.\).*$/\1/' <$frel`
+		frel=/etc/SuSE-release
+		[ -f $frel ] && res=`grep "^VERSION = " $frel | sed 's/^.* //g'`
 		;;
-	SunOS)
+	sunos)
 		res=`uname -r | sed 's/^5\.//'`
 		;;
-	AIX)
+	aix)
 		res="`uname -v`.`uname -r`"
 		;;
 esac
@@ -172,6 +202,25 @@ uname -i
 }
 
 ##----------------------------------------------------------------------------
+# Display the value to use for the 'dist' macro in rpm build
+#
+# This script is needed because, unlike RHEL 6, RHEL 4 & 5 don't provide
+# this value in their rpm build system
+# Centos also appends a '.centos' suffix we want to avoid
+#
+# Args: None
+# Returns: 0
+# Displays: OS distrib
+#-----------------------------------------------------------------------------
+
+function sf_os_dist_macro
+{
+if [ -f /etc/redhat-release ] ; then
+        echo ".el`sf_os_version`"
+fi
+}
+
+##----------------------------------------------------------------------------
 # Shutdown and restart the host
 #
 # Args: None
@@ -181,15 +230,12 @@ uname -i
 
 function sf_reboot
 {
-case "`uname -s`" in
-	Linux)
-		[ -z "$sf_noexec" ] && shutdown -r now
-		;;
-	SunOS)
+case "`sf_os_family`" in
+	sunos)
 		[ -z "$sf_noexec" ] && init 6
 		;;
 	*)
-		sf_unsupported reboot
+		[ -z "$sf_noexec" ] && shutdown -r now
 esac
 
 while true; do sleep 10; done	# Endless loop
@@ -205,15 +251,12 @@ while true; do sleep 10; done	# Endless loop
 
 function sf_shutdown
 {
-case "`uname -s`" in
-	Linux)
-		[ -z "$sf_noexec" ] && shutdown -h now
-		;;
-	SunOS)
+case `sf_os_family` in
+	sunos)
 		[ -z "$sf_noexec" ] && shutdown -y -i0 -g0
 		;;
 	*)
-		sf_unsupported shutdown
+		[ -z "$sf_noexec" ] && shutdown -h now
 esac
 
 while true; do sleep 10; done	# Endless loop
@@ -229,15 +272,12 @@ while true; do sleep 10; done	# Endless loop
 
 function sf_poweroff
 {
-case "`uname -s`" in
-	Linux)
-		[ -z "$sf_noexec" ] && shutdown -h now
-		;;
-	SunOS)
+case `sf_os_family` in
+	sunos)
 		[ -z "$sf_noexec" ] && shutdown -y -i5 -g0
 		;;
 	*)
-		sf_unsupported poweroff
+		[ -z "$sf_noexec" ] && shutdown -h now
 esac
 
 while true; do sleep 10; done	# Endless loop

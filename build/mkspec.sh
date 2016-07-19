@@ -25,6 +25,6 @@ export SOFTWARE_VERSION INSTALL_DIR
 
 sed -e "s,%SOFTWARE_VERSION%,$SOFTWARE_VERSION,g" \
 	-e "s,%INSTALL_DIR%,$INSTALL_DIR,g" \
-	<build/specfile.in >specfile
+	<specfile.in >specfile
 
 ###############################################################################

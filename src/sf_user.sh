@@ -111,8 +111,8 @@ function sf_create_group
 typeset rc i
 rc=0
 
-case `uname -s` in
-	AIX)
+case `sf_os_family` in
+	aix)
 		if ! lsgroup $1 >/dev/null 2>&1 ; then
 			sf_msg1 "Creating $1 group"
 			if [ -z "$sf_noexec" ] ; then
@@ -160,8 +160,8 @@ function sf_delete_group
 typeset rc
 rc=0
 
-case `uname -s` in
-	Linux|SunOS)
+case `sf_os_family` in
+	linux|sunos)
 		if grep "^$1:" /etc/group >/dev/null 2>&1 ; then
 			sf_msg1 "Deleting $1 group"
 			if [ -z "$sf_noexec" ] ; then
@@ -233,8 +233,8 @@ function sf_user_exists
 {
 typeset status
 
-case `uname -s` in
-	AIX)
+case `sf_os_family` in
+	aix)
 		lsuser $1 >/dev/null 2>&1
 		status=$?
 		;;
@@ -262,8 +262,8 @@ typeset rc
 rc=0
 
 if sf_user_exists "$1" ; then
-	case `uname -s` in
-		Linux|SunOS)
+	case `sf_os_family` in
+		linux|sunos)
 			sf_msg1 "Deleting $1 user"
 			if [ -z "$sf_noexec" ] ; then
 				userdel "$1"
@@ -294,8 +294,8 @@ function sf_user_uid
 typeset res
 res=''
 
-case `uname -s` in
-	Linux)
+case `sf_os_family` in
+	linux)
 		res=`awk -F: -vUSER=${user} '$1==USER {print $3}' /etc/passwd`
 		;;
 	*)
@@ -321,8 +321,8 @@ function sf_user_gid
 typeset res
 res=''
 
-case `uname -s` in
-	Linux)
+case `sf_os_family` in
+	linux)
 		res=`awk -F: -vUSER=${user} '$1==USER {print $4}' /etc/passwd`
 		;;
 	*)
@@ -382,8 +382,8 @@ sf_create_dir `dirname $home`
 
 add_cmd=''
 
-case `uname -s` in
-	AIX)
+case `sf_os_family` in
+	aix)
 		[ -n "$groups" ] && add_cmd="$add_cmd groups=$groups"
 
 		[ -n "$locked" ] && add_cmd="$add_cmd login=false"
@@ -393,7 +393,7 @@ case `uname -s` in
 		[ -z "$locked" ] && sf_set_passwd_aix $name "$9"
 		;;
 
-	Linux)
+	linux)
 		shell=/bin/bash
 		#[ -n "$locked" ] && shell=/bin/false
 		[ -n "$CREATE_USER_SHELL" ] && shell="$CREATE_USER_SHELL"
@@ -424,7 +424,7 @@ case `uname -s` in
 			>/dev/null
 
 		passwd_file=/etc/shadow
-		[ `uname -s` = HP-UX ] && passwd_file=/etc/passwd
+		[ `sf_os_family` = hp-ux ] && passwd_file=/etc/passwd
 		[ -z "$locked" ] && sf_set_passwd $name "$8" $passwd_file
 		;;
 esac

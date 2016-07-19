@@ -41,7 +41,7 @@ test -x /usr/bin/systemctl
 #
 # Args:
 # $1: Service name
-# Returns:  0 if enabled, 1 if diasabled, 2 if not installed
+# Returns:  0 if enabled, 1 if disabled, 2 if not installed
 # Displays: Nothing
 ##----------------------------------------------------------------------------
 
@@ -52,15 +52,15 @@ _svc=$1
 
 sf_svc_is_installed $_svc || return 2
 
-case "`uname -s`" in
-	Linux)
+case `sf_os_family` in
+	linux)
 		if sf_svc_running_systemd ; then
 			systemctl --quiet is-enabled $_svc || return 1
 		else
 			chkconfig $_svc || return 1
 		fi
 		;;
-	SunOS)
+	sunos)
 		# We don't use states as defined on 'chkconfig' line in service
 		# script, as states do not correspond on Solaris.
 		_base=`sf_svc_base`
@@ -97,8 +97,8 @@ for _svc in $*
 		continue
 	fi
 
-	case "`uname -s`" in
-		Linux)
+	case `sf_os_family` in
+		linux)
 			if ! sf_svc_is_enabled $_svc ; then
 				sf_msg1 "Enabling service $_svc"
 				if [ -z "$sf_noexec" ] ; then
@@ -112,7 +112,7 @@ for _svc in $*
 				fi
 			fi
 			;;
-		SunOS)
+		sunos)
 			# We don't use states as defined on 'chkconfig' line in service
 			# script, as states do not correspond on Solaris.
 			_script=`sf_svc_script $_svc`
@@ -155,8 +155,8 @@ for _svc in $*
 		continue
 	fi
 
-	case "`uname -s`" in
-		Linux)
+	case `sf_os_family` in
+		linux)
 			if sf_svc_is_enabled $_svc ; then
 				sf_msg1 "Disabling service $_svc"
 				if [ -z "$sf_noexec" ] ; then
@@ -168,7 +168,7 @@ for _svc in $*
 				fi
 			fi
 			;;
-		SunOS)
+		sunos)
 			_pattern="$_base/rc?.d/[KS]??$_svc"
 			_f="`ls -l $_pattern | head -1`"
 			if [ -f "$_f" ] ; then
@@ -229,10 +229,8 @@ sf_delete `sf_svc_script $1`
 function sf_svc_is_installed
 {
 if sf_svc_running_systemd ; then
-	systemctl  list-unit-files $_svc 2>&1 | grep '^1 unit ' >/dev/null
-	[ $? = 0 ] && return 0
-	systemctl  list-unit-files $_svc.service 2>&1 | grep '^1 unit ' >/dev/null
-	[ $? = 0 ] && return 0
+	systemctl status $1 2>&1 | grep 'Loaded: not-found' >/dev/null && return 1
+	return 0
 else
 	[ -x "`sf_svc_script $1`" ]
 	return $?
@@ -254,7 +252,7 @@ function sf_svc_start
 {
 if sf_svc_is_installed "$1" ; then
 	if sf_svc_running_systemd ; then
-		systemctl start $_svc
+		systemctl start $1
 	else
 		`sf_svc_script $1` start
 	fi
@@ -278,7 +276,7 @@ function sf_svc_stop
 {
 if sf_svc_is_installed "$1" ; then
 	if sf_svc_running_systemd ; then
-		systemctl stop $_svc
+		systemctl stop $1
 	else
 		`sf_svc_script $1` stop
 	fi
@@ -309,8 +307,8 @@ if sf_svc_running_systemd ; then
 	return 1
 fi
 
-case "`uname -s`" in
-	Linux)
+case `sf_os_family` in
+	linux)
 		service $_svc status >/dev/null 2>&1 || return 1
 		;;
 	*)
@@ -330,12 +328,12 @@ return 0
 
 function sf_svc_base
 {
-case `uname -s` in
-	Linux)
+case `sf_os_family` in
+	linux)
 		echo /etc/rc.d ;;
-	SunOS)
+	sunos)
 		echo /etc ;;
-	HP-UX)
+	hp-ux)
 		echo /sbin ;;
 	*)
 		sf_unsupported sf_svc_base ;;

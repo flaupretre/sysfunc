@@ -26,6 +26,7 @@ include config.mk
 
 TGZ_PREFIX = $(SOFTWARE_NAME)-$(SOFTWARE_VERSION)
 TGZ_FILE = $(TGZ_PREFIX).tar.gz
+RPM_PATTERN=$(TGZ_PREFIX)-*.noarch.rpm
 
 #=====================================
 
@@ -33,17 +34,17 @@ all: ppc
 
 .PHONY: ppc clean tgz install all rpm
 
-ppc: sysfunc.sh.ppc
+ppc: $(SOFTWARE_NAME).sh.ppc
 
-sysfunc.sh.ppc:
+$(SOFTWARE_NAME).sh.ppc:
 	chmod +x build/build.sh
 	build/build.sh "$(SOFTWARE_VERSION)" "$(INSTALL_DIR)"
 
-install: sysfunc.sh.ppc
+install: $(SOFTWARE_NAME).sh.ppc
 	chmod +x build/install.sh
 	build/install.sh $(INSTALL_DIR)
 
-specfile: build/specfile.in
+specfile: specfile.in
 	chmod +x build/mkspec.sh
 	build/mkspec.sh "$(SOFTWARE_VERSION)" "$(INSTALL_DIR)"
 
@@ -58,9 +59,12 @@ $(TGZ_FILE): clean
 
 rpm: tgz specfile
 	chmod +x build/dist.sh
+	/bin/rm -rf $(HOME)/rpmbuild/RPMS/noarch/$(RPM_PATTERN)
 	rpmbuild -bb --define="_sourcedir `pwd`" --define="dist `build/dist.sh`" specfile
+	mv -f $(HOME)/rpmbuild/RPMS/noarch/$(RPM_PATTERN) .
+	/bin/rm -rf $(HOME)/rpmbuild/BUILD/$(TGZ_PREFIX)
 	
 clean:
-	/bin/rm -rf sysfunc.sh.ppc specfile $(TGZ_FILE)
+	/bin/rm -rf $(SOFTWARE_NAME).sh.ppc specfile $(TGZ_FILE) $(RPM_PATTERN)
 
 #============================================================================
