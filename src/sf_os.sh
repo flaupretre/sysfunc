@@ -172,6 +172,8 @@ case "`sf_os_family`" in
 	linux)
 		frel=/etc/redhat-release
 		[ -f $frel ] && res=`sed 's/^.* release \(.\).*$/\1/' <$frel`
+		frel=/etc/centos-release
+		[ -f $frel ] && res=`sed 's/^.* release \(.\).*$/\1/' <$frel`
 		frel=/etc/SuSE-release
 		[ -f $frel ] && res=`grep "^VERSION = " $frel | sed 's/^.* //g'`
 		;;
