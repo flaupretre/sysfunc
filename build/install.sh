@@ -44,7 +44,7 @@ make_dir $INSTALL_DIR
 rm -rf $INSTALL_DIR/*
 
 cp sysfunc.sh.ppc $INSTALL_DIR/sysfunc.sh
-chmod 500 $INSTALL_DIR/sysfunc.sh
+chmod 555 $INSTALL_DIR/sysfunc.sh
 
 make_dir $INSTALL_ROOT/usr/bin
 /bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc
