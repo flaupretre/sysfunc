@@ -356,7 +356,7 @@ typeset type
 
 case `sf_os_family` in
 	linux)
-		for type in ext4 ext3 ext2 ; do
+		for type in xfs ext4 ext3 ext2 ; do
 			[ -x /sbin/mkfs.$type ] && break
 		done
 		;;
