@@ -291,8 +291,9 @@ return $rc
 
 function sf_user_uid
 {
-typeset res
+typeset res user
 res=''
+user=$1
 
 case `sf_os_family` in
 	linux)
@@ -318,8 +319,9 @@ return 0
 
 function sf_user_gid
 {
-typeset res
+typeset res user
 res=''
+user=$1
 
 case `sf_os_family` in
 	linux)

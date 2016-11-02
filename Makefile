@@ -26,7 +26,8 @@ include config.mk
 
 TGZ_PREFIX = $(SOFTWARE_NAME)-$(SOFTWARE_VERSION)
 TGZ_FILE = $(TGZ_PREFIX).tar.gz
-RPM_PATTERN=$(TGZ_PREFIX)-*.noarch.rpm
+TGZ_PATTERN=$(SOFTWARE_NAME)-*.tar.gz
+RPM_PATTERN=$(SOFTWARE_NAME)-*.noarch.rpm
 
 #=====================================
 
@@ -65,6 +66,6 @@ rpm: tgz specfile
 	/bin/rm -rf $(HOME)/rpmbuild/BUILD/$(TGZ_PREFIX)
 	
 clean:
-	/bin/rm -rf $(SOFTWARE_NAME).sh.ppc specfile $(TGZ_FILE) $(RPM_PATTERN)
+	/bin/rm -rf $(SOFTWARE_NAME).sh.ppc specfile $(TGZ_PATTERN) $(RPM_PATTERN)
 
 #============================================================================
