@@ -433,4 +433,20 @@ esac
 return 0
 }
 
+##----------------------------------------------------------------------------
+# Check that we run as root
+#
+# Args: None
+# Returns: 0 if OK; 1 if KO
+# Displays: Nothing or error message
+#-----------------------------------------------------------------------------
+
+function sf_check_user_is_root
+{
+[ `id -ur` = 0 ] && return 0
+
+sf_fatal "This must be executed as 'root'"
+return 1
+}
+
 #=============================================================================
