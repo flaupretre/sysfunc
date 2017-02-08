@@ -662,6 +662,31 @@ source="$1"
 }
 
 ##------------------------------------------------
+# Return age of a file (since last modification) in seconds
+#
+# Args:
+#	$1: Path
+# Returns: 0 if file exists, 1 if not
+# Displays: Time in seconds since last modification of file
+#------------------------------------------------
+
+function sf_file_age
+{
+typeset source ftime
+source="$1"
+
+[ -e "$source" ] || return 1
+
+stat=`sf_find_executable stat`
+[ -z "$stat" ] && sf_unsupported sf_file_age
+
+ftime=`stat -c "%Y" "$source"`
+expr `date +%s` - $ftime
+
+return 0
+}
+
+##------------------------------------------------
 # Return mode of a file in octal
 #
 # Args:
