@@ -126,4 +126,43 @@ case "`sf_os_family`" in
 esac
 }
 
+##------------------------------------------------
+# Check connectivity with a host
+#
+# Args:
+#	$1: Hostname
+#	$2: Optional. String to use in error message - host function
+# Returns: 0 if OK, 1 if KO
+# Displays: Nothing
+#------------------------------------------------
+
+function sf_net_host_is_reachable
+{
+typeset host desc
+
+host="$1"
+if [ -z "$host" ] ; then
+	sf_warning "ms_host_is_reachable: host parameter not set"
+	return 1
+fi
+
+desc="$2"
+[ -z "$desc" ] && desc="$host"
+
+sf_trace "Checking connectivity with $desc ($host)"
+
+#---
+
+ping -c 1 "$host" >/dev/null 2>&1
+if [ $? != 0 ] ; then
+	sf_warning "Cannot ping $desc ($host)"
+	return 1
+fi
+sf_trace "$desc is reachable"
+	
+#---
+
+return 0
+}
+
 #=============================================================================
