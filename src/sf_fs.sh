@@ -281,21 +281,23 @@ sf_fs_create $*
 #	$1: Mount point
 #	$2: device path
 #	$3: Optional. FS type (if empty, default FS type for this OS)
-#	$4: Optional. Mount point directory owner[:group]
+#	$4: Optional. Mount point directory owner[:group]~
+#	$5: mkfs additional options
 # Returns: 0 if no error, 1 on error
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_fs_create
 {
-typeset mnt dev type owner opts tmp
+typeset mnt dev type owner opts tmp mkfs_opts
 
 mnt=$1
 dev=$2
 type=$3
-owner=$4
 [ -z "$type" ] && type=`sf_fs_default_type`
+owner=$4
 [ -z "$owner" ] && owner=root
+mkfs_opts=$5
 
 sf_fs_is_mount_point $mnt && return 0
 sf_msg1 "$mnt: Creating file system..."
@@ -316,7 +318,7 @@ case "`sf_os_family`" in
 		echo $type | grep '^ext' >/dev/null && opts="-L `basename $dev`"
 		if [ -z "$sf_noexec" ] ; then
 			tmp=`sf_tmpfile`
-			mkfs -t $type $opts $dev >$tmp 2>&1
+			mkfs -t $type $opts $mkfs_opts $dev >$tmp 2>&1
 			if [ $? != 0 ] ; then
 				echo "mkfs failed  with this log :"
 				cat $tmp
@@ -405,13 +407,15 @@ sf_fs_create_lv_fs "$1" "$2" "$3" "$5" "$4" "$6"
 #		takes the whole free size in the VG. 
 #	$5: Optional. File system type. Defaults to default FS type for this environment
 #	$6: Optional. Directory owner[:group]
+#	$7: mkfs additional options
+#
 # Returns: 0: OK, !=0: Error
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_fs_create_lv_fs
 {
-typeset mnt lv vg type size owner
+typeset mnt lv vg type size owner mkfs_opts
 
 mnt=$1
 lv=$2
@@ -419,9 +423,10 @@ vg=$3
 size=$4
 type=$5
 owner=$6
+mkfs_opts=$7
 
 sf_create_lv $lv $vg $size || return 1
-sf_fs_create $mnt /dev/$vg/$lv $type $owner || return 1
+sf_fs_create $mnt /dev/$vg/$lv "$type" "$owner" "$mkfs_opts" || return 1
 return 0
 }
 
