@@ -18,6 +18,6 @@
 
 INSTALL_DIR = /opt/sysfunc
 
-SOFTWARE_VERSION = 2.2.5
+SOFTWARE_VERSION = 2.2.6
 
 #============================================================================

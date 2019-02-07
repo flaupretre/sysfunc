@@ -161,7 +161,7 @@ for _svc in $*
 				sf_msg1 "Disabling service $_svc"
 				if [ -z "$sf_noexec" ] ; then
 					if sf_svc_running_systemd ; then
-						systemctl enable $_svc
+						systemctl disable $_svc
 					else
 						/sbin/chkconfig --del $_svc
 					fi
