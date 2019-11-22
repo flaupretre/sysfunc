@@ -101,8 +101,9 @@ export sf_rpm
 
 #-- Check if sourced or executed
 
-echo "$0" | grep sysfunc >/dev/null 2>&1
-if [ $? = 0 ] ; then	# Executed
+_found=
+echo "$0" | grep sysfunc >/dev/null 2>&1 && _found=y
+if [ -n "$_found" ] ; then	# Executed
 	_cmd="$1"
 	[ "$_cmd" = '' ] && _sf_fatal 'No command'
 	_func="sf_$_cmd"

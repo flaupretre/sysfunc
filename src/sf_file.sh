@@ -52,7 +52,7 @@ done
 #	$1 : Executable name
 #	$2 : Optional. List of directories to search (separated by ':' chars).
 #	     If not set, use PATH
-# Returns: 0 if executable was found, 1 if not
+# Returns: 0
 # Displays: Absolute path if found, nothing if not found
 #-----------------------------------------------------------------------------
 
@@ -71,10 +71,9 @@ for dir in $dirs
 	f="$dir/$file"
 	if [ -f "$f" -a -x "$f" ] ; then
 		echo "$f"
-		return 0
+		break
 	fi
 done
-return 1
 }
 
 ##----------------------------------------------------------------------------
