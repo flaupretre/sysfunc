@@ -81,19 +81,19 @@ export PATH
 
 #-- Variables
 
-[ -z "$sf_install_dir" ] && sf_install_dir="%INSTALL_DIR%"
+[ -z "${sf_install_dir:+}" ] && sf_install_dir="%INSTALL_DIR%"
 
 export sf_install_dir
 
 #-- Find utilities
 
-if [ -z "$sf_yum" ] ; then
+if [ -z "${sf_yum:+}" ] ; then
 	sf_yum=`sf_find_executable yum`
 	[ -n "$sf_yum" ] && sf_yum="$sf_yum -y -t -d 1"
 fi
 export sf_yum
 
-if [ -z "$sf_rpm" ] ; then
+if [ -z "${sf_rpm:+}" ] ; then
 	sf_rpm=`sf_find_executable rpm`
 	[ -n "$sf_rpm" ] && sf_rpm="$sf_rpm --nosignature"
 fi

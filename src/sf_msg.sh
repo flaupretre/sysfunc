@@ -242,6 +242,6 @@ return 0
 # $sf_verbose remains for compatibility. $sf_verbose_level must
 # contain a numeric value.
 
-[ -z "$sf_verbose_level" ] && sf_verbose_level=0
+[ -z "${sf_verbose_level:+}" ] && sf_verbose_level=0
 
 export sf_verbose_level

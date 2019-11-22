@@ -258,7 +258,7 @@ rm -f $tmp
 
 #=============================================================================
 
-[ "X$SF_CFG_DEF_DIR" = X ] && SF_CFG_DEF_DIR=/etc/sysfunc/cfg/defaults
+[ -z "${SF_CFG_DEF_DIR:+}" ] && SF_CFG_DEF_DIR=/etc/sysfunc/cfg/defaults
 
 export SF_CFG_DEF_DIR
 
