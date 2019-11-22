@@ -19,11 +19,6 @@
 # $INSTALL_ROOT variable can be set by the calling environment and is optional.
 # If not set, everything will be installed relative to '/'.
 
-function make_dir
-{
-[ -d $1 ] || mkdir -p $1
-}
-
 #----------
 
 CMD=`basename $0`
@@ -39,14 +34,14 @@ cd $BASE_DIR
 
 #-- Re-create target tree and copy base files
 
-make_dir $INSTALL_DIR
+[ -d $INSTALL_DIR ] || mkdir -p $INSTALL_DIR
 
 rm -rf $INSTALL_DIR/*
 
 cp sysfunc.sh.ppc $INSTALL_DIR/sysfunc.sh
 chmod 555 $INSTALL_DIR/sysfunc.sh
 
-make_dir $INSTALL_ROOT/usr/bin
+[ -d $INSTALL_ROOT/usr/bin ] || mkdir -p $INSTALL_ROOT/usr/bin
 /bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc
 ln -s $INSTALL_TARGET_DIR/sysfunc.sh $INSTALL_ROOT/usr/bin/sysfunc
 /bin/rm -rf $INSTALL_ROOT/usr/bin/sysfunc.sh
