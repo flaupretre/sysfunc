@@ -240,7 +240,7 @@ fi
 ##----------------------------------------------------------------------------
 # Start a service
 #
-# 'noexec' does not disable starting/stopping services.
+# Note that 'noexec' does not disable starting/stopping services.
 #
 # Args:
 #	$1: Service name
@@ -264,7 +264,7 @@ fi
 ##----------------------------------------------------------------------------
 # Stop a service
 #
-# 'noexec' does not disable starting/stopping services.
+# Note that 'noexec' does not disable starting/stopping services.
 #
 # Args:
 #	$1: Service name
@@ -283,6 +283,46 @@ if sf_svc_is_installed "$1" ; then
 else
 	sf_error "$1: Service is not installed"
 fi
+}
+
+##----------------------------------------------------------------------------
+# Restart a service
+#
+# Note that 'noexec' does not disable starting/stopping services.
+#
+# Args:
+#	$1: Service name
+# Returns: 0 if OK, return code of failed command if KO
+# Displays: Output from service script(s)
+#-----------------------------------------------------------------------------
+
+function sf_svc_restart
+{
+local ret
+
+ret=0
+if sf_svc_is_installed "$1" ; then
+	if sf_svc_running_systemd ; then
+		systemctl restart $1
+    ret=$?
+	else
+    # Cannot rely on a 'restart' action because it is not standard
+    if sf_svc_is_up "$1" ; then
+      sf_svc_stop "$1"
+      ret=$?
+    fi
+    if [ $ret = 0 ] ; then
+      sf_svc_start "$1"
+      ret=$?
+    else
+      sf_error "Won't start service "$1" because stop procedure failed"
+    fi
+	fi
+else
+	sf_error "$1: Service is not installed"
+fi
+
+return $ret
 }
 
 ##----------------------------------------------------------------------------
