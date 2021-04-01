@@ -79,11 +79,19 @@ for i in /usr/sbin /bin /usr/bin /sbin /etc /usr/ccs/bin /usr/xpg4/bin /usr/xpg6
 done
 export PATH
 
-#-- Variables
+#-- Variables (avoir unbound variable error)
 
-[ -z "${sf_install_dir:+}" ] && sf_install_dir="%INSTALL_DIR%"
+sf_install_dir="${sf_install_dir:=%INSTALL_DIR%}"
 
-export sf_install_dir
+sf_nosave="${sf_nosave:=}"
+sf_noexec="${sf_noexec:=}"
+
+# $sf_verbose remains for compatibility.
+sf_verbose="${sf_verbose:=}"
+# $sf_verbose_level must contain a numeric value.
+sf_verbose_level="${sf_verbose_level:=0}"
+
+export sf_install_dir sf_nosave sf_noexec sf_verbose sf_verbose_level
 
 #-- Find utilities
 

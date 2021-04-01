@@ -41,7 +41,7 @@ function sf_tm_now
 typeset opt format
 
 opt=''
-[ "X$SF_TM_UTC" = X ] || opt='-u'
+[ "X${SF_TM_UTC:-}" = X ] || opt='-u'
 
 format='%d-%b-%Y %H:%M:%S (%s)'
 [ "X$1" = X ] || format="$1"

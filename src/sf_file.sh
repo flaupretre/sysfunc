@@ -101,11 +101,8 @@ function sf_create_dir
 typeset path owner mode
 
 path=$1
-owner=$2
-mode=$3
-
-[ -z "$owner" ] && owner=root
-[ -z "$mode" ] && mode=755
+owner=${2:-root}
+mode=${3:-755}
 
 if [ ! -d "$path" ] ; then
 	sf_msg1 "Creating directory: $path"
@@ -178,8 +175,7 @@ fi
 
 target="$2"
 
-mode="$3"
-[ -z "$mode" ] && mode=644
+mode=${3:-644}
 
 [ -f "$source" ] || return
 
@@ -252,11 +248,9 @@ typeset mode source target flag comment nstart nend fname tmp_dir action tmp_sta
 
 source="$1"
 target="$2"
-mode="$3"
-[ -z "$mode" ] && mode=644
-flag="$4"
-comment="$5"
-[ -z "$comment" ] && comment='#'
+mode=${3:-644}
+flag=${4:-}
+comment=${5:-#}
 
 # Special case: data read from stdin. Create file in temp dir (id taken from
 # the base name)
@@ -357,7 +351,7 @@ grep "^.#sysfunc_start/$id##" "$target" >/dev/null 2>&1
 #
 # Args:
 #       $1: owner[:group]
-#       $2+: List of paths
+#       $2+: List of paths (may be empty)
 # Returns: chown status code
 # Displays: Nothing
 #-----------------------------------------------------------------------------
@@ -369,7 +363,7 @@ typeset status owner
 status=0
 owner=$1
 shift
-if [ -z "$sf_noexec" ] ; then
+if [ -z "$sf_noexec" -a $# -gt 0 ] ; then
 	chown "$owner" $*
 	status=$?
 fi
@@ -381,7 +375,7 @@ return $status
 #
 # Args:
 #       $1: mode as accepted by chmod
-#       $2+: List of paths
+#       $2+: List of paths (may be empty)
 # Returns: chmod status code
 # Displays: Nothing
 #-----------------------------------------------------------------------------
@@ -393,7 +387,7 @@ typeset status mode
 status=0
 mode=$1
 shift
-if [ -z "$sf_noexec" ] ; then
+if [ -z "$sf_noexec" -a $# -gt 0 ] ; then
 	chmod "$mode" $*
 	status=$?
 fi
@@ -447,30 +441,30 @@ fi
 #	$1: File path
 #	$2: Pattern to search (grep regex syntax)
 #	$3: Optional. Comment prefix string. Default='#'
-#	$4: Number of lines to comment (''=all). Default: ''
+#	$4: Optional. Number of lines to comment (''=all). Default: ''
 # Returns: Always 0
 # Displays: Info msg
 #-----------------------------------------------------------------------------
 
 function sf_comment_out
 {
-typeset file pattern com cnb tmp lnum line
+typeset file pattern com cnb tmp lnum line found
 file="$1"
 pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+com=${3:-#}
+cnb=${4:-}
 
 tmp=`sf_tmpfile`
 lnum=0
 while read line ; do
 	lnum=`expr $lnum + 1`
 	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "$pattern" >/dev/null
-		if [ $? = 0 ] ; then
+		found=y
+		echo "$line" | grep "$pattern" >/dev/null || found=
+		if [ -n "$found" ] ; then
 			sf_msg "$file: Commenting out line $lnum"
 			line="$com$line"
-			[ -n "$cnb" ] && cnb=`expr $cnb - 1`
+			[ -n "$cnb" ] && cnb=`expr $cnb - 1` || :
 		fi
 	fi
 	echo "$line" >>$tmp
@@ -502,26 +496,27 @@ fi
 
 function sf_uncomment
 {
-typeset file pattern com cnb tmp lnum line l2
+typeset file pattern com cnb tmp lnum line l2 found
 file="$1"
 pattern="$2"
-com="$3"
-[ "X$com" = X ] && com='#'
-cnb=$4
+com=${3:-#}
+cnb=${4:-}
 
 tmp=`sf_tmpfile`
 lnum=0
 while read line ; do
 	lnum=`expr $lnum + 1`
 	if [ "$cnb" != 0 ] ; then
-		echo "$line" | grep "^[ 	]*$com" >/dev/null
-		if [ $? = 0 ] ; then
+		found=y
+		echo "$line" | grep "^[ 	]*$com" >/dev/null || found=
+		if [ -n "$found" ] ; then
 			l2=`echo "$line" | sed "s,^[ 	]*$com,,"`
-			echo "$l2" | grep "$pattern" >/dev/null
-			if [ $? = 0 ] ; then
+      found=y
+			echo "$l2" | grep "$pattern" >/dev/null || found=
+			if [ -n "$found" ] ; then
 				sf_msg "$file: Uncommenting line $lnum"
 				line="$l2"
-				[ -n "$cnb" ] && cnb=`expr $cnb - 1`
+				[ -n "$cnb" ] && cnb=`expr $cnb - 1` || :
 			fi
 		fi
 	fi
@@ -562,13 +557,13 @@ file="$1"
 pattern="$2"
 line="$3"
 
-fline=`grep "$pattern" $file 2>/dev/null | head -1`
-[ "$fline" = "$line" ] && return
+fline=`grep "$pattern" $file 2>/dev/null | head -1 || :`
+[ "X$fline" = "X$line" ] && return
 sf_save $file
 if [ -n "$fline" ] ; then
 	sf_msg1 "$1: Replacing '$2' line"
 	qpattern=`echo "$pattern" | sed 's!/!\\\\/!g'`
-	[ -z "$sf_noexec" ] && ed $file <<-EOF >/dev/null 2>&1
+	[ -z "$sf_noexec" ] && ed $file >/dev/null 2>&1 <<-EOF || :
 		/$qpattern/
 		.c
 		$line
