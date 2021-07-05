@@ -30,7 +30,7 @@
 
 function sf_svc_running_systemd
 {
-test -x /usr/bin/systemctl
+test -d /run/systemd/system
 }
 
 ##----------------------------------------------------------------------------
