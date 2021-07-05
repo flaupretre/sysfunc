@@ -93,7 +93,7 @@ typeset errfile
 sf_msg "***ERROR: $1" >&2
 
 errfile=$_sf_error_list
-[ -n "$SF_ERRLOG" ] && errfile="$SF_ERRLOG"
+[ -n "${SF_ERRLOG:+}" ] && errfile="$SF_ERRLOG"
 echo "$1" >>$errfile
 }
 
