@@ -1,3 +1,5 @@
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
+
 **SysFunc** is a shell library primarily intended for Unix sysadmins.
 
 It provides a set of portable shell functions including features such as :
